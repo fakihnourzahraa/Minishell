@@ -1,0 +1,5 @@
+//this is for runnig command and handling forks ,pipes,redirection
+.mira work on it week 2 mira should execute single command 
+and week 2 for fork+execve
+.mira work on it week 3 for apply redirection using open(),dup2(),close.
+.mira work on it week 4 execute pipeline->pipe(),fotk(),dup2()&& combine it with redirection

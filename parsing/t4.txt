@@ -1,0 +1,6 @@
+//this is for parsing ,splitting input into tokens ,handle quote
+.nour maybe should work on it week 1 (token)
+.nour work on it week 2 it handle single and double quote and handle < > >> |
+.nour work on it week 3 to handle the pare of < > >> and Fill t_redir in t_cmd(idk what is this)
+.nour work on it week 4 to parse pipelines ->produce linked list of t_cmd && handle variable expansion $VAR and $?
+.nour work on it week 5 to handle edge case ->unclosed quotes,...&free memory
