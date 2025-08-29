@@ -58,6 +58,18 @@ typedef struct s_token
 //s: the actual string (the words)
 //quotes: there or not
 
+typedef enum e_builtin
+{
+  NOT_BUILTIN,
+  BUILTIN_CD,
+  BUILTIN_ECHO,
+  BUILTIN_ENV,
+  BUILTIN_EXIT,
+  BUILTIN_EXPORT,
+  BUILTIN_PWD,
+  BUILTIN_UNSET
+} t_builtin;
+
 typedef struct s_cmd
 {
 	char	**args;
@@ -66,7 +78,7 @@ typedef struct s_cmd
 	int		i_fd;
 	int		o_fd;
 	pid_t	pid;
-	int		builtin;
+	t_builtin builtin;
 	t_cmd	*next;
 }			t_cmd;
 //rd: redirections
