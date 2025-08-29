@@ -19,27 +19,29 @@ void	init_shell(t_shell *a)
 	a->cmds = NULL;
 	a->in = NULL;
 	a->envp = NULL;
-	a->exit_status = NULL;
+	a->exit_status = 0;
 	a->cwd = NULL;
 }
 int main()
 {
-	int		i;
+	//int		i;
 	t_shell	*a;
 	signal(SIGINT,sigint_handler);//ctrl+c(sigint here is a signal and signit_han is fct)
 	signal(SIGQUIT,SIG_IGN);//ctrl+\ (sigquit here is a signal and sif_in is a macro in os to ignore the signal)
 
 	a = malloc(sizeof(t_shell));
-	i = 0;
+	if(!a)
+		return (1);
 	init_shell(a);
 	while(1)//infinite loop bcz always should print minishell$
 	{
-		a->in[i] = readline("minishell$ ");
-		if(a->in[i] == NULL)
+		a->in = readline("minishell$ ");
+		if(!a->in)
 			break;//ctrl+D
-    	if(a->in[i] != '\0')
-      		add_history(a->in[i]);
-    	i++;
+    if(a->in[0] != '\0')
+      add_history(a->in);
+		free(a->in);
 	}
+	free(a);
   return (0);
 }

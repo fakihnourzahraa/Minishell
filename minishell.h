@@ -86,13 +86,13 @@ typedef struct s_cmd
 //o_fd: output fd
 //pid: so we can wait on it later
 
-typedef enum	e_r_type
+typedef enum e_r_type
 {
-	IN,
-	OUT,
-	APPEND,
-	HEREDOC
-}				t_r_type;
+  R_IN,
+  R_OUT,
+  R_APPEND,
+  R_HEREDOC
+} t_r_type;
 typedef struct s_redir
 {
 	t_r_type	type;
