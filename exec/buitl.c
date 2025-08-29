@@ -24,3 +24,18 @@ int is_builtin(char *cmd)
     return (BUILTIN_EXIT);
   return (0);
 }
+
+int	execute_builtin(t_cmd *cmd, t_shell *shell)
+{
+	if (!cmd || !cmd->args || !cmd->args[0])
+		return (0);
+	if (ft_strcmp(cmd->args[0], "echo") == 0)
+		builtin_echo(cmd, shell);
+	else if (ft_strcmp(cmd->args[0], "pwd") == 0)
+		builtin_pwd(cmd, shell);
+	else if (ft_strcmp(cmd->args[0], "exit") == 0)
+		builtin_exit(cmd, shell);
+	else
+		return (0);
+	return (1);
+}

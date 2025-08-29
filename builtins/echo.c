@@ -28,11 +28,13 @@ static void	print_echo(char **args, int start, bool newline)
 		ft_putchar_fd('\n', 1);
 }
 
-void	builtin_echo(t_cmd *cmd)
+void	builtin_echo(t_cmd *cmd, t_shell *shell)
 {
 	int		i;
 	int		start;
 	bool	newline;
+
+	(void)shell; // not used inside print, just to match prototype
 
 	i = 0;
 	start = 1;
@@ -48,4 +50,5 @@ void	builtin_echo(t_cmd *cmd)
 		ft_putchar_fd('\n', 1);
 	else
 		print_echo(cmd->args, start, newline);
+	shell->exit_status = 0; // set success exit status
 }

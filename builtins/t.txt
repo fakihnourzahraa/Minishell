@@ -1,6 +1,0 @@
-//this is for cd,echo,pwd,export,uset 
-i can do each one of them in .c file
-
-.mira should work on it week 2 and build skeleton for echo pwd exit
-.mira work on it week 5 to implement full builtin :cd ,export,unset,env,exit
-and handle heredo<< ,signal handle in child process

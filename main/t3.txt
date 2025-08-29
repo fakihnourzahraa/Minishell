@@ -1,2 +1,0 @@
-//this is for storing the main loop for prompt readline history and signal
-work on it week 1 mira 

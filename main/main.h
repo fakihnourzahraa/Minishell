@@ -19,7 +19,10 @@
 #include<readline/history.h>
 #include<signal.h>
 # include "../minishell.h"
-
+# include "../libft/libft.h"
+#include "../builtins/builtin.h"
+#include "../exec/exec.h"
+#include "../tools/tools.h"
 void	sigint_handler(int signum);
 
 #endif

@@ -15,7 +15,7 @@
 #include "../minishell.h"
 #include "../libft/libft.h"
 
-void builtin_echo(t_cmd *cmd);
+void builtin_echo(t_cmd *cmd,t_shell *shell);
 void	builtin_pwd(t_cmd *cmd, t_shell *shell);
 void builtin_exit(t_cmd *cmd, t_shell *shell);
 

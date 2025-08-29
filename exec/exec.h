@@ -14,7 +14,8 @@
 #define EXEC_H
 #include "../minishell.h"
 #include "../libft/libft.h"
+#include "../builtins/builtin.h"
 
-int is_buitlin(char *cmd);
-
+int is_builtin(char *cmd);
+int	execute_builtin(t_cmd *cmd, t_shell *shell);
 #endif
