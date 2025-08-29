@@ -6,7 +6,7 @@
 /*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/28 11:35:19 by miwehbe           #+#    #+#             */
-/*   Updated: 2025/08/29 13:34:14 by nfakih           ###   ########.fr       */
+/*   Updated: 2025/08/29 14:46:36 by nfakih           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,21 +24,22 @@ void	init_shell(t_shell *a)
 }
 int main()
 {
+	int		i;
 	t_shell	*a;
 	signal(SIGINT,sigint_handler);//ctrl+c(sigint here is a signal and signit_han is fct)
 	signal(SIGQUIT,SIG_IGN);//ctrl+\ (sigquit here is a signal and sif_in is a macro in os to ignore the signal)
-	char *line;
 
 	a = malloc(sizeof(t_shell));
+	i = 0;
 	init_shell(a);
 	while(1)//infinite loop bcz always should print minishell$
 	{
-		line = readline("minishell$ ");
-		if(line == NULL)
+		a->in[i] = readline("minishell$ ");
+		if(a->in[i] == NULL)
 			break;//ctrl+D
-    	if(*line != '\0')
-      		add_history(line);
-    	free(line);
+    	if(a->in[i] != '\0')
+      		add_history(a->in[i]);
+    	i++;
 	}
   return (0);
 }
