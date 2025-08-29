@@ -1,23 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   signal.c                                           :+:      :+:    :+:   */
+/*   pwd.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: miwehbe <miwehbe@student.42beirut.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/08/28 13:04:47 by miwehbe           #+#    #+#             */
-/*   Updated: 2025/08/28 13:04:47 by miwehbe          ###   ########.fr       */
+/*   Created: 2025/08/29 13:17:35 by miwehbe           #+#    #+#             */
+/*   Updated: 2025/08/29 13:17:35 by miwehbe          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "main.h"
-
-void  sigint_handler(int signum)
-{
-  (void)signum;
-  write(1,"\n",1);
-  rl_on_new_line();// tell readline we are on a new line
-  rl_replace_line("",0); // clear current input
-  rl_redisplay();// redraw prompt
-}
-//here we must found some leak but we are not responsible on it bcz the said this in the given
