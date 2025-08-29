@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   signal.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miwehbe <miwehbe@student.42beirut.com>     +#+  +:+       +#+        */
+/*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/28 13:04:47 by miwehbe           #+#    #+#             */
-/*   Updated: 2025/08/28 13:04:47 by miwehbe          ###   ########.fr       */
+/*   Updated: 2025/08/29 13:31:44 by nfakih           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,10 @@
 
 void  sigint_handler(int signum)
 {
-  (void)signum;
-  printf("\n");
-  rl_on_new_line();// tell readline we are on a new line
-  rl_replace_line("",0); // clear current input
-  rl_redisplay();// redraw prompt
+	(void)signum;
+	printf("\n");
+	rl_on_new_line();// tell readline we are on a new line
+	rl_replace_line("", 0); // clear current input
+	rl_redisplay();// redraw prompt
 }
 //here we must found some leak but we are not responsible on it bcz the said this in the given

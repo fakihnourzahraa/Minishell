@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miwehbe <miwehbe@student.42beirut.com>     +#+  +:+       +#+        */
+/*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/28 11:36:07 by miwehbe           #+#    #+#             */
-/*   Updated: 2025/08/28 11:36:07 by miwehbe          ###   ########.fr       */
+/*   Updated: 2025/08/29 13:33:43 by nfakih           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,8 @@
 #include<readline/readline.h>
 #include<readline/history.h>
 #include<signal.h>
+# include "../minishell.h"
 
-void sigint_handler(int signum);
+void	sigint_handler(int signum);
 
 #endif

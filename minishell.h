@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/28 16:10:17 by nour              #+#    #+#             */
-/*   Updated: 2025/08/28 18:34:44 by nour             ###   ########.fr       */
+/*   Updated: 2025/08/29 13:23:48 by nfakih           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 # include <errno.h>
-# include "ft_printf/ft_printf.h"
+
 
 typedef struct s_token	t_token;
 typedef struct s_cmd	t_cmd;
@@ -126,8 +126,8 @@ typedef struct s_shell
 	char	*cwd;
 	int		*sti;
 	int		*sto;
-
 }			t_shell;
+
 //in string immediately from read line
 //exit_status: last cmds exit code (for $?)
 //exit: if should exit or not
