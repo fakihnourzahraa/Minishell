@@ -6,7 +6,7 @@
 /*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/04 22:53:52 by nour              #+#    #+#             */
-/*   Updated: 2025/09/04 23:47:08 by nour             ###   ########.fr       */
+/*   Updated: 2025/09/05 15:50:10 by nour             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,23 +33,27 @@ void	parse(t_shell *shell)
 	int		i;
 	
 	token = shell->tkns;
+	if (!token || token->type != WORD)
+		return ;
 	shell->cmds = malloc(sizeof(t_cmd));
+	shell->cmds->args = malloc(sizeof(char *) * (word_count(shell) + 1));
 	shell->cmds->cmd = ft_strdup(token->s);
-	shell->cmds->args = malloc(sizeof(char) * (word_count(shell) + 1));
 	shell->cmds->args[0] = ft_strdup(token->s);
 	i = 1;
-	while (token)
+	while (token && token->type == WORD)
 	{
 		if (token->quotes == 1)
 			shell->cmds->args[i] = ft_strtrim(token->s, '\'');
 		else if (token->quotes == 2)
 			shell->cmds->args[i] = ft_strtrim(token->s, '"');
-		else
-			shell->cmds->args[i] = ft_strdup(shell->tkns->s);
+			shell->cmds->args[i] = ft_strdup(token->s);
 		token = token->next;
 		i++;
 	}
 }
+
+//parses till eof only
+
 //should take the first token
 // typedef struct s_cmd
 // {
