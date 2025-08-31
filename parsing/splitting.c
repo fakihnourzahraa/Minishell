@@ -6,7 +6,7 @@
 /*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/31 13:41:44 by nfakih            #+#    #+#             */
-/*   Updated: 2025/08/31 13:46:06 by nfakih           ###   ########.fr       */
+/*   Updated: 2025/08/31 15:59:09 by nfakih           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,9 @@ int	split_q(char *a, int i, t_token *t)
 }
 int	split_cmd(char *a, int i, t_token *t)
 {
+	if (is_builtin(a, i ,t))
+		return (0);
+	if 
 	
 	return (i);
 }
