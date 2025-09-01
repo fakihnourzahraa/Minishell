@@ -34,7 +34,7 @@ void	builtin_echo(t_cmd *cmd, t_shell *shell)
 	int		start;
 	bool	newline;
 
-	(void)shell; // not used inside print, just to match prototype
+	(void)shell; //  to match prototype
 
 	i = 0;
 	start = 1;

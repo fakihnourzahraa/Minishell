@@ -1,0 +1,105 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   execute_path.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: miwehbe <miwehbe@student.42beirut.com>     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/09/01 09:31:56 by miwehbe           #+#    #+#             */
+/*   Updated: 2025/09/01 09:31:56 by miwehbe          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "exec.h"
+
+static char	*get_path_from_env(t_shell *shell)
+{
+	int		i;
+
+	if (!shell || !shell->envp)
+		return (NULL);
+	i = 0;
+	while (shell->envp[i])
+	{
+		if (ft_strncmp(shell->envp[i], "PATH=", 5) == 0)
+			return (ft_strdup(shell->envp[i] + 5));
+		i++;
+	}
+	return (NULL);
+}//to get the full path for cmd
+
+static char	*join_path_cmd(const char *path, const char *cmd)
+{
+	char	*tmp;
+	char	*full;
+
+	if (!path || !cmd)
+		return (NULL);
+	tmp = ft_strjoin(path, "/");
+	if (!tmp)
+		return (NULL);
+	full = ft_strjoin(tmp, cmd);
+	free(tmp);
+	return (full);
+}// to put for example path/cmd(bin/ls)
+
+static char	*check_cmd_with_slash(const char *cmd)
+{
+	if (!cmd)
+		return (NULL);
+	if (ft_strchr(cmd, '/'))
+	{
+		if (access(cmd, X_OK) == 0)
+			return (ft_strdup(cmd));
+		return (NULL);
+	}
+	return (NULL);
+}//we check if it has / than it maybe the full path
+
+static char	*search_in_paths(char **paths, const char *cmd)
+{
+	char	*full;
+	int		i;
+
+	if (!paths || !cmd)
+		return (NULL);
+	i = 0;
+	while (paths[i])
+	{
+		full = join_path_cmd(paths[i], cmd);
+		if (!full)
+			return (NULL);
+		if (access(full, X_OK) == 0)
+			return (full);
+		free(full);
+		i++;
+	}
+	return (NULL);
+}//check for all executable paths
+
+char	*get_cmd_path(const char *cmd, t_shell *shell)
+{
+	char	*path_env;
+	char	**paths;
+	char	*res;
+
+	if (!cmd || !shell)
+		return (NULL);
+	res = check_cmd_with_slash(cmd);
+	if (res)
+		return (res);
+	path_env = get_path_from_env(shell);
+	if (!path_env)
+		return (NULL);
+	paths = ft_split(path_env, ':');
+	free(path_env);
+	if (!paths)
+		return (NULL);
+	res = search_in_paths(paths, cmd);
+	free_paths(paths);
+	return (res);
+}
+
+/*
+this file is to get the path of cmnd that is not buitlin(like pipex) nearly to it 
+*/
