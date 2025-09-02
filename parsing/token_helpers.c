@@ -6,7 +6,7 @@
 /*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/31 13:23:45 by nfakih            #+#    #+#             */
-/*   Updated: 2025/08/31 15:30:57 by nfakih           ###   ########.fr       */
+/*   Updated: 2025/09/02 18:26:42 by nfakih           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,12 @@ void	cleanup_token(t_shell *shell)
 {
 	if (shell->tkns)
 		free_tokens(shell->tkns);
+}
+int	skip_spaces(char *a, int i)
+{
+	while (i > -1 && a[i] && skipable_space(a[i]))
+		i++;
+	return (i);
 }
 // only the skipable ones
 // Space (32) and Tab (9) are your main token separators

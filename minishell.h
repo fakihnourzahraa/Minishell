@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/28 16:10:17 by nour              #+#    #+#             */
-/*   Updated: 2025/09/01 19:16:10 by nour             ###   ########.fr       */
+/*   Updated: 2025/09/02 18:17:42 by nfakih           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 # include <errno.h>
-//# include "libft.h"
+# include "libft.h"
 
 typedef struct s_token	t_token;
 typedef struct s_cmd	t_cmd;
@@ -66,7 +66,7 @@ typedef enum e_builtin
   BUILTIN_EXPORT,
   BUILTIN_PWD,
   BUILTIN_UNSET
-} t_builtin;
+} 			t_builtin;
 
 typedef struct s_cmd
 {

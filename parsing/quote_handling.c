@@ -3,45 +3,50 @@
 /*                                                        :::      ::::::::   */
 /*   quote_handling.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/02 13:24:02 by nour              #+#    #+#             */
-/*   Updated: 2025/09/02 14:19:31 by nour             ###   ########.fr       */
+/*   Updated: 2025/09/02 20:20:06 by nfakih           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "parsing.h"
 
-int	
-
-int	check_quotes(char *a)
+int	split_q(char *a, t_shell *shell, int i)
 {
-	int	i;
-	int	j;
-	int	c;
+	int	z;
 
-	j = ft_strlen(a) - 1;
-	i = 0;
-	while (a[i])
+	z = i;
+	int	j = ft_strlen(a);
+	while (a[z])
 	{
-		if (a[i] == 34 || a[i] == 39)
+		if (a[z] == 34 || a[z] == 39)
 		{
-			c = 0;
 			while (j > i)
 			{
-				if (a[j] == a[i])
+				if (a[j] == a[z])
 				{
-					c = 1;
-					break ;
+					split_word(a, a[z] % 3 + 1, shell);
+					return (j);
 				}
 				j--;
 			}
-			if (!c)
-				return (0);
+			return (-1);
 		}
-		i++;
+		z++;
 	}
-	return (1);
+	return (i);
 }
+//this goes off of where the last index is, so either the original one if there are quotes
+//or tokenizes whats between quotes, or -1 on error
 //34 is " 39 is '
-//set bool quotes = 1 or 2
+//shell->tkns->quotes = (a[z] % 3) + 1; is its single quote it'll be 0 + 1 else 1 + 1
+
+// int main()
+// {
+//     // Fix: Use proper prompt or NULL instead of uninitialized pointer
+//     char *b = readline("Enter text: ");  // or readline(NULL) for no prompt
+//     printf("%d", assign_q(b, 0, strlen(b)));
+    
+//     return 0;
+// }
