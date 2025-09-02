@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miwehbe <miwehbe@student.42beirut.com>     +#+  +:+       +#+        */
+/*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/28 16:10:17 by nour              #+#    #+#             */
-/*   Updated: 2025/09/01 09:33:32 by miwehbe          ###   ########.fr       */
+/*   Updated: 2025/09/01 19:16:10 by nour             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,8 +42,6 @@ typedef	enum	s_token_type
 	OUT,
 	APPEND,
 	HEREDOC,
-	AND,
-	OR,
 	T_EOF
 }				t_token_type;
 

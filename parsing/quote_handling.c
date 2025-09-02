@@ -3,14 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   quote_handling.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/08/31 13:17:20 by nfakih            #+#    #+#             */
-/*   Updated: 2025/08/31 13:25:18 by nfakih           ###   ########.fr       */
+/*   Created: 2025/09/02 13:24:02 by nour              #+#    #+#             */
+/*   Updated: 2025/09/02 14:19:31 by nour             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "parsing.h"
+
+int	
 
 int	check_quotes(char *a)
 {
@@ -19,6 +21,7 @@ int	check_quotes(char *a)
 	int	c;
 
 	j = ft_strlen(a) - 1;
+	i = 0;
 	while (a[i])
 	{
 		if (a[i] == 34 || a[i] == 39)
@@ -41,3 +44,4 @@ int	check_quotes(char *a)
 	return (1);
 }
 //34 is " 39 is '
+//set bool quotes = 1 or 2

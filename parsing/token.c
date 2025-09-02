@@ -3,53 +3,77 @@
 /*                                                        :::      ::::::::   */
 /*   token.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/08/29 11:16:46 by nfakih            #+#    #+#             */
-/*   Updated: 2025/08/31 19:10:18 by nfakih           ###   ########.fr       */
+/*   Created: 2025/09/02 13:32:47 by nour              #+#    #+#             */
+/*   Updated: 2025/09/02 13:32:47 by nour             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-int	tokenize(t_shell *shell)
+int	tokenize_line(t_shell *shell)
 {
 	char	*a;
 	int		i;
 
 	i = 0;
 	a = shell->in[i];
-	while (a)
-	{
-		if (!running(shell, a))
-			cleanup(shell);
-		i++;
-	}
+	shell->tkns = malloc(sizeof(t_token) + 1);
+	
+
+
 	if (a)
 		free(a);
 }
-int	running(t_shell *shell, char *a)
+void	set_single(int n, char a, t_token *t)
 {
-	int		i;
-	t_token	*t;
+	char	*b;
 
-	t = malloc(sizeof(t_token) + 1);
-	i = 0;
-	while (i > -1 && a[i])
-	{
-		if (a[i] == 34 || a[i] == 39)
-			i = split_q(a, i, t);
-		if (i > -1 && is_op(a, i))
-			i = split_op(a, i, t);
-		if (i > -1 && is_var(a, i))
-			i = split_var(a, i, t);
-		else
-			i = split_word(a, i, t);
-		i++;
-	}
-	shell->tkns = t;
+	b = malloc (sizeof(char) * 2);
+	b[0] = a;
+	b[1] = '\0';
+	t->type = n;
+	t->s = b;
+	t->quotes = 0;
 }
- 
+void	set_double(int n, char a, t_token *t, int i)
+{
+	char	*b;
+
+	b = malloc (sizeof(char) * 3);
+	b[0] = a;
+	b[1] = a;
+	b[2] = '\0';
+	t->type = n;
+	t->s = b;
+	t->quotes = 0;
+	return (i + 1);
+}
+int	set_tokens(t_shell *shell, char *a)
+{
+		if (a[i] == 34 || a[i] == 39)
+			i = split_q(a, i, shell->tkns);
+		else if (a[i] == '|')
+			set_single(1, '|', shell->tkns);
+		else if (a[i] == '>' && a[i + 1] == '>' && i++)
+			i = set_double(4, '>', shell->tkns);
+		else if (a[i] == '<' && a[i + 1] == '<' && i++)
+			i = set_double(5, '<', shell->tkns);
+		else if (a[i] == '<')
+			set_single(2, '<', shell->tkns);
+		else if (a[i] == '>')
+			set_single(3, '>', shell->tkns);
+		else
+			i = split_word(a, i, shell->tkns);
+		shell->tkns = shell->tkns->next;
+
+	if (i != -2)
+		shell->tkns->type = 6;
+}
 //in quotations we can have new lines etc
 //skip spaces at the end of each split
 //we can also check for the validity of i in is_functions
+
+
+//escape sequences
