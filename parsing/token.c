@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minishell.h"
+#include "parsing.h"
 
 int	tokenize_line(t_shell *shell)
 {
@@ -19,13 +19,14 @@ int	tokenize_line(t_shell *shell)
 
 	i = 0;
 	a = shell->in[i];
-	shell->tkns = malloc(sizeof(t_token) + 1);
+	i = skip_spaces(a, i);
 	while (a[i])
 	{
+		shell->tkns = malloc(sizeof(t_token) + 1);
 		set_tokens(shell, a, i, false);
+		i = skip_spaces(a, i);
+		i++;
 	}
-	if (a)
-		free(a);
 }
 void	set_single(int n, char a, t_token *t)
 {
@@ -51,18 +52,10 @@ int	set_double(int n, char a, t_token *t, int i)
 	t->quotes = 0;
 	return (i + 1);
 }
-typedef	enum	s_token_type
-{
-	WORD,
-	PIPE,
-	IN,
-	OUT,
-	APPEND,
-	HEREDOC,
-	T_EOF
-}				t_token_type;
+
 int	set_tokens(t_shell *shell, char *a, int i, bool in_q)
 {
+	shell->tkns->type = in_q;
 	if (!in_q && (a[i] == 34 || a[i] == 39))
 		i = split_q(a, shell->tkns, i);
 	else if (a[i] == '|')
@@ -76,12 +69,9 @@ int	set_tokens(t_shell *shell, char *a, int i, bool in_q)
 	else if (a[i] == '>')
 		set_single(3, '>', shell->tkns);
 	else
-		i = split_word(a, i, shell->tkns, in_q);
+		i = split_word(a, i, shell->tkns);
 	shell->tkns = shell->tkns->next;
 }
 //in quotations we can have new lines etc
 //skip spaces at the end of each split
 //we can also check for the validity of i in is_functions
-
-
-//escape sequences

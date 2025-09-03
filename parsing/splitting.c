@@ -3,26 +3,28 @@
 /*                                                        :::      ::::::::   */
 /*   splitting.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/31 13:41:44 by nfakih            #+#    #+#             */
-/*   Updated: 2025/09/02 20:28:17 by nfakih           ###   ########.fr       */
+/*   Updated: 2025/09/02 22:12:42 by nour             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "parsing.h"
-typedef	enum	s_token_type
-{
-	WORD,
-	PIPE,
-	IN,
-	OUT,
-	APPEND,
-	HEREDOC,
-	T_EOF
-}				t_token_type;
 
-int	split_word(char *a, int i, t_shell *shell, bool q_t)
+int	word_len(char *a, int i)
+{
+	int	j;
+
+	j = 0;
+	while (a[i] && skipable_space(a[i]))
+	{
+		i++;
+		j++;
+	}
+	return (j);
+}
+int	split_word(char *a, int i, t_shell *shell)
 {
 	char	*b;
 	int		j;
@@ -36,8 +38,8 @@ int	split_word(char *a, int i, t_shell *shell, bool q_t)
 		i++;
 		j++;
 	}
+	b[j] = '\0';
 	shell->tkns->s = b;
-	shell->tkns->quotes = q_t;
 	shell->tkns->type = 0;
 	return (i);
 }
