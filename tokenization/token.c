@@ -22,13 +22,12 @@ int	tokenize_line(t_shell *shell)
 	i = skip_spaces(a, i);
 	while (a[i])
 	{
-		shell->tkns = malloc(sizeof(t_token) + 1);
-		set_tokens(shell, a, i, false);
-		i = skip_spaces(a, i);
-		i++;
+		shell->tkns = malloc(sizeof(t_token));
+		shell->tkns->type = 0;
+		i = set_token(shell, a, i);
 	}
 }
-void	set_single(int n, char a, t_token *t)
+int	set_single(int n,int i, char a, t_token *t)
 {
 	char	*b;
 
@@ -37,6 +36,7 @@ void	set_single(int n, char a, t_token *t)
 	b[1] = '\0';
 	t->type = n;
 	t->s = b;
+	return (i + 1);
 }
 int	set_double(int n, char a, t_token *t, int i)
 {
@@ -51,24 +51,32 @@ int	set_double(int n, char a, t_token *t, int i)
 	return (i + 1);
 }
 
-int	set_tokens(t_shell *shell, char *a, int i, bool in_q)
+int	set_token(t_shell *shell, char *a, int i)
 {
-	shell->tkns->type = in_q;
-	if (!in_q && (a[i] == 34 || a[i] == 39))
+	t_token	*b;
+
+	if ((a[i] == 34 || a[i] == 39))
 		i = split_q(a, shell->tkns, i);
 	else if (a[i] == '|')
-		set_single(1, '|', shell->tkns);
-	else if (a[i] == '>' && a[i + 1] == '>' && i++)
+		i = set_single(1, i, '|', shell->tkns);
+	else if (a[i] == '>' && a[i + 1] == '>')
 		i = set_double(4, '>', shell->tkns, i);
-	else if (a[i] == '<' && a[i + 1] == '<' && i++)
+	else if (a[i] == '<' && a[i + 1] == '<')
 		i = set_double(5, '<', shell->tkns, i);
 	else if (a[i] == '<')
-		set_single(2, '<', shell->tkns);
+		i = set_single(2, i, '<', shell->tkns);
 	else if (a[i] == '>')
-		set_single(3, '>', shell->tkns);
+		i = set_single(3, i, '>', shell->tkns);
 	else
-		i = split_word(a, i, shell->tkns);
-	shell->tkns = shell->tkns->next;
+		i = split_word(a, i, shell, 0);
+	if (i != -1)
+	{
+		b = malloc(sizeof(t_token));
+		shell->tkns->next = b;
+		shell->tkns = shell->tkns->next;
+		i = skip_spaces(a, i);
+	}
+	return (i);
 }
 //in quotations we can have new lines etc
 //skip spaces at the end of each split

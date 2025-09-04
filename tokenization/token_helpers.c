@@ -6,7 +6,7 @@
 /*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/31 13:23:45 by nfakih            #+#    #+#             */
-/*   Updated: 2025/09/04 13:36:32 by nour             ###   ########.fr       */
+/*   Updated: 2025/09/04 16:12:03 by nour             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,11 +18,11 @@ bool	skipable_space(char a)
 		return (true);
 	return (false);
 }
-void	cleanup_token(t_shell *shell)
-{
-	if (shell->tkns)
-		free_tokens(shell->tkns);
-}
+// void	cleanup_token(t_shell *shell)
+// {
+// 	if (shell->tkns)
+// 		free_tokens(shell->tkns);
+// }
 int	skip_spaces(char *a, int i)
 {
 	while (i > -1 && a[i] && skipable_space(a[i]))
@@ -33,3 +33,36 @@ int	skip_spaces(char *a, int i)
 // Space (32) and Tab (9) are your main token separators
 // Newline (10) typically ends a command line
 // Carriage Return (13) might appear in files created on Windows systems
+
+int	word_len(char *a, int i)
+{
+	int	j;
+
+	j = 0;
+	while (a[i] && skipable_space(a[i]))
+	{
+		i++;
+		j++;
+	}
+	return (j);
+}
+int	split_word(char *a, int i, t_shell *shell, bool in_q)
+{
+	char	*b;
+	int		j;
+	
+	j = 0;
+	skip_spaces(a, i);
+	b = malloc(sizeof(char) * (word_len(a, i) + 1));
+	while (!skipable_space(a[i]))
+	{
+		b[j] = a[i];
+		i++;
+		j++;
+	}
+	b[j] = '\0';
+	shell->tkns->s = b;
+	shell->tkns->quotes = in_q;
+	shell->tkns->type = 0;
+	return (i);
+}
