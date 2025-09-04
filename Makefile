@@ -13,7 +13,9 @@ SRCS = main/main.c \
 	tools/utils.c\
        exec/execute_single.c\
        exec/execute_path.c\
-       exec/utilsexec.c
+       exec/utilsexec.c\
+       exec/redirection.c\
+       exec/redir_utils.c
 
 OBJS = $(SRCS:.c=.o)
 

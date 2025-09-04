@@ -6,7 +6,7 @@
 /*   By: miwehbe <miwehbe@student.42beirut.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/28 11:35:19 by miwehbe           #+#    #+#             */
-/*   Updated: 2025/09/01 14:19:10 by miwehbe          ###   ########.fr       */
+/*   Updated: 2025/09/04 20:45:00 by miwehbe          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,8 @@ void	init_shell(t_shell *shell, char **envp)
 	}
 	shell->envp[i] = NULL;
 }
+
+
 void	free_shell(t_shell *shell)
 {
 	int	i;
@@ -68,7 +70,7 @@ void	free_shell(t_shell *shell)
 	}
 }
 
-int	main(int argc, char **argv, char **envp)
+/*int	main(int argc, char **argv, char **envp)
 {
 	t_shell	*a;
 	(void)argc;
@@ -111,4 +113,56 @@ int	main(int argc, char **argv, char **envp)
 	free_shell(a);
 	free(a);
 	return (0);
+}
+*/
+int main(int argc, char **argv, char **envp)
+{
+    t_shell *shell;
+    t_cmd cmd;
+    t_redir in_redir;
+    pid_t pid;
+    int status;
+
+    (void)argc;
+    (void)argv;
+
+    shell = malloc(sizeof(t_shell));
+    if (!shell)
+        return (1);
+    init_shell(shell, envp);
+
+    // setup command
+    cmd.args = malloc(sizeof(char *) * 2);
+    cmd.args[0] = "/bin/cat";
+    cmd.args[1] = NULL;
+    cmd.builtin = NOT_BUILTIN;
+
+    // setup input redirection
+    in_redir.type = R_IN;
+    in_redir.s = "input.txt";
+    in_redir.next = NULL;
+    cmd.rd = &in_redir;
+
+    // fork + exec
+    pid = fork();
+    if (pid == 0)
+    {
+        if (apply_redirections(&cmd) == -1)
+        {
+            perror("redirection");
+            exit(1);
+        }
+        execve(cmd.args[0], cmd.args, envp);
+        perror("execve");
+        exit(1);
+    }
+    else
+    {
+        waitpid(pid, &status, 0);
+    }
+
+    free(cmd.args);
+    free_shell(shell);
+    free(shell);
+    return 0;
 }
