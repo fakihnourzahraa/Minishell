@@ -48,7 +48,7 @@ int	split_q(char *a, t_shell *shell, int i)
 	{
 		if (a[j] == a[z])
 		{
-			split_word(a, z, shell, a[z] % 3 + 1);
+			split_word(a, z, shell, a[j]);
 			return (j);
 		}
 		j++;

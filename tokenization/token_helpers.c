@@ -6,7 +6,7 @@
 /*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/31 13:23:45 by nfakih            #+#    #+#             */
-/*   Updated: 2025/09/04 16:12:03 by nour             ###   ########.fr       */
+/*   Updated: 2025/09/04 16:31:08 by nour             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,30 @@ int	word_len(char *a, int i)
 	}
 	return (j);
 }
-int	split_word(char *a, int i, t_shell *shell, bool in_q)
+int	split_quote(char *a, int i, t_shell *shell, char n)
+{
+	char	*b;
+	int		j;
+	int	z;
+	
+	j = 0;
+	z = i + 1;
+	while (b[z] != n)
+		z++;
+	b = malloc(sizeof(char) * (z + 1));
+	while ((a[i]) != n)
+	{
+		b[j] = a[i];
+		i++;
+		j++;
+	}
+	b[j] = '\0';
+	shell->tkns->s = b;
+	shell->tkns->quotes = n % 3 + 1;
+	shell->tkns->type = 0;
+	return (i);
+}
+int	split_word(char *a, int i, t_shell *shell)
 {
 	char	*b;
 	int		j;
@@ -62,7 +85,7 @@ int	split_word(char *a, int i, t_shell *shell, bool in_q)
 	}
 	b[j] = '\0';
 	shell->tkns->s = b;
-	shell->tkns->quotes = in_q;
+	shell->tkns->quotes = 0;
 	shell->tkns->type = 0;
 	return (i);
 }

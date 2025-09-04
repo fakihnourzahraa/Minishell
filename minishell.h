@@ -6,7 +6,7 @@
 /*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/28 16:10:17 by nour              #+#    #+#             */
-/*   Updated: 2025/09/02 20:48:58 by nour             ###   ########.fr       */
+/*   Updated: 2025/09/04 23:00:40 by nour             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,7 @@ typedef enum e_builtin
 
 typedef struct s_cmd
 {
+	char	*cmd;
 	char	**args;
 	char	*path;
 	t_redir	*rd;
