@@ -6,7 +6,7 @@
 /*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/28 16:10:17 by nour              #+#    #+#             */
-/*   Updated: 2025/09/04 16:11:31 by nour             ###   ########.fr       */
+/*   Updated: 2025/09/04 16:22:21 by nour             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,41 @@
 # define TOKENIZATION_H
 
 # include "../minishell.h"
+
+// cc token.c token_helpers.c -lreadline
+
+// int main()
+// {
+// 	t_shell *a;
+// 	a = malloc(1);
+//     char *b = readline("Enter text: ");
+//     printf("%d\n", split_q(b, a, 0));
+    
+//     return 0;
+// }
+
+//int	main(int argc, char **argv, char **envp)
+// {
+// 	t_shell	*a;
+// 	(void)argc;
+// 	(void)argv;
+// 	t_cmd	cmd;
+// 	char	**args;
+
+// 	a = malloc(sizeof(t_shell));
+// 	if (!a)
+// 		return (1);
+// 	// init_shell(a,envp);
+// 	while (1)
+// 	{
+// 		a->in = readline("minishell$ ");
+// 		if (!a->in)
+// 			break ;
+// 		args = ft_split(a->in, ' ');
+// 	}
+// 	return (0);
+// }
+
 
 int	    skip_spaces(char *a, int i);
 bool	skipable_space(char a);
