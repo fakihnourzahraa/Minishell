@@ -6,7 +6,7 @@
 /*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/31 13:23:45 by nfakih            #+#    #+#             */
-/*   Updated: 2025/09/05 17:03:23 by nour             ###   ########.fr       */
+/*   Updated: 2025/09/05 17:08:28 by nour             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ int	split_quote(char *a, int i, t_shell *shell, char n)
 	
 	j = 0;
 	z = 0;
-	while (b[z + i] != n)
+	while (a[z + i] != n)
 		z++;
 	b = malloc(sizeof(char) * (z + 2));
 	while ((a[i]) != n)

@@ -6,7 +6,7 @@
 /*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/28 16:10:17 by nour              #+#    #+#             */
-/*   Updated: 2025/09/04 16:22:21 by nour             ###   ########.fr       */
+/*   Updated: 2025/09/05 17:12:33 by nour             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@
 
 int	    skip_spaces(char *a, int i);
 bool	skipable_space(char a);
-int	    split_word(char *a, int i, t_shell *shell, bool in_q);
+int	    split_word(char *a, int i, t_shell *shell);
 int	    split_q(char *a, t_shell *shell, int i);
 
 #endif

@@ -48,7 +48,7 @@ int	split_q(char *a, t_shell *shell, int i)
 	{
 		if (a[j] == a[z])
 		{
-			j = split_word(a, j, shell, a[j]);
+			j = split_quote(a, j, shell, a[j]);
 			return (j);
 		}
 		j++;
@@ -77,7 +77,7 @@ int	set_token(t_shell *shell, char *a, int i)
 	else if (a[i] == '>')
 		i = set_single(3, i, '>', shell->tkns);
 	else
-		i = split_word(a, i, shell, 0);
+		i = split_word(a, i, shell);
 	if (i != -1)
 	{
 		b = malloc(sizeof(t_token));
@@ -87,6 +87,7 @@ int	set_token(t_shell *shell, char *a, int i)
 	}
 	return (i);
 }
+
 //in quotations we can have new lines etc
 //skip spaces at the end of each split
 
