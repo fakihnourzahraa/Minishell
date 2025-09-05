@@ -6,7 +6,7 @@
 /*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/31 13:23:45 by nfakih            #+#    #+#             */
-/*   Updated: 2025/09/04 16:31:08 by nour             ###   ########.fr       */
+/*   Updated: 2025/09/05 17:03:23 by nour             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,13 +50,13 @@ int	split_quote(char *a, int i, t_shell *shell, char n)
 {
 	char	*b;
 	int		j;
-	int	z;
+	int		z;
 	
 	j = 0;
-	z = i + 1;
-	while (b[z] != n)
+	z = 0;
+	while (b[z + i] != n)
 		z++;
-	b = malloc(sizeof(char) * (z + 1));
+	b = malloc(sizeof(char) * (z + 2));
 	while ((a[i]) != n)
 	{
 		b[j] = a[i];
@@ -69,13 +69,16 @@ int	split_quote(char *a, int i, t_shell *shell, char n)
 	shell->tkns->type = 0;
 	return (i);
 }
+// + 2 to account for the n at the end ("")
 int	split_word(char *a, int i, t_shell *shell)
 {
 	char	*b;
 	int		j;
 	
 	j = 0;
-	skip_spaces(a, i);
+	i = skip_spaces(a, i);
+	if (a[i] == '\0')
+		return (i);
 	b = malloc(sizeof(char) * (word_len(a, i) + 1));
 	while (!skipable_space(a[i]))
 	{
@@ -87,5 +90,5 @@ int	split_word(char *a, int i, t_shell *shell)
 	shell->tkns->s = b;
 	shell->tkns->quotes = 0;
 	shell->tkns->type = 0;
-	return (i);
+	return (i - 1);
 }
