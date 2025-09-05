@@ -44,7 +44,7 @@ int execute_single(t_shell *shell, t_cmd *cmd)
     }
     else if (pid == 0)
     {
-        if (apply_redirections(cmd) == -1)
+        if (apply_redirections(cmd,shell) == -1)
             exit(1); // Redirection error already printed in apply_redirections
 
         execve(path, cmd->args, shell->envp);

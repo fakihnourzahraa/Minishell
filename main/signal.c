@@ -12,12 +12,21 @@
 
 #include "main.h"
 
-void  sigint_handler(int signum)
+
+/*void  sigint_handler(int signum)
 {
   (void)signum;
   write(1,"\n",1);
   rl_on_new_line();// tell readline we are on a new line
   rl_replace_line("",0); // clear current input
   rl_redisplay();// redraw prompt
+}*/
+int g_signal = 0;
+
+void sigint_handler(int signum)
+{
+  g_signal = signum;  // just store the signal number
+  write(1, "\n", 1);
 }
+
 //here we must found some leak but we are not responsible on it bcz the said this in the given

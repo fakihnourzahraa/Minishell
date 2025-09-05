@@ -26,5 +26,7 @@ void	  free_paths(char **paths);
 int     open_infile(char *filename);
 int     open_outfile(char *filename, int append);
 int     redirect_fd(int fd, int target_fd);
-int     apply_redirections(t_cmd *cmd);
+int     apply_redirections(t_cmd *cmd, t_shell *shell);
+int     run_heredoc(char *delimiter, t_shell *shell);
+
 #endif

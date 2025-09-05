@@ -15,7 +15,8 @@ SRCS = main/main.c \
        exec/execute_path.c\
        exec/utilsexec.c\
        exec/redirection.c\
-       exec/redir_utils.c
+       exec/redir_utils.c\
+       exec/heredoc.c
 
 OBJS = $(SRCS:.c=.o)
 

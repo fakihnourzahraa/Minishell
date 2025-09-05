@@ -12,7 +12,7 @@
 
 #include "exec.h"
 
-int apply_redirections(t_cmd *cmd)
+int apply_redirections(t_cmd *cmd, t_shell *shell)
 {
   if(cmd == NULL || cmd->rd == NULL)
     return (0);
@@ -42,6 +42,13 @@ int apply_redirections(t_cmd *cmd)
       if(fd==-1)
         return(-1);
       redirect_fd(fd,STDOUT_FILENO);
+    }
+    else if (current_redir->type == R_HEREDOC)
+    {
+      fd = run_heredoc(current_redir->s, shell);
+      if (fd == -1)
+        return (-1); // heredoc failed / Ctrl+C
+      redirect_fd(fd, STDIN_FILENO);
     }
     current_redir = current_redir->next;
   }
