@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: yitani <yitani@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/04 22:53:52 by nour              #+#    #+#             */
-/*   Updated: 2025/09/05 15:50:10 by nour             ###   ########.fr       */
+/*   Updated: 2025/09/05 17:36:33 by yitani           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,10 +43,10 @@ void	parse(t_shell *shell)
 	while (token && token->type == WORD)
 	{
 		if (token->quotes == 1)
-			shell->cmds->args[i] = ft_strtrim(token->s, '\'');
+			shell->cmds->args[i] = ft_strtrim(token->s, "'");
 		else if (token->quotes == 2)
-			shell->cmds->args[i] = ft_strtrim(token->s, '"');
-			shell->cmds->args[i] = ft_strdup(token->s);
+			shell->cmds->args[i] = ft_strtrim(token->s, "\"");
+		shell->cmds->args[i] = ft_strdup(token->s);
 		token = token->next;
 		i++;
 	}

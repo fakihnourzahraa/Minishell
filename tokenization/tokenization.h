@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokenization.h                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: yitani <yitani@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/28 16:10:17 by nour              #+#    #+#             */
-/*   Updated: 2025/09/05 17:12:33 by nour             ###   ########.fr       */
+/*   Updated: 2025/09/05 17:41:29 by yitani           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,5 +54,8 @@ int	    skip_spaces(char *a, int i);
 bool	skipable_space(char a);
 int	    split_word(char *a, int i, t_shell *shell);
 int	    split_q(char *a, t_shell *shell, int i);
+int		split_quote(char *a, int i, t_shell *shell, char n);
+void	parse(t_shell *shell);
+int	tokenize_line(t_shell *shell);
 
 #endif

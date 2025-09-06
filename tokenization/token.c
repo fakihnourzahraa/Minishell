@@ -104,4 +104,5 @@ int	tokenize_line(t_shell *shell)
 		shell->tkns->type = 0;
 		i = set_token(shell, a, i);
 	}
+	return (1);
 }
