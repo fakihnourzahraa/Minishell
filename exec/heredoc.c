@@ -59,6 +59,7 @@ int run_heredoc(char *delimiter, t_shell *shell)
     close(fd[1]);//close it bcz parent doenst write only read
     waitpid(pid,&status,0);//pid is the child pidd we want wait,0 is defalt behv
     shell->in_h = 0;
+    signals_prompt();
     if(WIFEXITED(status))//child exit (for existence)
     {
       code = WEXITSTATUS(status);//0

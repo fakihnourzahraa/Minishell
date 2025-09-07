@@ -6,7 +6,7 @@
 /*   By: miwehbe <miwehbe@student.42beirut.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/28 11:35:19 by miwehbe           #+#    #+#             */
-/*   Updated: 2025/09/06 09:14:06 by miwehbe          ###   ########.fr       */
+/*   Updated: 2025/09/07 16:12:07 by miwehbe          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@
 	a->envp = NULL;
 	a->exit_status = 0;
 	a->cwd = NULL;
-}*/
+}
 void	init_shell(t_shell *shell, char **envp)
 {
 	int	i;
@@ -68,7 +68,7 @@ void	free_shell(t_shell *shell)
 		}
 		free(shell->envp);
 	}
-}
+}*/
 
 /*int	main(int argc, char **argv, char **envp)
 {
@@ -116,6 +116,53 @@ void	free_shell(t_shell *shell)
 }
 */
 
+#include"main.h"
+
+void	init_shell(t_shell *shell, char **envp)
+{
+	int	i;
+
+	if (!shell)
+		return ;
+	shell->exit_status = 0;
+	shell->in = NULL;
+
+	// Count env variables
+	i = 0;
+	while (envp[i])
+		i++;
+
+	// Allocate and copy envp
+	shell->envp = malloc(sizeof(char *) * (i + 1));
+	if (!shell->envp)
+		return ;
+	i = 0;
+	while (envp[i])
+	{
+		shell->envp[i] = ft_strdup(envp[i]);
+		i++;
+	}
+	shell->envp[i] = NULL;
+}
+
+void	free_shell(t_shell *shell)
+{
+	int	i;
+
+	if (!shell)
+		return ;
+	if (shell->envp)
+	{
+		i = 0;
+		while (shell->envp[i])
+		{
+			free(shell->envp[i]);
+			i++;
+		}
+		free(shell->envp);
+	}
+}
+
 int main(int argc, char **argv, char **envp)
 {
     t_shell *shell;
@@ -135,7 +182,25 @@ int main(int argc, char **argv, char **envp)
 
     while (1)
     {
-        shell->in = readline("minishell$ ");
+        g_signal = 0;  // Reset signal flag
+        if (g_signal != SIGINT)  // Only show prompt if not interrupted
+            shell->in = readline("minishell$ ");
+        else
+        {
+            shell->in = readline("minishell$ ");  // This will show the prompt
+            g_signal = 0;
+        }
+        //shell->in = readline("minishell$ ");
+        
+        // Handle Ctrl+C during readline
+        if (g_signal == SIGINT)
+        {
+            shell->exit_status = 130;
+            printf("minishell$ ");  // Show new prompt
+            fflush(stdout);
+            continue;
+        }
+        
         if (!shell->in)
             break;
         if (shell->in[0] != '\0')

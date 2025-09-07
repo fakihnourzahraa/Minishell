@@ -13,6 +13,7 @@
 #ifndef MAIN_H
 # define MAIN_H
 
+extern int g_signal;
 #include<stdio.h>
 #include<stdlib.h>
 #include<readline/readline.h>
