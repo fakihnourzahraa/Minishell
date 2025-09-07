@@ -6,7 +6,7 @@
 /*   By: miwehbe <miwehbe@student.42beirut.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/28 11:35:19 by miwehbe           #+#    #+#             */
-/*   Updated: 2025/09/05 19:49:23 by miwehbe          ###   ########.fr       */
+/*   Updated: 2025/09/06 09:14:06 by miwehbe          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -148,40 +148,25 @@ int main(int argc, char **argv, char **envp)
             continue;
         }
 
-        // --- REDIRECTION DETECTION & REMOVAL ---
+        // --- REDIRECTION DETECTION ---
         t_redir *redir = NULL;
         t_redir *last = NULL;
         int i = 0;
 
         while (tokens[i])
         {
-            int is_redir = 0;
-            t_redir *new = NULL;
-
-            if ((strcmp(tokens[i], "<") == 0 || strcmp(tokens[i], ">") == 0 ||
-                 strcmp(tokens[i], ">>") == 0 || strcmp(tokens[i], "<<") == 0) && tokens[i + 1])
+            if (strcmp(tokens[i], "<") == 0 && tokens[i + 1])
             {
-                new = malloc(sizeof(t_redir));
-                new->next = NULL;
-
-                if (strcmp(tokens[i], "<") == 0)
-                    new->type = R_IN;
-                else if (strcmp(tokens[i], ">") == 0)
-                    new->type = R_OUT;
-                else if (strcmp(tokens[i], ">>") == 0)
-                    new->type = R_APPEND;
-                else if (strcmp(tokens[i], "<<") == 0)
-                    new->type = R_HEREDOC;
-
+                t_redir *new = malloc(sizeof(t_redir));
+                new->type = R_IN;
                 new->s = tokens[i + 1];
-
+                new->next = NULL;
                 if (!redir)
                     redir = new;
                 else
                     last->next = new;
                 last = new;
-
-                // Remove the two tokens (redir + target) from args
+                // Remove tokens[i] and tokens[i+1] from args
                 int j = i;
                 while (tokens[j + 2])
                 {
@@ -190,12 +175,72 @@ int main(int argc, char **argv, char **envp)
                 }
                 tokens[j] = NULL;
                 tokens[j + 1] = NULL;
-
-                is_redir = 1;
+                continue; // stay at same i
             }
-
-            if (!is_redir)
-                i++;
+            else if (strcmp(tokens[i], ">") == 0 && tokens[i + 1])
+            {
+                t_redir *new = malloc(sizeof(t_redir));
+                new->type = R_OUT;
+                new->s = tokens[i + 1];
+                new->next = NULL;
+                if (!redir)
+                    redir = new;
+                else
+                    last->next = new;
+                last = new;
+                int j = i;
+                while (tokens[j + 2])
+                {
+                    tokens[j] = tokens[j + 2];
+                    j++;
+                }
+                tokens[j] = NULL;
+                tokens[j + 1] = NULL;
+                continue;
+            }
+            else if (strcmp(tokens[i], ">>") == 0 && tokens[i + 1])
+            {
+                t_redir *new = malloc(sizeof(t_redir));
+                new->type = R_APPEND;
+                new->s = tokens[i + 1];
+                new->next = NULL;
+                if (!redir)
+                    redir = new;
+                else
+                    last->next = new;
+                last = new;
+                int j = i;
+                while (tokens[j + 2])
+                {
+                    tokens[j] = tokens[j + 2];
+                    j++;
+                }
+                tokens[j] = NULL;
+                tokens[j + 1] = NULL;
+                continue;
+            }
+            else if (strcmp(tokens[i], "<<") == 0 && tokens[i + 1])
+            {
+                t_redir *new = malloc(sizeof(t_redir));
+                new->type = R_HEREDOC;
+                new->s = tokens[i + 1];
+                new->next = NULL;
+                if (!redir)
+                    redir = new;
+                else
+                    last->next = new;
+                last = new;
+                int j = i;
+                while (tokens[j + 2])
+                {
+                    tokens[j] = tokens[j + 2];
+                    j++;
+                }
+                tokens[j] = NULL;
+                tokens[j + 1] = NULL;
+                continue;
+            }
+            i++;
         }
 
         cmd.args = tokens;
@@ -205,36 +250,13 @@ int main(int argc, char **argv, char **envp)
         // --- EXECUTION ---
         if (tokens[0])
         {
-            // If any heredoc was canceled by Ctrl+C, skip execution
-            t_redir *r = cmd.rd;
-            int heredoc_canceled = 0;
-            while (r)
-            {
-                if (r->type == R_HEREDOC)
-                {
-                    int fd = run_heredoc(r->s, shell);
-                    if (fd == -1)
-                    {
-                        heredoc_canceled = 1;
-                        shell->exit_status = 130;
-                        break;
-                    }
-                    redirect_fd(fd, STDIN_FILENO);
-                }
-                r = r->next;
-            }
-
-            if (!heredoc_canceled)
-            {
-                if (cmd.builtin != NOT_BUILTIN)
-                    execute_builtin(&cmd, shell);
-                else
-                    execute_single(shell, &cmd);
-            }
-						
+            if (cmd.builtin != NOT_BUILTIN)
+                execute_builtin(&cmd, shell);
+            else
+                execute_single(shell, &cmd);
         }
 
-        // --- FREE REDIRECTIONS ---
+        // --- FREE ---
         t_redir *tmp;
         while (redir)
         {

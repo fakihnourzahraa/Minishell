@@ -24,5 +24,9 @@
 #include "../exec/exec.h"
 #include "../tools/tools.h"
 void	sigint_handler(int signum);
+void	signals_prompt(void);
+void	signals_child_heredoc(void);
+void	signals_child(void);
+void	signals_parent(void);
 
 #endif

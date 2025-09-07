@@ -15,6 +15,7 @@
 #include "../minishell.h"
 #include "../libft/libft.h"
 #include "../builtins/builtin.h"
+#include"../main/main.h"
 #include<fcntl.h>
 
 int     is_builtin(char *cmd);
