@@ -64,6 +64,7 @@ int	set_token(t_shell *shell, char *a, int i)
 {
 	t_token	*b;
 
+
 	if ((a[i] == 34 || a[i] == 39))
 		i = split_q(a, shell, i);
 	else if (a[i] == '|')
@@ -80,9 +81,9 @@ int	set_token(t_shell *shell, char *a, int i)
 		i = split_word(a, i, shell);
 	if (i != -1)
 	{
-		b = malloc(sizeof(t_token));
-		shell->tkns->next = b;
-		shell->tkns = shell->tkns->next;
+		// b = malloc(sizeof(t_token));
+		// shell->tkns->next = b;
+		// shell->tkns = shell->tkns->next;
 		i = skip_spaces(a, i);
 	}
 	return (i);
@@ -95,14 +96,21 @@ int	tokenize_line(t_shell *shell)
 {
 	char	*a;
 	int		i;
+	int		j;
 
 	a = shell->in;
+	a = "echo hello0";
+	shell->tkns = malloc(sizeof(t_token));
+	shell->tkns->next = NULL;
 	i = skip_spaces(a, 0);
-	while (a[i])
+	while (i > -1 && a[i])
 	{
-		shell->tkns = malloc(sizeof(t_token));
+		j = i;
 		shell->tkns->type = 0;
 		i = set_token(shell, a, i);
+		if ((i > -1 && a[i] == '\0' ) || j == i)
+			break ;
 	}
+
 	return (1);
 }

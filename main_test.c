@@ -74,13 +74,13 @@ void test_string(char *input)
     
     int result = tokenize_line(&shell);
     
-    // if (result == -1)
-    // {
-    //     printf("ERROR: Tokenization failed!\n\n");
-    //     return;
-    // }
+    if (result == -1)
+    {
+        printf("ERROR: Tokenization failed!\n\n");
+        return;
+    }
     
-    // print_tokens(&shell);
+    print_tokens(&shell);
     
     // Test parsing
     // printf("--- PARSING ---\n");
@@ -126,21 +126,21 @@ int main(void)
     printf("=================\n\n");
     
     // Basic tests
-    test_string("echo hello");
-    test_string("echo 'hello world'");
-    test_string("echo \"hello world\"");
-    test_string("ls -l");
-    test_string("cat < file.txt");
-    test_string("ls > output.txt");
-    test_string("echo hello >> log.txt");
-    test_string("cat << EOF");
-    test_string("ls | grep .c");
-    test_string("echo hello | wc -l");
+    test_string("echi hel  | lp");
+    // test_string("echo 'hello world'");
+    // test_string("echo \"hello world\"");
+    // test_string("ls -l");
+    // test_string("cat < file.txt");
+    // test_string("ls > output.txt");
+    // test_string("echo hello >> log.txt");
+    // test_string("cat << EOF");
+    // test_string("ls | grep .c");
+    // test_string("echo hello | wc -l");
     
-    // Edge cases
-    test_string("echo");
-    test_string("   echo   hello   ");
-    test_string("");
+    // // Edge cases
+    // test_string("echo");
+    // test_string("   echo   hello   ");
+    // test_string("");
     
     printf("All tests completed!\n");
     return 0;
