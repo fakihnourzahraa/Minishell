@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokenization.h                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yitani <yitani@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/28 16:10:17 by nour              #+#    #+#             */
-/*   Updated: 2025/09/05 17:41:29 by yitani           ###   ########.fr       */
+/*   Updated: 2025/09/07 21:58:54 by nour             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,5 +57,7 @@ int	    split_q(char *a, t_shell *shell, int i);
 int		split_quote(char *a, int i, t_shell *shell, char n);
 void	parse(t_shell *shell);
 int	tokenize_line(t_shell *shell);
+t_token	*init_token(void);
+void	add_token(t_shell *shell, t_token *n);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/28 16:10:17 by nour              #+#    #+#             */
-/*   Updated: 2025/09/04 23:00:40 by nour             ###   ########.fr       */
+/*   Updated: 2025/09/07 22:11:11 by nour             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,8 @@ typedef	enum	s_token_type
 	OUT,
 	APPEND,
 	HEREDOC,
-	T_EOF
+	T_EOF,
+	EMPTY
 }				t_token_type;
 
 typedef struct s_token

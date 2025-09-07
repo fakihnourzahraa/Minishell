@@ -1,15 +1,4 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   main_test.c                                        :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: test                                        +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/09/05 21:00:00 by test              #+#    #+#             */
-/*   Updated: 2025/09/05 21:00:00 by test             ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
+/* Fixed main_test.c */
 #include "minishell.h"
 #include "tokenization/tokenization.h"
 
@@ -23,7 +12,7 @@ void print_token_type(t_token_type type)
         case APPEND: printf("APPEND"); break;
         case HEREDOC: printf("HEREDOC"); break;
         case T_EOF: printf("T_EOF"); break;
-        default: printf("UNKNOWN"); break;
+        default: printf("UNKNOWN(%d)", type); break;
     }
 }
 
@@ -81,43 +70,8 @@ void test_string(char *input)
     }
     
     print_tokens(&shell);
-    
-    // Test parsing
-    // printf("--- PARSING ---\n");
-    // parse(&shell);
-    
-    // if (shell.cmds)
-    // {
-    //     printf("Command: %s\n", shell.cmds->cmd ? shell.cmds->cmd : "(null)");
-    //     printf("Args:\n");
-    //     if (shell.cmds->args)
-    //     {
-    //         for (int i = 0; shell.cmds->args[i]; i++)
-    //         {
-    //             printf("  [%d]: '%s'\n", i, shell.cmds->args[i]);
-    //         }
-    //     }
-    // }
-    // else
-    // {
-    //     printf("No command parsed\n");
-    // }
-    // printf("--- END PARSING ---\n\n");
-    
-    // // Cleanup
-    // free_tokens(&shell);
-    // if (shell.cmds)
-    // {
-    //     if (shell.cmds->cmd)
-    //         free(shell.cmds->cmd);
-    //     if (shell.cmds->args)
-    //     {
-    //         for (int i = 0; shell.cmds->args[i]; i++)
-    //             free(shell.cmds->args[i]);
-    //         free(shell.cmds->args);
-    //     }
-    //     free(shell.cmds);
-    // }
+    free_tokens(&shell);
+    printf("\n");
 }
 
 int main(void)
@@ -126,21 +80,22 @@ int main(void)
     printf("=================\n\n");
     
     // Basic tests
-    test_string("echi hel  | lp");
-    // test_string("echo 'hello world'");
-    // test_string("echo \"hello world\"");
-    // test_string("ls -l");
-    // test_string("cat < file.txt");
-    // test_string("ls > output.txt");
-    // test_string("echo hello >> log.txt");
-    // test_string("cat << EOF");
-    // test_string("ls | grep .c");
-    // test_string("echo hello | wc -l");
+    test_string("echo hello");
+    test_string("echo 'hello world'");
+    test_string("echo \"hello world\"");
+    test_string("ls -l");
+    test_string("cat < file.txt");
+    test_string("ls > output.txt");
+    test_string("echo hello >> log.txt");
+    test_string("cat << EOF");
+    test_string("ls | grep .c");
+    test_string("echo hello | wc -l");
     
-    // // Edge cases
-    // test_string("echo");
-    // test_string("   echo   hello   ");
-    // test_string("");
+    // Edge cases
+    test_string("echo");
+    test_string("   echo   hello   ");
+    test_string("");
+    test_string("echo 'unclosed quote");  // Error case
     
     printf("All tests completed!\n");
     return 0;

@@ -33,7 +33,7 @@ int	set_double(int n, char a, t_token *t, int i)
 	b[2] = '\0';
 	t->type = n;
 	t->s = b;
-	return (i + 1);
+	return (i + 2);
 }
 
 int	split_q(char *a, t_shell *shell, int i)
@@ -63,40 +63,65 @@ int	split_q(char *a, t_shell *shell, int i)
 int	set_token(t_shell *shell, char *a, int i)
 {
 	t_token	*b;
+	t_token	*n;
 
-
+	n = init_token();
+	i = skip_spaces(a, i);
 	if ((a[i] == 34 || a[i] == 39))
-		i = split_q(a, shell, i);
+		return (free(n), split_q(a, shell, i));
 	else if (a[i] == '|')
-		i = set_single(1, i, '|', shell->tkns);
+		i = set_single(1, i, '|', n);
 	else if (a[i] == '>' && a[i + 1] == '>')
-		i = set_double(4, '>', shell->tkns, i);
+		i = set_double(4, '>', n, i);
 	else if (a[i] == '<' && a[i + 1] == '<')
-		i = set_double(5, '<', shell->tkns, i);
+		i = set_double(5, '<', n, i);
 	else if (a[i] == '<')
-		i = set_single(2, i, '<', shell->tkns);
+		i = set_single(2, i, '<', n);
 	else if (a[i] == '>')
-		i = set_single(3, i, '>', shell->tkns);
+		i = set_single(3, i, '>', n);
 	else
-		i = split_word(a, i, shell);
-	if (i != -1)
-	{
-		// b = malloc(sizeof(t_token));
-		// shell->tkns->next = b;
-		// shell->tkns = shell->tkns->next;
-		i = skip_spaces(a, i);
-	}
+		return (free(n), split_word(a, i, shell));
+	add_token(shell, n);
+	// b = malloc(sizeof(t_token));
+	// shell->tkns->next = b;
+	// shell->tkns = shell->tkns->next;
 	return (i);
 }
 
 //in quotations we can have new lines etc
 //skip spaces at the end of each split
 
+t_token	*init_token(void)
+{
+	t_token	*n;
+
+	n = malloc(sizeof(t_token));
+	n->type = EMPTY;
+	n->s = NULL;
+	n->quotes = 0;
+	n->next = NULL;
+	return (n);
+}
+void	add_token(t_shell *shell, t_token *n)
+{
+	t_token	*cur;
+
+	if (!shell->tkns)
+		shell->tkns = n;
+	else
+	{
+		cur = shell->tkns;
+		while (cur->next)
+			cur = cur->next;
+		cur->next = n;
+	}
+}
 int	tokenize_line(t_shell *shell)
 {
 	char	*a;
 	int		i;
 	int		j;
+	t_token	*t;
 
 	a = shell->in;
 	a = "echo hello0";
@@ -108,9 +133,13 @@ int	tokenize_line(t_shell *shell)
 		j = i;
 		shell->tkns->type = 0;
 		i = set_token(shell, a, i);
-		if ((i > -1 && a[i] == '\0' ) || j == i)
+		if (i == -1)
+			return (-1);
+		if (a[i] == '\0' || j == i)
 			break ;
 	}
-
+	t = init_token();
+	t->type = T_EOF;	
+	add_token(shell, t);
 	return (1);
 }

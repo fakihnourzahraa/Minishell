@@ -6,7 +6,7 @@
 /*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/31 13:23:45 by nfakih            #+#    #+#             */
-/*   Updated: 2025/09/07 21:40:04 by nour             ###   ########.fr       */
+/*   Updated: 2025/09/07 22:07:35 by nour             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,25 +51,33 @@ int	split_quote(char *a, int i, t_shell *shell, char n)
 	char	*b;
 	int		j;
 	int		z;
+	t_token	*t;
 	
-	j = 0;
 	z = 0;
+	i++;
 	while (a[z + i] != n)
 		z++;
-	b = malloc(sizeof(char) * (z + 2));
+	//these are the chars between each quotation mark
+	b = malloc(sizeof(char) * (z + 3));
+	j = 1;
+	b[0] = n;
 	while ((a[i]) != n)
 	{
 		b[j] = a[i];
 		i++;
 		j++;
 	}
-	b[j] = '\0';
-	shell->tkns->s = b;
-	shell->tkns->quotes = n % 3 + 1;
-	shell->tkns->type = n;
-	return (i);
+	b[j] = n;
+	b[j + 1] = '\0';
+	t = init_token();
+	t->s = b;
+	t->quotes = n % 3 + 1;
+	add_token(shell, t);
+	return (z + i);
 }
-// + 2 to account for the n at the end ("")
+//takes pos of first " returns pos of last "
+// i++ cause i is gonna be " at first
+//
 int	split_word(char *a, int i, t_shell *shell)
 {
 	char	*b;
