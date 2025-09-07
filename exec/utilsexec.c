@@ -60,7 +60,7 @@ void close_unused_pipes(int **pipes, int pipe_count, int current_cmd)//5
 	}
 }
 
-void setup_cmd_fds(t_cmd *cmd, t_pipe_info *info)//6
+/*void setup_cmd_fds(t_cmd *cmd, t_pipe_info *info)//6
 {
 
 }
@@ -68,4 +68,4 @@ void setup_cmd_fds(t_cmd *cmd, t_pipe_info *info)//6
 int execute_cmd_in_pipeline(t_shell *shell, t_cmd *cmd, t_pipe_info *info)//8
 {
 
-}
+}*/

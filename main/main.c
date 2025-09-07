@@ -6,7 +6,7 @@
 /*   By: miwehbe <miwehbe@student.42beirut.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/28 11:35:19 by miwehbe           #+#    #+#             */
-/*   Updated: 2025/09/07 16:12:07 by miwehbe          ###   ########.fr       */
+/*   Updated: 2025/09/07 19:28:33 by miwehbe          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,51 +116,52 @@ void	free_shell(t_shell *shell)
 }
 */
 
-#include"main.h"
+#include "main.h"
 
-void	init_shell(t_shell *shell, char **envp)
+void init_shell(t_shell *shell, char **envp)
 {
-	int	i;
+    int i;
 
-	if (!shell)
-		return ;
-	shell->exit_status = 0;
-	shell->in = NULL;
+    if (!shell)
+        return;
+    shell->exit_status = 0;
+    shell->in = NULL;
+    shell->in_h = 0;  // Add this - track heredoc state
 
-	// Count env variables
-	i = 0;
-	while (envp[i])
-		i++;
+    // Count env variables
+    i = 0;
+    while (envp[i])
+        i++;
 
-	// Allocate and copy envp
-	shell->envp = malloc(sizeof(char *) * (i + 1));
-	if (!shell->envp)
-		return ;
-	i = 0;
-	while (envp[i])
-	{
-		shell->envp[i] = ft_strdup(envp[i]);
-		i++;
-	}
-	shell->envp[i] = NULL;
+    // Allocate and copy envp
+    shell->envp = malloc(sizeof(char *) * (i + 1));
+    if (!shell->envp)
+        return;
+    i = 0;
+    while (envp[i])
+    {
+        shell->envp[i] = ft_strdup(envp[i]);
+        i++;
+    }
+    shell->envp[i] = NULL;
 }
 
-void	free_shell(t_shell *shell)
+void free_shell(t_shell *shell)
 {
-	int	i;
+    int i;
 
-	if (!shell)
-		return ;
-	if (shell->envp)
-	{
-		i = 0;
-		while (shell->envp[i])
-		{
-			free(shell->envp[i]);
-			i++;
-		}
-		free(shell->envp);
-	}
+    if (!shell)
+        return;
+    if (shell->envp)
+    {
+        i = 0;
+        while (shell->envp[i])
+        {
+            free(shell->envp[i]);
+            i++;
+        }
+        free(shell->envp);
+    }
 }
 
 int main(int argc, char **argv, char **envp)
@@ -172,55 +173,64 @@ int main(int argc, char **argv, char **envp)
     (void)argc;
     (void)argv;
 
-    signal(SIGINT, sigint_handler);
-    signal(SIGQUIT, SIG_IGN);
-
     shell = malloc(sizeof(t_shell));
     if (!shell)
         return 1;
     init_shell(shell, envp);
 
+    // Set up signals ONCE at the start
+    signals_prompt();
+
     while (1)
     {
-        g_signal = 0;  // Reset signal flag
-        if (g_signal != SIGINT)  // Only show prompt if not interrupted
-            shell->in = readline("minishell$ ");
-        else
-        {
-            shell->in = readline("minishell$ ");  // This will show the prompt
-            g_signal = 0;
-        }
-        //shell->in = readline("minishell$ ");
+        shell->in = readline("minishell$ ");
         
-        // Handle Ctrl+C during readline
+        // Handle Ctrl+D (EOF)
+        if (!shell->in)
+        {
+            printf("exit\n");
+            break;
+        }
+
+        // Handle Ctrl+C signal
         if (g_signal == SIGINT)
         {
+            g_signal = 0;  // Reset signal
             shell->exit_status = 130;
-            printf("minishell$ ");  // Show new prompt
-            fflush(stdout);
+            free(shell->in);
             continue;
         }
-        
-        if (!shell->in)
-            break;
-        if (shell->in[0] != '\0')
-            add_history(shell->in);
 
-        tokens = ft_split(shell->in, ' ');
-        if (!tokens)
+        // Skip empty input
+        if (shell->in[0] == '\0')
         {
             free(shell->in);
             continue;
         }
 
-        // --- REDIRECTION DETECTION ---
+        // Add to history
+        add_history(shell->in);
+
+        // Tokenize by spaces
+        tokens = ft_split(shell->in, ' ');
+        if (!tokens || !tokens[0])
+        {
+            free(shell->in);
+            if (tokens)
+                free_split(tokens);
+            continue;
+        }
+
+        // --- REDIRECTION DETECTION (Fixed) ---
         t_redir *redir = NULL;
         t_redir *last = NULL;
+        char **clean_tokens = malloc(sizeof(char *) * 100);  // Temp array
+        int clean_idx = 0;
         int i = 0;
 
         while (tokens[i])
         {
-            if (strcmp(tokens[i], "<") == 0 && tokens[i + 1])
+            if (ft_strcmp(tokens[i], "<") == 0 && tokens[i + 1])
             {
                 t_redir *new = malloc(sizeof(t_redir));
                 new->type = R_IN;
@@ -231,18 +241,9 @@ int main(int argc, char **argv, char **envp)
                 else
                     last->next = new;
                 last = new;
-                // Remove tokens[i] and tokens[i+1] from args
-                int j = i;
-                while (tokens[j + 2])
-                {
-                    tokens[j] = tokens[j + 2];
-                    j++;
-                }
-                tokens[j] = NULL;
-                tokens[j + 1] = NULL;
-                continue; // stay at same i
+                i += 2;  // Skip both redirection and filename
             }
-            else if (strcmp(tokens[i], ">") == 0 && tokens[i + 1])
+            else if (ft_strcmp(tokens[i], ">") == 0 && tokens[i + 1])
             {
                 t_redir *new = malloc(sizeof(t_redir));
                 new->type = R_OUT;
@@ -253,17 +254,9 @@ int main(int argc, char **argv, char **envp)
                 else
                     last->next = new;
                 last = new;
-                int j = i;
-                while (tokens[j + 2])
-                {
-                    tokens[j] = tokens[j + 2];
-                    j++;
-                }
-                tokens[j] = NULL;
-                tokens[j + 1] = NULL;
-                continue;
+                i += 2;
             }
-            else if (strcmp(tokens[i], ">>") == 0 && tokens[i + 1])
+            else if (ft_strcmp(tokens[i], ">>") == 0 && tokens[i + 1])
             {
                 t_redir *new = malloc(sizeof(t_redir));
                 new->type = R_APPEND;
@@ -274,17 +267,9 @@ int main(int argc, char **argv, char **envp)
                 else
                     last->next = new;
                 last = new;
-                int j = i;
-                while (tokens[j + 2])
-                {
-                    tokens[j] = tokens[j + 2];
-                    j++;
-                }
-                tokens[j] = NULL;
-                tokens[j + 1] = NULL;
-                continue;
+                i += 2;
             }
-            else if (strcmp(tokens[i], "<<") == 0 && tokens[i + 1])
+            else if (ft_strcmp(tokens[i], "<<") == 0 && tokens[i + 1])
             {
                 t_redir *new = malloc(sizeof(t_redir));
                 new->type = R_HEREDOC;
@@ -295,33 +280,40 @@ int main(int argc, char **argv, char **envp)
                 else
                     last->next = new;
                 last = new;
-                int j = i;
-                while (tokens[j + 2])
-                {
-                    tokens[j] = tokens[j + 2];
-                    j++;
-                }
-                tokens[j] = NULL;
-                tokens[j + 1] = NULL;
-                continue;
+                i += 2;
             }
-            i++;
+            else
+            {
+                // Keep this token for command
+                clean_tokens[clean_idx++] = tokens[i];
+                i++;
+            }
         }
+        clean_tokens[clean_idx] = NULL;
 
-        cmd.args = tokens;
+        // --- COMMAND SETUP ---
+        cmd.args = clean_tokens;
         cmd.rd = redir;
-        cmd.builtin = tokens[0] ? is_builtin(tokens[0]) : NOT_BUILTIN;
+        cmd.builtin = clean_tokens[0] ? is_builtin(clean_tokens[0]) : NOT_BUILTIN;
 
         // --- EXECUTION ---
-        if (tokens[0])
+        if (cmd.builtin != NOT_BUILTIN)
         {
-            if (cmd.builtin != NOT_BUILTIN)
-                execute_builtin(&cmd, shell);
-            else
-                execute_single(shell, &cmd);
+            execute_builtin(&cmd, shell);
+        }
+        else
+        {
+            execute_single(shell, &cmd);
         }
 
-        // --- FREE ---
+        // Handle signal after execution (IMPORTANT!)
+        if (g_signal == SIGINT)
+        {
+            g_signal = 0;
+            shell->exit_status = 130;
+        }
+
+        // --- CLEANUP ---
         t_redir *tmp;
         while (redir)
         {
@@ -329,12 +321,15 @@ int main(int argc, char **argv, char **envp)
             free(redir);
             redir = tmp;
         }
-
+        free(clean_tokens);
         free_split(tokens);
         free(shell->in);
     }
 
+    int final_status = shell->exit_status;
     free_shell(shell);
     free(shell);
-    return 0;
+    rl_clear_history();
+    
+    return final_status;
 }

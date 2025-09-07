@@ -12,10 +12,10 @@
 
 #include "main.h"
 
-
-/*void  sigint_handler(int signum)
+/*void sigint_handler(int signum)
 {
   (void)signum;
+  g_signal = SIGINT;  // Store signal for main loop
   write(1,"\n",1);
   rl_on_new_line();// tell readline we are on a new line
   rl_replace_line("",0); // clear current input
@@ -25,36 +25,29 @@ int g_signal = 0;
 
 void sigint_handler(int signum)
 {
-  g_signal = signum;  // just store the signal number
-  write(1, "\n", 1);
+    (void)signum;
+    g_signal = SIGINT;
+    write(1, "\n", 1);
+    // Don't call any readline functions here!
 }
 
-void	signals_prompt(void)
+void signals_prompt(void)
 {
-	signal(SIGINT, sigint_handler);
-	signal(SIGQUIT, SIG_IGN);
-	signal(SIGTSTP, SIG_IGN);
+    signal(SIGINT, sigint_handler);
+    signal(SIGQUIT, SIG_IGN);
+    signal(SIGTSTP, SIG_IGN);
 }
 
-void	signals_child_heredoc(void)
+void signals_child_heredoc(void)
 {
-	signal(SIGINT, SIG_DFL);
-	signal(SIGQUIT, SIG_IGN);
-	signal(SIGTSTP, SIG_IGN);
+    signal(SIGINT, SIG_DFL);
+    signal(SIGQUIT, SIG_IGN);
+    signal(SIGTSTP, SIG_IGN);
 }
 
-void	signals_child(void)
+void signals_parent(void)
 {
-	signal(SIGINT, SIG_DFL);
-	signal(SIGQUIT, SIG_DFL);
-	signal(SIGTSTP, SIG_IGN);
+    signal(SIGINT, SIG_IGN);    // Ignore Ctrl+C during child execution
+    signal(SIGQUIT, SIG_IGN);
+    signal(SIGTSTP, SIG_IGN);
 }
-
-void	signals_parent(void)
-{
-	signal(SIGINT, SIG_IGN);
-	signal(SIGQUIT, SIG_IGN);
-	signal(SIGTSTP, SIG_IGN);
-}
-
-//here we must found some leak but we are not responsible on it bcz the said this in the given
