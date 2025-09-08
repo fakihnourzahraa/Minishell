@@ -84,13 +84,18 @@ void setup_cmd_fds(t_cmd *cmd, t_pipe_info *info, t_shell *shell)
   input_fd = handle_input_redirections(cmd, shell);
   output_fd = handle_output_redirections(cmd);
   connect_pipes(&input_fd, &output_fd, info);
+    
   if (input_fd != STDIN_FILENO)
+  {
     dup2(input_fd, STDIN_FILENO);
+    if (input_fd > 2)
+      close(input_fd);
+  }
   if (output_fd != STDOUT_FILENO)
+  {
     dup2(output_fd, STDOUT_FILENO);
+    if (output_fd > 2)
+      close(output_fd);
+  }
   close_all_pipes(info->pipes, info->cmd_count - 1);
-  if (input_fd > 2)
-    close(input_fd);
-  if (output_fd > 2)
-    close(output_fd);//close the file pipe open (>2 bcz 0 is stdin,1 stdout,2 stderr)
-}//it connect all the helper fct,and dup2
+}
