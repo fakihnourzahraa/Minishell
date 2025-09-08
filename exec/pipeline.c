@@ -68,12 +68,26 @@ void close_all_pipes(int **pipes, int pipe_count);//4
   }
 }
 
-void wait_for_children(t_cmd *cmds);//7
+void wait_for_children(t_cmd *cmds,t_Shell *shell);//7
 {
+  int last_status;
+  t_cmd *current ;
 
+  last_status =0;
+  current = cmds;
+  while(current)
+  {
+    if(current->pid > 0)
+      waitpid(current->pid,&last_status,0);
+    current = current->next;
+  }
+  if(WIFEXITED(last_status))
+    shell->exit_status=WEXITSTATUS(status);//normal exit
+  else if(WIFSIGNALED(last_status))
+    shell->exit_status=128+WTERMSIG(status);// in bash when we kill by a signal we add 128 to signal nbr
 }
 
-int execute_pipeline(t_shell *shell, t_cmd *cmds);//9
+/*int execute_pipeline(t_shell *shell, t_cmd *cmds);//9
 {
 
-}
+}*/

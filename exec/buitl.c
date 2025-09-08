@@ -16,7 +16,7 @@ int is_builtin(char *cmd)
 {
   if (cmd ==NULL)
     return(NOT_BUILTIN);
-  if (strcmp(cmd,"echo") == 0)
+  if (ft_strcmp(cmd,"echo") == 0)
     return (BUILTIN_ECHO);
   if (ft_strcmp(cmd,"pwd") == 0)
     return (BUILTIN_PWD);

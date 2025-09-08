@@ -6,7 +6,7 @@
 /*   By: miwehbe <miwehbe@student.42beirut.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/28 11:35:19 by miwehbe           #+#    #+#             */
-/*   Updated: 2025/09/07 19:28:33 by miwehbe          ###   ########.fr       */
+/*   Updated: 2025/09/07 19:56:42 by miwehbe          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -221,7 +221,7 @@ int main(int argc, char **argv, char **envp)
             continue;
         }
 
-        // --- REDIRECTION DETECTION (Fixed) ---
+        // --- REDIRECTION DETECTION (FIXED) ---
         t_redir *redir = NULL;
         t_redir *last = NULL;
         char **clean_tokens = malloc(sizeof(char *) * 100);  // Temp array
@@ -234,7 +234,7 @@ int main(int argc, char **argv, char **envp)
             {
                 t_redir *new = malloc(sizeof(t_redir));
                 new->type = R_IN;
-                new->s = tokens[i + 1];
+                new->s = ft_strdup(tokens[i + 1]);  // ✅ FIX: Use ft_strdup
                 new->next = NULL;
                 if (!redir)
                     redir = new;
@@ -247,7 +247,7 @@ int main(int argc, char **argv, char **envp)
             {
                 t_redir *new = malloc(sizeof(t_redir));
                 new->type = R_OUT;
-                new->s = tokens[i + 1];
+                new->s = ft_strdup(tokens[i + 1]);  // ✅ FIX: Use ft_strdup
                 new->next = NULL;
                 if (!redir)
                     redir = new;
@@ -260,7 +260,7 @@ int main(int argc, char **argv, char **envp)
             {
                 t_redir *new = malloc(sizeof(t_redir));
                 new->type = R_APPEND;
-                new->s = tokens[i + 1];
+                new->s = ft_strdup(tokens[i + 1]);  // ✅ FIX: Use ft_strdup
                 new->next = NULL;
                 if (!redir)
                     redir = new;
@@ -273,7 +273,7 @@ int main(int argc, char **argv, char **envp)
             {
                 t_redir *new = malloc(sizeof(t_redir));
                 new->type = R_HEREDOC;
-                new->s = tokens[i + 1];
+                new->s = ft_strdup(tokens[i + 1]);  // ✅ FIX: Use ft_strdup
                 new->next = NULL;
                 if (!redir)
                     redir = new;
@@ -313,11 +313,12 @@ int main(int argc, char **argv, char **envp)
             shell->exit_status = 130;
         }
 
-        // --- CLEANUP ---
+        // --- CLEANUP (FIXED) ---
         t_redir *tmp;
         while (redir)
         {
             tmp = redir->next;
+            free(redir->s);  // ✅ FIX: Free the string
             free(redir);
             redir = tmp;
         }
