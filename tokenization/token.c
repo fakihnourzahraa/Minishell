@@ -38,19 +38,13 @@ int	set_double(int n, char a, t_token *t, int i)
 
 int	split_q(char *a, t_shell *shell, int i)
 {
-	int	z;
 	int	j;
 
-	z = i;
-
-	j = z + 1;
+	j = i + 1;
 	while (a[j])
 	{
-		if (a[j] == a[z])
-		{
-			j = split_quote(a, j, shell, a[j]);
-			return (j);
-		}
+		if (a[j] == a[i])
+			return (split_quote(a, i, shell, a[i]));
 		j++;
 	}
 	return (-1);
@@ -80,7 +74,7 @@ int	set_token(t_shell *shell, char *a, int i)
 	else if (a[i] == '>')
 		i = set_single(3, i, '>', n);
 	else
-		return (free(n), split_word(a, i, shell));
+		return (split_word(a, i, shell));
 	add_token(shell, n);
 	// b = malloc(sizeof(t_token));
 	// shell->tkns->next = b;
@@ -124,14 +118,10 @@ int	tokenize_line(t_shell *shell)
 	t_token	*t;
 
 	a = shell->in;
-	a = "echo hello0";
-	shell->tkns = malloc(sizeof(t_token));
-	shell->tkns->next = NULL;
 	i = skip_spaces(a, 0);
-	while (i > -1 && a[i])
+	while (a[i])
 	{
 		j = i;
-		shell->tkns->type = 0;
 		i = set_token(shell, a, i);
 		if (i == -1)
 			return (-1);
