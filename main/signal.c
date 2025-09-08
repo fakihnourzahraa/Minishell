@@ -51,3 +51,8 @@ void signals_parent(void)
     signal(SIGQUIT, SIG_IGN);
     signal(SIGTSTP, SIG_IGN);
 }
+void signals_child(void)
+{
+    signal(SIGINT, SIG_DFL);   // Default behavior for Ctrl+C
+    signal(SIGQUIT, SIG_DFL);  // Default behavior for Ctrl+
+}

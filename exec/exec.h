@@ -40,7 +40,7 @@ int     execute_pipeline(t_shell *shell, t_cmd *cmds);
 int     **setup_pipes(int cmd_count);
 void    close_all_pipes(int **pipes, int pipe_count);
 int     count_commands(t_cmd *cmds);
-void    wait_for_children(t_cmd *cmds);
+void    wait_for_children(t_cmd *cmds,t_shell *shell);
 void    close_unused_pipes(int **pipes, int pipe_count, int current_cmd);
 int     execute_cmd_in_pipeline(t_shell *shell, t_cmd *cmd, t_pipe_info *info);
 void    setup_cmd_fds(t_cmd *cmd, t_pipe_info *info,t_shell shell);
@@ -49,5 +49,6 @@ void    cleanup_pipes(int **pipes, int count);
 int     create_single_pipe(int **pipes, int index);
 int     handle_input_redirections(t_cmd *cmd, t_shell *shell);
 int     handle_output_redirections(t_cmd *cmd);
+int     execute_multiple_cmds(t_shell *shell, t_cmd *cmds, int cmd_count);
 void    connect_pipes(int *input_fd, int *output_fd, t_pipe_info *info);
 #endif

@@ -38,3 +38,44 @@ int create_single_pipe(int **pipes, int index)
   }
   return (0);
 }
+
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   pipeline_two_functions.c                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: miwehbe <miwehbe@student.42beirut.com>     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/09/08 16:45:00 by miwehbe           #+#    #+#             */
+/*   Updated: 2025/09/08 16:45:00 by miwehbe          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "exec.h"
+
+// Helper function to execute multiple commands with pipes
+int execute_multiple_cmds(t_shell *shell, t_cmd *cmds, int cmd_count)
+{
+  t_pipe_info info;
+  t_cmd *current;
+  int index;
+
+  info.pipes = setup_pipes(cmd_count);
+  if (!info.pipes)
+    return (1);
+  info.cmd_count = cmd_count;
+    
+  current = cmds;
+  index = 0;
+  while (current)
+  {
+    info.cmd_index = index;
+    execute_cmd_in_pipeline(shell, current, &info);
+    current = current->next;
+    index++;
+  }
+  close_all_pipes(info.pipes, cmd_count - 1);
+  wait_for_children(cmds, shell);
+  free_pipes(info.pipes, cmd_count - 1);
+  return (shell->exit_status);
+}

@@ -68,7 +68,7 @@ void close_all_pipes(int **pipes, int pipe_count);//4
   }
 }
 
-void wait_for_children(t_cmd *cmds,t_Shell *shell);//7
+void wait_for_children(t_cmd *cmds,t_shell *shell);//7
 {
   int last_status;
   t_cmd *current ;
@@ -87,7 +87,16 @@ void wait_for_children(t_cmd *cmds,t_Shell *shell);//7
     shell->exit_status=128+WTERMSIG(status);// in bash when we kill by a signal we add 128 to signal nbr
 }
 
-/*int execute_pipeline(t_shell *shell, t_cmd *cmds);//9
+int execute_pipeline(t_shell *shell, t_cmd *cmds)
 {
+  int cmd_count;
 
-}*/
+  cmd_count = count_commands(cmds);
+  if (cmd_count == 1)
+  {
+    execute_cmd_in_pipeline(shell, cmds, NULL);
+    wait_for_children(cmds, shell);
+    return (shell->exit_status);
+  }  
+  return (execute_multiple_cmds(shell, cmds, cmd_count));
+}
