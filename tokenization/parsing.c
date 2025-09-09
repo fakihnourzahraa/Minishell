@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yitani <yitani@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/04 22:53:52 by nour              #+#    #+#             */
-/*   Updated: 2025/09/05 17:36:33 by yitani           ###   ########.fr       */
+/*   Updated: 2025/09/08 19:28:28 by nour             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ int	word_count(t_shell *shell)
 
 	i = 0;
 	t = shell->tkns;
-	while (t->type != T_EOF)
+	while (t && t->type != T_EOF)
 	{
 		t = t->next;
 		i++;

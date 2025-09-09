@@ -83,26 +83,31 @@ void test_string(char *input)
     print_tokens(&shell);
     
     // Test parsing
-    // printf("--- PARSING ---\n");
-    // parse(&shell);
+    printf("--- PARSING ---\n");
+    parse(&shell);
     
-    // if (shell.cmds)
-    // {
-    //     printf("Command: %s\n", shell.cmds->cmd ? shell.cmds->cmd : "(null)");
-    //     printf("Args:\n");
-    //     if (shell.cmds->args)
-    //     {
-    //         for (int i = 0; shell.cmds->args[i]; i++)
-    //         {
-    //             printf("  [%d]: '%s'\n", i, shell.cmds->args[i]);
-    //         }
-    //     }
-    // }
-    // else
-    // {
-    //     printf("No command parsed\n");
-    // }
-    // printf("--- END PARSING ---\n\n");
+    if (shell.cmds)
+    {
+        printf("Command: %s\n", shell.cmds->cmd ? shell.cmds->cmd : "(null)");
+        printf("Args:\n");
+        if (shell.cmds->args)
+         {
+            for (int i = 0; shell.cmds->args[i]; i++)
+            {
+                if (shell.cmds->args[i])
+                {
+                    printf("%s", shell.cmds->args[i]);
+                }
+             //   printf("  [%d]: '%s'\n", i, shell.cmds->args[i]);
+
+            }
+         }
+    }
+    else
+    {
+        printf("No command parsed\n");
+    }
+    printf("--- END PARSING ---\n\n");
     
     // // Cleanup
     // free_tokens(&shell);
