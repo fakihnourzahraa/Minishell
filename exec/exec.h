@@ -43,7 +43,7 @@ int     count_commands(t_cmd *cmds);
 void    wait_for_children(t_cmd *cmds,t_shell *shell);
 void    close_unused_pipes(int **pipes, int pipe_count, int current_cmd);
 int     execute_cmd_in_pipeline(t_shell *shell, t_cmd *cmd, t_pipe_info *info);
-void    setup_cmd_fds(t_cmd *cmd, t_pipe_info *info,t_shell shell);
+void    setup_cmd_fds(t_cmd *cmd, t_pipe_info *info,t_shell *shell);
 void    free_pipes(int **pipes, int pipe_count);
 void    cleanup_pipes(int **pipes, int count);
 int     create_single_pipe(int **pipes, int index);

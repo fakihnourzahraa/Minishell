@@ -16,6 +16,8 @@ int open_infile(char *filename)
 {
   int fd;
 
+  if(!filename)
+    return (-1);
   fd = open(filename,O_RDONLY);
   if(fd ==-1)
     perror("minishell");
@@ -26,6 +28,8 @@ int open_outfile(char *filename, int append)
 {
   int fd;
 
+  if(!filename)
+    return(-1);
   if(append)
     fd = open(filename,O_WRONLY | O_CREAT | O_APPEND ,0644);
   else

@@ -22,7 +22,7 @@ int apply_redirections(t_cmd *cmd, t_shell *shell)
   current_redir = cmd->rd;
   while(current_redir !=  NULL)
   {
-    if (current_redir->type ==R_IN)
+    if (current_redir->type == R_IN)
     {
       fd = open_infile(current_redir->s);
       if(fd == -1)
@@ -36,7 +36,7 @@ int apply_redirections(t_cmd *cmd, t_shell *shell)
         return (-1);
       redirect_fd(fd,STDOUT_FILENO);
     }
-    else if (current_redir->type ==R_APPEND)
+    else if (current_redir->type == R_APPEND)
     {
       fd= open_outfile(current_redir->s, 1);
       if(fd==-1)

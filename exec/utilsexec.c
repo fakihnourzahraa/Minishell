@@ -86,6 +86,7 @@ static void execute_child_process(t_shell *shell, t_cmd *cmd, t_pipe_info *info)
     }
 }
 
+
 int execute_cmd_in_pipeline(t_shell *shell, t_cmd *cmd, t_pipe_info *info)
 {
     pid_t pid;
@@ -96,8 +97,11 @@ int execute_cmd_in_pipeline(t_shell *shell, t_cmd *cmd, t_pipe_info *info)
         perror("fork");
         return (-1);
     }
-    if (pid == 0)
+    else if (pid == 0)
+    {
         execute_child_process(shell, cmd, info);
+        exit(1); // This line will never be reached, but satisfies compiler
+    }
     else
     {
         cmd->pid = pid;

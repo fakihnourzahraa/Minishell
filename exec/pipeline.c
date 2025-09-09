@@ -12,7 +12,7 @@
 
 #include "exec.h"
 
-int count_commands(t_cmd *cmds);//1
+int count_commands(t_cmd *cmds)
 {
   int i;
 
@@ -23,7 +23,8 @@ int count_commands(t_cmd *cmds);//1
     cmds= cmds->next;
   }
   return (i);
-}// this fct to only count cmnd 
+}
+// this fct to only count cmnd 
 
 int **setup_pipes(int cmd_count)
 {
@@ -48,9 +49,10 @@ int **setup_pipes(int cmd_count)
     i++;
   }
   return (pipes);
-}//this fct is only to allocate and initial the pipe
+}
+//this fct is only to allocate and initial the pipe
 
-void close_all_pipes(int **pipes, int pipe_count);//4
+void close_all_pipes(int **pipes, int pipe_count)
 {
   int i;
 
@@ -68,7 +70,7 @@ void close_all_pipes(int **pipes, int pipe_count);//4
   }
 }
 
-void wait_for_children(t_cmd *cmds,t_shell *shell);//7
+void wait_for_children(t_cmd *cmds,t_shell *shell)
 {
   int last_status;
   t_cmd *current ;
@@ -82,9 +84,9 @@ void wait_for_children(t_cmd *cmds,t_shell *shell);//7
     current = current->next;
   }
   if(WIFEXITED(last_status))
-    shell->exit_status=WEXITSTATUS(status);//normal exit
+    shell->exit_status=WEXITSTATUS(last_status);//normal exit
   else if(WIFSIGNALED(last_status))
-    shell->exit_status=128+WTERMSIG(status);// in bash when we kill by a signal we add 128 to signal nbr
+    shell->exit_status=128+WTERMSIG(last_status);// in bash when we kill by a signal we add 128 to signal nbr
 }
 
 int execute_pipeline(t_shell *shell, t_cmd *cmds)

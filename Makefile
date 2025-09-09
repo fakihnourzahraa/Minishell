@@ -17,6 +17,9 @@ SRCS = main/main.c \
        exec/redirection.c\
        exec/redir_utils.c\
        exec/heredoc.c\
+       exec/pipeline.c\
+       exec/pipeline2.c\
+       exec/utils2exec.c
      
 
 OBJS = $(SRCS:.c=.o)
