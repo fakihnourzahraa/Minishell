@@ -10,7 +10,6 @@ SRCS = main/main.c \
        builtins/pwd.c \
        builtins/exit.c \
        exec/buitl.c\
-	tools/utils.c\
        exec/execute_single.c\
        exec/execute_path.c\
        exec/utilsexec.c\
@@ -19,7 +18,8 @@ SRCS = main/main.c \
        exec/heredoc.c\
        exec/pipeline.c\
        exec/pipeline2.c\
-       exec/utils2exec.c
+       exec/utils2exec.c\
+       exec/pipeutils.c
      
 
 OBJS = $(SRCS:.c=.o)

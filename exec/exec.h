@@ -46,6 +46,7 @@ int     execute_cmd_in_pipeline(t_shell *shell, t_cmd *cmd, t_pipe_info *info);
 void    setup_cmd_fds(t_cmd *cmd, t_pipe_info *info,t_shell *shell);
 void    free_pipes(int **pipes, int pipe_count);
 void    cleanup_pipes(int **pipes, int count);
+void    free_split(char **split);
 int     create_single_pipe(int **pipes, int index);
 int     handle_input_redirections(t_cmd *cmd, t_shell *shell);
 int     handle_output_redirections(t_cmd *cmd);

@@ -23,7 +23,6 @@ extern int g_signal;
 # include "../libft/libft.h"
 #include "../builtins/builtin.h"
 #include "../exec/exec.h"
-#include "../tools/tools.h"
 void	sigint_handler(int signum);
 void	signals_prompt(void);
 void	signals_child_heredoc(void);
