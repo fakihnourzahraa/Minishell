@@ -77,7 +77,7 @@ int execute_single(t_shell *shell, t_cmd *cmd)
         return (0);
 
     if (cmd->builtin != NOT_BUILTIN)
-    {
+    {   
         // If builtin has redirections, we MUST fork to avoid messing up shell's stdin/stdout
         if (cmd->rd)
         {

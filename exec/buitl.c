@@ -22,6 +22,10 @@ int is_builtin(char *cmd)
     return (BUILTIN_PWD);
   if(ft_strcmp(cmd,"exit") == 0)
     return (BUILTIN_EXIT);
+  if (ft_strcmp(cmd, "cd") == 0)
+    return (BUILTIN_CD);
+  if (ft_strcmp(cmd, "env") == 0)
+    return (BUILTIN_ENV);
   return (0);
 }
 
@@ -69,6 +73,10 @@ int execute_builtin(t_cmd *cmd, t_shell *shell)
         builtin_pwd(cmd, shell);
       else if (ft_strcmp(cmd->args[0], "exit") == 0)
         builtin_exit(cmd, shell);
+      else if (ft_strcmp(cmd->args[0], "cd") == 0)
+        builtin_cd(cmd, shell);
+      else if (ft_strcmp(cmd->args[0], "env") == 0)
+        builtin_env(cmd, shell);
       //printf("DEBUG: Child about to exit\n");
       exit(shell->exit_status);
     }
@@ -88,13 +96,16 @@ int execute_builtin(t_cmd *cmd, t_shell *shell)
 
     // No redirections - execute builtin directly
     if (ft_strcmp(cmd->args[0], "echo") == 0)
-        builtin_echo(cmd, shell);
+      builtin_echo(cmd, shell);
     else if (ft_strcmp(cmd->args[0], "pwd") == 0)
-        builtin_pwd(cmd, shell);
+      builtin_pwd(cmd, shell);
     else if (ft_strcmp(cmd->args[0], "exit") == 0)
-        builtin_exit(cmd, shell);
+      builtin_exit(cmd, shell);
+    else if (ft_strcmp(cmd->args[0], "cd") == 0)
+      builtin_cd(cmd, shell);
+    else if (ft_strcmp(cmd->args[0], "env") == 0)
+      builtin_env(cmd, shell);
     else
-        return (0);
-    
+      return (0);
     return (1);
 }

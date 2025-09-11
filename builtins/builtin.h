@@ -15,8 +15,12 @@
 #include "../minishell.h"
 #include "../libft/libft.h"
 
-void builtin_echo(t_cmd *cmd,t_shell *shell);
-void	builtin_pwd(t_cmd *cmd, t_shell *shell);
-void builtin_exit(t_cmd *cmd, t_shell *shell);
+void    builtin_echo(t_cmd *cmd,t_shell *shell);
+void	  builtin_pwd(t_cmd *cmd, t_shell *shell);
+void    builtin_exit(t_cmd *cmd, t_shell *shell);
+void    builtin_cd(t_cmd *cmd, t_shell *shell);
+int     builtin_env(t_cmd *cmd, t_shell *shell);
+char    *get_env_value(char **envp, const char *key);
+void    update_env(char ***envp, const char *key, const char *value);
 
 #endif
