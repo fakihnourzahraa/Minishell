@@ -6,7 +6,7 @@
 /*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/28 16:10:17 by nour              #+#    #+#             */
-/*   Updated: 2025/09/11 21:16:54 by nfakih           ###   ########.fr       */
+/*   Updated: 2025/09/11 21:53:32 by nfakih           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,5 +58,7 @@ void	parse(t_shell *shell);
 int	    tokenize_line(t_shell *shell);
 t_token	*init_token(void);
 void	add_token(t_shell *shell, t_token *n);
+void	fill_r(t_token *t, t_shell *shell);
+void	add_redir(t_shell *shell, t_redir *c);
 
 #endif

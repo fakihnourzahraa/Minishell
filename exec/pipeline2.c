@@ -6,7 +6,7 @@
 /*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/08 12:34:12 by miwehbe           #+#    #+#             */
-/*   Updated: 2025/09/11 21:19:35 by nfakih           ###   ########.fr       */
+/*   Updated: 2025/09/11 22:08:49 by nfakih           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ int handle_input_redirections(t_cmd *cmd, t_shell *shell)
   {
     if (redir->type == R_IN)
     {
-      input_fd = open(redir->s, O_RDONLY);
+      i        nput_fd = open(redir->s, O_RDONLY);
       if (input_fd < 0)
         handle_file_error(redir->s);
     }

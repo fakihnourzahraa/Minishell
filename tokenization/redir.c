@@ -6,7 +6,7 @@
 /*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/10 11:10:26 by nour              #+#    #+#             */
-/*   Updated: 2025/09/11 21:28:55 by nfakih           ###   ########.fr       */
+/*   Updated: 2025/09/11 21:58:44 by nfakih           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,12 +27,12 @@
 // 	t_redir		*next;
 // }				t_redir;
 
-void	add_token(t_shell *shell, t_redir *c)
+void	add_redir(t_shell *shell, t_redir *c)
 {
 	t_redir	*r;
 
 	if (!shell->cmds->rd)
-		shell->tkns = c;
+		shell->cmds->rd = c;
 	else
 	{
 		r = shell->cmds->rd;
@@ -48,14 +48,20 @@ void	fill_r(t_token *t, t_shell *shell)
 
 	if (t->type == T_EOF)
 		return ;
+	r = malloc(sizeof(t_redir));
 	if (t->type == IN)
 		r->type = R_IN;
-	if (t->type = OUT)
+	else if (t->type == OUT)
 		r->type = R_OUT;
-	if (t->type = APPEND)
+	else if (t->type == APPEND)
 		r->type = R_APPEND;
-	if (t->type == HEREDOC)
-		r->type = HEREDOC;
-	r->s = ft_strdup(t->s);
-	add_token(shell, r);
+	else if (t->type == HEREDOC)
+		r->type = R_HEREDOC;
+	else
+		return ;
+	if (t->next && t->next->s)
+		r->s = ft_strdup(t->next->s);
+	else
+		r->s = NULL;
+	add_redir(shell, r);
 }
