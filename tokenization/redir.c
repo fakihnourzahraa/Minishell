@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redir.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/10 11:10:26 by nour              #+#    #+#             */
-/*   Updated: 2025/09/11 20:00:28 by nour             ###   ########.fr       */
+/*   Updated: 2025/09/11 21:28:55 by nfakih           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,21 @@
 // 	t_redir		*next;
 // }				t_redir;
 
+void	add_token(t_shell *shell, t_redir *c)
+{
+	t_redir	*r;
+
+	if (!shell->cmds->rd)
+		shell->tkns = c;
+	else
+	{
+		r = shell->cmds->rd;
+		while (r->next)
+			r = r->next;
+		r->next = c;
+	}
+}
+
 void	fill_r(t_token *t, t_shell *shell)
 {
 	t_redir *r;
@@ -34,7 +49,13 @@ void	fill_r(t_token *t, t_shell *shell)
 	if (t->type == T_EOF)
 		return ;
 	if (t->type == IN)
-	{
-		shell->cmds->rd
-	}
+		r->type = R_IN;
+	if (t->type = OUT)
+		r->type = R_OUT;
+	if (t->type = APPEND)
+		r->type = R_APPEND;
+	if (t->type == HEREDOC)
+		r->type = HEREDOC;
+	r->s = ft_strdup(t->s);
+	add_token(shell, r);
 }

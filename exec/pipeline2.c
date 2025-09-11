@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipeline2.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miwehbe <miwehbe@student.42beirut.com>     +#+  +:+       +#+        */
+/*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/08 12:34:12 by miwehbe           #+#    #+#             */
-/*   Updated: 2025/09/08 12:34:12 by miwehbe          ###   ########.fr       */
+/*   Updated: 2025/09/11 21:19:35 by nfakih           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,8 @@ static void handle_file_error(char *filename)
 {
   perror(filename);
   exit(1);
-}//only used for file open errors
+}
+//only used for file open errors
 int handle_input_redirections(t_cmd *cmd, t_shell *shell)
 {
   t_redir *redir;
