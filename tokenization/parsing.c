@@ -6,7 +6,7 @@
 /*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/04 22:53:52 by nour              #+#    #+#             */
-/*   Updated: 2025/09/08 19:28:28 by nour             ###   ########.fr       */
+/*   Updated: 2025/09/10 11:52:40 by nour             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,22 +21,38 @@ int	word_count(t_shell *shell)
 	t = shell->tkns;
 	while (t && t->type != T_EOF)
 	{
+		if (t->type == WORD)
+			i++;
 		t = t->next;
-		i++;
 	}
 	return (i);
+}
+void	init_args(t_shell *shell, int wc)
+{
+	shell->cmds->args = malloc(sizeof(char *) * (wc + 1));
+	shell->cmds->path =	NULL;
+	shell->cmds->rd = NULL;
+	shell->cmds->i_fd =	-1;
+	shell->cmds->o_fd = -1;
+	shell->cmds->pid = -1;
+	shell->cmds->builtin = NULL;
+	pid_t	pid;
+	t_builtin builtin;
+	t_cmd	*next;
 }
 
 void	parse(t_shell *shell)
 {
 	t_token	*token;
 	int		i;
+	int		wc;
 	
 	token = shell->tkns;
 	if (!token || token->type != WORD)
 		return ;
 	shell->cmds = malloc(sizeof(t_cmd));
-	shell->cmds->args = malloc(sizeof(char *) * (word_count(shell) + 1));
+	wc = word_count(shell);
+	init_args(shell, wc);
 	shell->cmds->cmd = ft_strdup(token->s);
 	shell->cmds->args[0] = ft_strdup(token->s);
 	i = 1;
@@ -50,6 +66,8 @@ void	parse(t_shell *shell)
 		token = token->next;
 		i++;
 	}
+	// fill_r(token, shell);
+	shell->cmds->args[i] = NULL;
 }
 
 //parses till eof only
