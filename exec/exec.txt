@@ -1,0 +1,63 @@
+execute_single.c
+its handle the execution of a single cmnd in mini,it also handel the redirect,and exit status
+so we do some help  fct bcz norm :
+1-wait_child(t_shell *shell, int status):its update the shell exit status after child proc finish
+.WIFEXITED(status) → child exited normally → shell->exit_status = WEXITSTATUS(status)
+.WIFSIGNALED(status) → child was killed by a signal → shell->exit_status = 128 + signal_number
+2-exec_external_child(t_shell *shell, t_cmd *cmd, char *path):
+handle everything the child process must do ,its apply the redire,convet t_env to array,call execve.
+3-execute_external_command(t_shell *shell, t_cmd *cmd):
+handle foek and wait for external cmd,get path fro, get_cmd path,print error...
+execute_builtin_with_redirect(t_shell *shell, t_cmd *cmd):
+it is execute the buitlin inside the child if redirection exit 
+5-execute_single(t_shell *shell, t_cmd *cmd):
+The main entry point to execute a single command,validate input cmd, cmd->args, shell.f it’s a builtin:
+If redirection exists → call execute_builtin_with_redirect
+Else → execute directly in the parent using execute_builtin()
+Else → it’s an external command → call execute_external_command
+
+execute_single()
+ ├─ if builtin w/o redirect -> execute_builtin()
+ ├─ if builtin w/ redirect -> execute_builtin_with_redirect()
+ │       └─ fork() → child: apply_redirections() + execute_builtin()
+ │       └─ parent: waitpid() + wait_child()
+ └─ else external command -> execute_external_command()
+         └─ fork() → child: exec_external_child()
+         │       └─ apply_redirections()
+         │       └─ env_to_envp()
+         │       └─ execve()
+         └─ parent: waitpid() + wait_child()
+
+Main decision: builtin vs external command
+Builtin with redirections: needs fork (to isolate redirections)
+Builtin without redirections: direct execution (no fork needed)
+External commands: always need fork + env conversion for execve
+Shared helpers: wait_child() reused for both fork cases
+
+
+
+execute_path.c:
+his work is to get the full executable path of a cmnd in our mini
+so if for example we type cat in shell
+If the command contains /, it might already be a full path (/bin/ls), so we check that first.
+therwise, we fetch the PATH variable from your environment (t_env).
+We split PATH into directories (like /usr/bin:/bin:/usr/local/bin).
+Then we try each directory to see if the executable exists.
+If found, return the full path, otherwise return NULL
+so :
+1-get_path_from_env(t_shell *shell):its take the value of path from t_env,it call get_env and return the string value of path
+2-join_path_cmd(const char *path, const char *cmd):Join a directory path and a command into a full path.laan bde full path shufu ize executable
+3-check_cmd_with_slash(const char *cmd):heck if cmd contains / using ft_strchr,ize eee bst3ml acces x-ok ta shufu ize executable
+4-search_in_paths(char **paths, const char *cmd):Look for the command in all directories from PATH.
+
+User types command -> get_cmd_path(cmd, shell)
+   ├─ check_cmd_with_slash(cmd)
+   │      └─ return cmd if contains '/' and executable
+   ├─ get_path_from_env(shell)
+   │      └─ fetch PATH from t_env linked list
+   ├─ ft_split(path_env, ':')
+   ├─ search_in_paths(paths, cmd)
+   │      └─ loop each directory, join with cmd, check executable
+   └─ return full path or NULL
+
+

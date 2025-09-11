@@ -12,14 +12,12 @@
 
 #include "exec.h"
 
-// Split into clean, small functions
-
 static void handle_file_error(char *filename)
 {
   perror(filename);
   exit(1);
 }
-//only used for file open errors
+
 int handle_input_redirections(t_cmd *cmd, t_shell *shell)
 {
   t_redir *redir;
@@ -31,7 +29,7 @@ int handle_input_redirections(t_cmd *cmd, t_shell *shell)
   {
     if (redir->type == R_IN)
     {
-      i        nput_fd = open(redir->s, O_RDONLY);
+      input_fd = open(redir->s, O_RDONLY);
       if (input_fd < 0)
         handle_file_error(redir->s);
     }
@@ -44,7 +42,7 @@ int handle_input_redirections(t_cmd *cmd, t_shell *shell)
     redir = redir->next;
   }
   return (input_fd);
-}//for < || << open file or run herdoc and control the exit
+}
 
 int handle_output_redirections(t_cmd *cmd)
 {
@@ -67,15 +65,7 @@ int handle_output_redirections(t_cmd *cmd)
     redir = redir->next;
   }
   return (output_fd);
-}//check the > || >> open the output file
-
-void connect_pipes(int *input_fd, int *output_fd, t_pipe_info *info)
-{
-  if (*input_fd == STDIN_FILENO && info->cmd_index > 0)
-    *input_fd = info->pipes[info->cmd_index - 1][0];
-  if (*output_fd == STDOUT_FILENO && info->cmd_index < info->cmd_count - 1)
-    *output_fd = info->pipes[info->cmd_index][1];
-}// it set the input from prev pipe,output to next pipe 
+}
 
 void setup_cmd_fds(t_cmd *cmd, t_pipe_info *info, t_shell *shell)
 {
@@ -99,4 +89,18 @@ void setup_cmd_fds(t_cmd *cmd, t_pipe_info *info, t_shell *shell)
       close(output_fd);
   }
   close_all_pipes(info->pipes, info->cmd_count - 1);
+}
+
+void exec_external_with_env(t_shell *shell, t_cmd *cmd, char *path)
+{
+  char **envp_array;
+
+  envp_array = env_to_envp(shell->env);
+  if (!envp_array)
+    exit(1);
+  execve(path, cmd->args, envp_array);
+  perror("execve");
+  free_envp(envp_array);
+  free(path);
+  exit(127);
 }

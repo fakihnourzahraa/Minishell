@@ -12,21 +12,17 @@
 
 #include "exec.h"
 
-static char	*get_path_from_env(t_shell *shell)
+static char *get_path_from_env(t_shell *shell)
 {
-	int		i;
+  char *path_value;
 
-	if (!shell || !shell->envp)
-		return (NULL);
-	i = 0;
-	while (shell->envp[i])
-	{
-		if (ft_strncmp(shell->envp[i], "PATH=", 5) == 0)
-			return (ft_strdup(shell->envp[i] + 5));
-		i++;
-	}
-	return (NULL);
-}//to get the full path for cmd
+  if (!shell || !shell->env)
+    return (NULL);
+  path_value = get_env_value(shell->env, "PATH");
+  if (!path_value)
+    return (NULL);
+  return (ft_strdup(path_value));
+}
 
 static char	*join_path_cmd(const char *path, const char *cmd)
 {
@@ -41,7 +37,7 @@ static char	*join_path_cmd(const char *path, const char *cmd)
 	full = ft_strjoin(tmp, cmd);
 	free(tmp);
 	return (full);
-}// to put for example path/cmd(bin/ls)
+}
 
 static char	*check_cmd_with_slash(const char *cmd)
 {

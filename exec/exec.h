@@ -15,6 +15,7 @@
 #include "../minishell.h"
 #include "../libft/libft.h"
 #include "../builtins/builtin.h"
+#include "../env/env.h"
 #include"../main/main.h"
 #include<fcntl.h>
 
@@ -31,6 +32,7 @@ int     execute_single(t_shell *shell, t_cmd *cmd);
 char    *execute_path(char *cmd,t_shell *shell);
 char    *get_cmd_path(const char *cmd, t_shell *shell);
 void	  free_paths(char **paths);
+void exec_external_with_env(t_shell *shell, t_cmd *cmd, char *path);
 int     open_infile(char *filename);
 int     open_outfile(char *filename, int append);
 int     redirect_fd(int fd, int target_fd);

@@ -19,8 +19,11 @@ SRCS = main/main.c \
        exec/pipeline.c\
        exec/pipeline2.c\
        exec/utils2exec.c\
-       exec/pipeutils.c
-     
+       exec/pipeutils.c\
+       env/envir.c \
+       env/envir2.c \
+       env/envir3.c \
+       env/envir.utils.c \
 
 OBJS = $(SRCS:.c=.o)
 
