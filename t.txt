@@ -1,0 +1,277 @@
+t_redir *create_redir(t_r_type type, char *file)
+{
+    t_redir *redir = malloc(sizeof(t_redir));
+    redir->type = type;
+    redir->s = ft_strdup(file);
+    redir->next = NULL;
+    return redir;
+}
+
+t_cmd *create_cmd(char **args, t_redir *redir)
+{
+    t_cmd *cmd = malloc(sizeof(t_cmd));
+    cmd->cmd = ft_strdup(args[0]);
+    cmd->args = args;
+    cmd->rd = redir;
+    cmd->builtin = is_builtin(args[0]);
+    cmd->next = NULL;
+    cmd->pid = 0;
+    cmd->path = NULL;
+    cmd->i_fd = 0;     
+    cmd->o_fd = 1;
+    return cmd;
+}
+
+void free_cmd_chain(t_cmd *cmd)
+{
+    t_cmd *next;
+    t_redir *redir, *next_redir;
+    
+    while (cmd) {
+        next = cmd->next;
+        if (cmd->cmd) free(cmd->cmd);
+        redir = cmd->rd;
+        while (redir) {
+            next_redir = redir->next;
+            free(redir->s);
+            free(redir);
+            redir = next_redir;
+        }
+        free(cmd);
+        cmd = next;
+    }
+}
+
+void parse_and_execute(t_shell *shell, char *input)
+{
+    char **tokens = ft_split(input, ' ');
+    if (!tokens || !tokens[0]) {
+        if (tokens) free_split(tokens);
+        return;
+    }
+    
+    // Simple parsing for pipes and redirections
+    t_cmd *first_cmd = NULL, *current_cmd = NULL;
+    char **cmd_args = malloc(sizeof(char *) * 10);
+    int arg_count = 0;
+    t_redir *redir = NULL;
+    
+    for (int i = 0; tokens[i]; i++) {
+        if (ft_strcmp(tokens[i], "|") == 0) {
+            // Create command and add to chain
+            cmd_args[arg_count] = NULL;
+            t_cmd *new_cmd = create_cmd(cmd_args, redir);
+            if (!first_cmd) first_cmd = new_cmd;
+            else current_cmd->next = new_cmd;
+            current_cmd = new_cmd;
+            
+            // Reset for next command
+            cmd_args = malloc(sizeof(char *) * 10);
+            arg_count = 0;
+            redir = NULL;
+        }
+        else if (ft_strcmp(tokens[i], "<") == 0 && tokens[i+1]) {
+            redir = create_redir(R_IN, tokens[++i]);
+        }
+        else if (ft_strcmp(tokens[i], ">") == 0 && tokens[i+1]) {
+            redir = create_redir(R_OUT, tokens[++i]);
+        }
+        else if (ft_strcmp(tokens[i], ">>") == 0 && tokens[i+1]) {
+            redir = create_redir(R_APPEND, tokens[++i]);
+        }
+        else if (ft_strcmp(tokens[i], "<<") == 0 && tokens[i+1]) {
+            redir = create_redir(R_HEREDOC, tokens[++i]);
+        }
+        else {
+            cmd_args[arg_count++] = tokens[i];
+        }
+    }
+    
+    // Create last command
+    if (arg_count > 0) {
+        cmd_args[arg_count] = NULL;
+        t_cmd *new_cmd = create_cmd(cmd_args, redir);
+        if (!first_cmd) first_cmd = new_cmd;
+        else current_cmd->next = new_cmd;
+    }
+    
+    // Execute
+    if (first_cmd) {
+        if (first_cmd->next) {
+            execute_pipeline(shell, first_cmd);
+        } else {
+            execute_single(shell, first_cmd);
+        }
+        free_cmd_chain(first_cmd);
+    }
+    
+    free_split(tokens);
+}
+
+
+/*int main(int argc, char **argv, char **envp)
+{
+    t_shell shell;
+    char **tokens;
+    (void)argc; (void)argv;
+    
+    init_shell(&shell, envp);
+    signals_prompt();
+   
+    while (1)
+    {
+        shell.in = readline("minishell$ ");
+        
+        if (!shell.in)
+        {
+            printf("exit\n");
+            break;
+        }
+
+        if (g_signal == SIGINT)
+        {
+            g_signal = 0;
+            shell.exit_status = 130;
+            free(shell.in);
+            continue;
+        }
+
+        if (shell.in[0] == '\0')
+        {
+            free(shell.in);
+            continue;
+        }
+
+        add_history(shell.in);
+
+        // Tokenize by spaces
+        tokens = ft_split(shell.in, ' ');
+        if (!tokens || !tokens[0])
+        {
+            free(shell.in);
+            if (tokens)
+                free_split(tokens);
+            continue;
+        }
+
+        // Parse redirections and clean command arguments
+        t_redir *redir = NULL;
+        t_redir *last = NULL;
+        char **clean_tokens = malloc(sizeof(char *) * 100);
+        int clean_idx = 0;
+        int i = 0;
+
+        while (tokens[i])
+        {
+            if (ft_strcmp(tokens[i], ">") == 0 && tokens[i + 1])
+            {
+                t_redir *new = malloc(sizeof(t_redir));
+                new->type = R_OUT;
+                new->s = ft_strdup(tokens[i + 1]);
+                new->next = NULL;
+                if (!redir)
+                    redir = new;
+                else
+                    last->next = new;
+                last = new;
+                i += 2;
+            }
+            else if (ft_strcmp(tokens[i], "<") == 0 && tokens[i + 1])
+            {
+                t_redir *new = malloc(sizeof(t_redir));
+                new->type = R_IN;
+                new->s = ft_strdup(tokens[i + 1]);
+                new->next = NULL;
+                if (!redir)
+                    redir = new;
+                else
+                    last->next = new;
+                last = new;
+                i += 2;
+            }
+            else if (ft_strcmp(tokens[i], ">>") == 0 && tokens[i + 1])
+            {
+                t_redir *new = malloc(sizeof(t_redir));
+                new->type = R_APPEND;
+                new->s = ft_strdup(tokens[i + 1]);
+                new->next = NULL;
+                if (!redir)
+                    redir = new;
+                else
+                    last->next = new;
+                last = new;
+                i += 2;
+            }
+            else if (ft_strcmp(tokens[i], "<<") == 0 && tokens[i + 1])
+            {
+                t_redir *new = malloc(sizeof(t_redir));
+                new->type = R_HEREDOC;
+                new->s = ft_strdup(tokens[i + 1]);
+                new->next = NULL;
+                if (!redir)
+                    redir = new;
+                else
+                    last->next = new;
+                last = new;
+                i += 2;
+            }
+            else
+            {
+                clean_tokens[clean_idx++] = ft_strdup(tokens[i]);
+                i++;
+            }
+        }
+        clean_tokens[clean_idx] = NULL;
+
+        // Set up command structure
+        t_cmd cmd = {0};
+        cmd.args = clean_tokens;
+        cmd.rd = redir;
+        cmd.builtin = clean_tokens[0] ? is_builtin(clean_tokens[0]) : NOT_BUILTIN;
+
+        // Execute command
+        if (cmd.builtin != NOT_BUILTIN)
+        {
+            execute_builtin(&cmd, &shell);
+        }
+        else
+        {
+            execute_single(&shell, &cmd);
+        }
+
+        // Handle signals after execution
+        if (g_signal == SIGINT)
+        {
+            g_signal = 0;
+            shell.exit_status = 130;
+        }
+
+        // Cleanup
+        t_redir *tmp;
+        while (redir)
+        {
+            tmp = redir->next;
+            free(redir->s);
+            free(redir);
+            redir = tmp;
+        }
+        
+        for (int j = 0; j < clean_idx; j++)
+            free(clean_tokens[j]);
+        free(clean_tokens);
+        
+        free_split(tokens);
+        free(shell.in);
+    }
+    
+    // Cleanup shell
+    if (shell.envp)
+    {
+        for (int i = 0; shell.envp[i]; i++)
+            free(shell.envp[i]);
+        free(shell.envp);
+    }
+    
+    return shell.exit_status;
+}*/
+
