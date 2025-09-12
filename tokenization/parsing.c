@@ -6,7 +6,7 @@
 /*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/04 22:53:52 by nour              #+#    #+#             */
-/*   Updated: 2025/09/12 17:16:36 by nour             ###   ########.fr       */
+/*   Updated: 2025/09/12 17:30:15 by nour             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,8 @@ void	parse(t_shell *shell)
 				shell->cmds->args[i] = ft_strtrim(token->s, "'");
 			else if (token->quotes == 2)
 				shell->cmds->args[i] = ft_strtrim(token->s, "\"");
-			shell->cmds->args[i] = ft_strdup(token->s);
+			else
+				shell->cmds->args[i] = ft_strdup(token->s);
 			i++;
 		}
 		else
@@ -72,7 +73,6 @@ void	parse(t_shell *shell)
 		}
 			token = token->next;
 	}
-
 	shell->cmds->args[i] = NULL;
 }
 //extra token.next so it skips filename
