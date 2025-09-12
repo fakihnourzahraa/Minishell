@@ -134,7 +134,6 @@ void free_command(t_shell *shell)
     }
     
 }
-
 void test_string(char *input)
 {
     t_shell shell = {0};
@@ -145,7 +144,6 @@ void test_string(char *input)
     shell.in = input;
     
     int result = tokenize_line(&shell);
-    
     if (result == -1)
     {
         printf("ERROR: Tokenization failed!\n\n");
@@ -154,7 +152,7 @@ void test_string(char *input)
     
     print_tokens(&shell);
     
-    // Test parsing
+    // Parse ONCE - this should handle redirections internally
     printf("--- PARSING ---\n");
     parse(&shell);
     
@@ -165,30 +163,7 @@ void test_string(char *input)
         if (shell.cmds->args)
         {
             for (int i = 0; shell.cmds->args[i]; i++)
-            {
                 printf("  [%d]: '%s'\n", i, shell.cmds->args[i]);
-            }
-        }
-        
-        // Print redirections
-        print_redirections(&shell);
-        
-        // Test redirection parsing if you have the function
-        printf("--- TESTING REDIRECTION PARSING ---\n");
-        // Call your fill_r function for redirection tokens
-        t_token *current = shell.tkns;
-        while (current && current->type != T_EOF)
-        {
-            if (current->type == IN || current->type == OUT || 
-                current->type == APPEND || current->type == HEREDOC)
-            {
-                printf("Processing redirection token: ");
-                print_token_type(current->type);
-                printf(" with file: %s\n", 
-                       current->next && current->next->s ? current->next->s : "(missing)");
-                fill_r(current, &shell);
-            }
-            current = current->next;
         }
         print_redirections(&shell);
     }
@@ -198,7 +173,13 @@ void test_string(char *input)
     }
     printf("--- END PARSING ---\n\n");
     
-    // Cleanup
+    // REMOVE THIS SECTION - it's causing duplicates:
+    // --- TESTING REDIRECTION PARSING ---
+    // DON'T call fill_r() again here!
+    
+    // // Cleanup
+    // free_tokens(&shell);
+    // free_command(&shell);
 }
 
 int main(void)

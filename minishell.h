@@ -6,7 +6,7 @@
 /*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/28 16:10:17 by nour              #+#    #+#             */
-/*   Updated: 2025/09/10 11:51:55 by nour             ###   ########.fr       */
+/*   Updated: 2025/09/12 16:58:08 by nour             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ typedef struct s_token
 {
 	t_token_type	type;
 	char			*s;
-	bool			quotes;
+	int			quotes;
 	t_token			*next;
 }				t_token;
 //type: command or pipe or direction

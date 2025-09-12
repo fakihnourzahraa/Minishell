@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/04 22:53:52 by nour              #+#    #+#             */
-/*   Updated: 2025/09/11 21:54:49 by nfakih           ###   ########.fr       */
+/*   Updated: 2025/09/12 17:16:36 by nour             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ void	init_args(t_shell *shell, int wc)
 	shell->cmds->i_fd =	-1;
 	shell->cmds->o_fd = -1;
 	shell->cmds->pid = -1;
-	shell->cmds->builtin = NULL;
+	shell->cmds->builtin = (t_builtin)NULL;
 }
 
 void	parse(t_shell *shell)
@@ -54,19 +54,28 @@ void	parse(t_shell *shell)
 	shell->cmds->args[0] = ft_strdup(token->s);
 	i = 1;
 	token = token->next;
-	while (token && token->type == WORD)
+	while (token && token->type != T_EOF)
 	{
-		if (token->quotes == 1)
-			shell->cmds->args[i] = ft_strtrim(token->s, "'");
-		else if (token->quotes == 2)
-			shell->cmds->args[i] = ft_strtrim(token->s, "\"");
-		shell->cmds->args[i] = ft_strdup(token->s);
-		token = token->next;
-		i++;
+		if(token->type == WORD)
+		{
+			if (token->quotes == 1)
+				shell->cmds->args[i] = ft_strtrim(token->s, "'");
+			else if (token->quotes == 2)
+				shell->cmds->args[i] = ft_strtrim(token->s, "\"");
+			shell->cmds->args[i] = ft_strdup(token->s);
+			i++;
+		}
+		else
+		{
+			fill_r(token, shell);
+			token = token->next;
+		}
+			token = token->next;
 	}
-	fill_r(token, shell);
+
 	shell->cmds->args[i] = NULL;
 }
+//extra token.next so it skips filename
 
 //parses till eof only
 

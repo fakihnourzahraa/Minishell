@@ -6,7 +6,7 @@
 /*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/31 13:23:45 by nfakih            #+#    #+#             */
-/*   Updated: 2025/09/08 11:12:46 by nour             ###   ########.fr       */
+/*   Updated: 2025/09/12 15:21:03 by nour             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,7 +134,11 @@ int	split_quote(char *a, int i, t_shell *shell, char n)
 	t = init_token();
 	t->s = b;
 	t->type = WORD;
-	t->quotes = (n == '\'') ? 1 : 2;  // 1 for single, 2 for double
+	if (n == '\'')
+		t->quotes = 1;
+	else
+		t->quotes = 2;
+	//t->quotes = (n == '\'') ? 1 : 2;  // 1 for single, 2 for double
 	add_token(shell, t);
 	
 	// Return position after closing quote
