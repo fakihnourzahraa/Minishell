@@ -6,7 +6,7 @@
 /*   By: miwehbe <miwehbe@student.42beirut.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/28 11:35:19 by miwehbe           #+#    #+#             */
-/*   Updated: 2025/09/08 19:26:02 by miwehbe          ###   ########.fr       */
+/*   Updated: 2025/09/12 11:22:23 by miwehbe          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,18 +118,21 @@ void	free_shell(t_shell *shell)
 
 void init_shell(t_shell *shell, char **envp)
 {
-    int i = 0;
     shell->exit_status = 0;
     shell->in_h = 0;
-    while (envp[i]) i++;
-    shell->envp = malloc(sizeof(char *) * (i + 1));
-    i = 0;
-    while (envp[i]) {
-        shell->envp[i] = ft_strdup(envp[i]);
-        i++;
-    }
-    shell->envp[i] = NULL;
+    shell->tkns = NULL;
+    shell->cmds = NULL;
+    shell->in = NULL;
+    shell->cwd = NULL;
+    shell->sti = NULL;
+    shell->sto = NULL;
+    shell->exit = false;
+    
+    // Replace envp copying with t_env initialization
+    shell->env = init_env_from_envp(envp);
+    shell->envp = NULL;  // Don't need this anymore
 }
+
 
 t_redir *create_redir(t_r_type type, char *file)
 {
@@ -149,6 +152,9 @@ t_cmd *create_cmd(char **args, t_redir *redir)
     cmd->builtin = is_builtin(args[0]);
     cmd->next = NULL;
     cmd->pid = 0;
+    cmd->path = NULL;
+    cmd->i_fd = 0;     
+    cmd->o_fd = 1;
     return cmd;
 }
 
@@ -648,12 +654,8 @@ int main(int argc, char **argv, char **envp)
     }
     
     // Cleanup shell
-    if (shell.envp)
-    {
-        for (int i = 0; shell.envp[i]; i++)
-            free(shell.envp[i]);
-        free(shell.envp);
-    }
+    if (shell.env)
+        free_env_list(shell.env);
     
     return shell.exit_status;
 }

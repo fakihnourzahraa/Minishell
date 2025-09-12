@@ -78,7 +78,7 @@ typedef struct s_cmd
 	int		i_fd;
 	int		o_fd;
 	pid_t	pid;
-	t_builtin *builtin;
+	t_builtin builtin;
 	t_cmd	*next;
 }			t_cmd;
 //rd: redirections
