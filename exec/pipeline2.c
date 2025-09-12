@@ -88,7 +88,7 @@ void setup_cmd_fds(t_cmd *cmd, t_pipe_info *info, t_shell *shell)
     if (output_fd > 2)
       close(output_fd);
   }
-  close_all_pipes(info->pipes, info->cmd_count - 1);
+  close_unused_pipes(info->pipes, info->cmd_count - 1, info->cmd_index);
 }
 
 void exec_external_with_env(t_shell *shell, t_cmd *cmd, char *path)

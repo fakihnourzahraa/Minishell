@@ -12,45 +12,68 @@
 
 #include "exec.h"
 
-int apply_redirections(t_cmd *cmd, t_shell *shell)
+static int	handle_in_redir(t_shell *shell, t_redir *redir)
 {
-  if(cmd == NULL || cmd->rd == NULL)
-    return (0);
-  t_redir *current_redir;
-  int fd;
+	int	fd;
 
-  current_redir = cmd->rd;
-  while(current_redir !=  NULL)
-  {
-    if (current_redir->type == R_IN)
-    {
-      fd = open_infile(current_redir->s);
-      if(fd == -1)
-        return(-1);
-      redirect_fd(fd,STDIN_FILENO);
-    }
-    else if(current_redir->type == R_OUT)
-    {
-      fd = open_outfile(current_redir->s,0);
-      if (fd ==-1)
-        return (-1);
-      redirect_fd(fd,STDOUT_FILENO);
-    }
-    else if (current_redir->type == R_APPEND)
-    {
-      fd= open_outfile(current_redir->s, 1);
-      if(fd==-1)
-        return(-1);
-      redirect_fd(fd,STDOUT_FILENO);
-    }
-    else if (current_redir->type == R_HEREDOC)
-    {
-      fd = run_heredoc(current_redir->s, shell);
-      if (fd == -1)
-        return (-1); // heredoc failed / Ctrl+C
-      redirect_fd(fd, STDIN_FILENO);
-    }
-    current_redir = current_redir->next;
-  }
-  return (0);
+	fd = open_infile(redir->s);
+	if (fd == -1)
+		return (-1);
+	redirect_fd(fd, STDIN_FILENO);
+	return (0);
+}
+
+static int	handle_out_redir(t_redir *redir)
+{
+	int	fd;
+
+	fd = open_outfile(redir->s, 0);
+	if (fd == -1)
+		return (-1);
+	redirect_fd(fd, STDOUT_FILENO);
+	return (0);
+}
+
+static int	handle_append_redir(t_redir *redir)
+{
+	int	fd;
+
+	fd = open_outfile(redir->s, 1);
+	if (fd == -1)
+		return (-1);
+	redirect_fd(fd, STDOUT_FILENO);
+	return (0);
+}
+
+static int	handle_heredoc_redir(t_redir *redir, t_shell *shell)
+{
+	int	fd;
+
+	fd = run_heredoc(redir->s, shell);
+	if (fd == -1)
+		return (-1);
+	redirect_fd(fd, STDIN_FILENO);
+	return (0);
+}
+
+int	apply_redirections(t_cmd *cmd, t_shell *shell)
+{
+	t_redir	*current;
+
+	if (!cmd || !cmd->rd)
+		return (0);
+	current = cmd->rd;
+	while (current)
+	{
+		if (current->type == R_IN && handle_in_redir(shell, current) == -1)
+			return (-1);
+		else if (current->type == R_OUT && handle_out_redir(current) == -1)
+			return (-1);
+		else if (current->type == R_APPEND && handle_append_redir(current) == -1)
+			return (-1);
+		else if (current->type == R_HEREDOC && handle_heredoc_redir(current, shell) == -1)
+			return (-1);
+		current = current->next;
+	}
+	return (0);
 }

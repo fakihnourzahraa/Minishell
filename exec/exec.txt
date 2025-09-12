@@ -1,4 +1,4 @@
-execute_single.c
+****execute_single.c
 its handle the execution of a single cmnd in mini,it also handel the redirect,and exit status
 so we do some help  fct bcz norm :
 1-wait_child(t_shell *shell, int status):its update the shell exit status after child proc finish
@@ -33,10 +33,13 @@ Builtin with redirections: needs fork (to isolate redirections)
 Builtin without redirections: direct execution (no fork needed)
 External commands: always need fork + env conversion for execve
 Shared helpers: wait_child() reused for both fork cases
+.WIFEXITED : it check if the child process exited normally(that mean not killed,ot ctrl+c)
+.WEXITSTATUS : get the exit code from a normally exited child ,Only use this if WIFEXITED(status) is TRUE!
+. WIFSIGNALED : check if the child was killed by a signal
+.WTERMSIG : get the signal nbr that killed the child(2 if sigint(ctrl+c) 9 if sigkill(kill) 11 if sigsegv(segfault))
 
 
-
-execute_path.c:
+****execute_path.c:
 his work is to get the full executable path of a cmnd in our mini
 so if for example we type cat in shell
 If the command contains /, it might already be a full path (/bin/ls), so we check that first.
@@ -60,4 +63,40 @@ User types command -> get_cmd_path(cmd, shell)
    │      └─ loop each directory, join with cmd, check executable
    └─ return full path or NULL
 
+If user typed something like ./myprog → it checks directly if it’s executable.
+If user typed just ls → it searches through $PATH directories until it finds it.
+If found → returns absolute path (/usr/bin/ls).
+If not found → returns NULL (you can later print command not found).
+This is the backend for running external commands in your shell (execve needs a full path).
 
+Command not found → 127
+Permission denied → 126
+Signal killed → 128 + signal number
+
+
+
+****heredoc.c : 
+-run_heredoc: entry point to do heredoc ,return file desc to read the heredoc content
+shell->in_h = 1 mean that the shell as in heredoc,
+-child_heredoc : Prepare child process for heredoc input.it set the signal close fd[0]
+-child_heredoc_loop(int fd, char *delimiter) : Actually read lines from the user until the delimiter is found,
+-parent_heredoc(t_shell *shell, int fd[2], pid_t pid) : Parent process waits for the child and returns the read-end fd, close fd[1] no write,waitpid,shell->in_h=0 
+
+run_heredoc → orchestrates pipe + fork. Returns read fd.
+Child process → reads lines until delimiter or Ctrl+D, writes to pipe.
+Parent process → waits for child, handles exit code (normal, Ctrl+C, error).
+Signals: child has special heredoc signals; parent restores normal shell signals.
+Exit codes:
+Normal → child exit code
+Ctrl+C → 130
+Other errors → 1
+Pipe: fd[0] is read end, fd[1] is write end. Only the child writes, only parent reads.
+
+
+
+****redirection.c+redir_utils.c : 
+-handle_in_redir(t_shell *shell, t_redir *redir) :  open the input file ,then redirects file descriptor to stdin (handle < file)
+-handle_out_redir(t_redir *redir) : Opens the output file,Redirects fd to stdout (handle > file)
+-handle_append_redir(t_redir *redir) : Opens output file in append mode ( handle >> file)
+-handle_heredoc_redir(t_redir *redir, t_shell *shell) : Calls run_heredoc(redir->s, shell) → gets read-end fd of heredoc pipe,Redirects to stdin (handle << delimiter)
+-apply_redirections : Loops over all redirections in cmd->rd,For each type, calls the corresponding helpe
