@@ -27,6 +27,8 @@ int		ft_tolower(int c);
 int		ft_strncmp(const char *s1, const char *s2, size_t n);
 int		ft_memcmp(const void *s1, const void *s2, size_t n);
 int		ft_atoi(const char *nptr);
+int	  ft_is_numeric(const char *str);
+int	  ft_size_of_arr(char **arr);
 
 size_t	ft_strlen(const char *s);
 size_t	ft_strlcpy(char *dst, const char *src, size_t dsize);
@@ -58,5 +60,7 @@ int		ft_strcmp(const char *s1, const char *s2);
 char  *ft_strcpy(char *dest, const char *src);
 char  *ft_strndup(const char *s, size_t n);
 char *ft_strcat(char *dest, const char *src);
+
+long long   ft_atoll(const char *str);
 
 #endif

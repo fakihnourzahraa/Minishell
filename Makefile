@@ -9,6 +9,7 @@ SRCS = main/main.c \
        builtins/echo.c \
        builtins/pwd.c \
        builtins/exit.c \
+       builtins/cd.c\
        exec/buitl.c\
        exec/execute_single.c\
        exec/execute_path.c\

@@ -16,6 +16,7 @@ static int	handle_in_redir(t_shell *shell, t_redir *redir)
 {
 	int	fd;
 
+	(void)shell;
 	fd = open_infile(redir->s);
 	if (fd == -1)
 		return (-1);

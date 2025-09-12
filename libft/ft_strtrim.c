@@ -45,6 +45,5 @@ char	*ft_strtrim(char const *s1, char const *set)
 	while (start < end)
 		trimmed[i++] = s1[start++];
 	trimmed[i] = '\0';
-	free(s1);
 	return (trimmed);
 }
