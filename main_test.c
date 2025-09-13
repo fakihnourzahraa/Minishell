@@ -235,7 +235,7 @@ void test_string(char *input)
     
     // Parse ONCE - this should handle redirections internally
     printf("--- PARSING ---\n");
-    parse(&shell);
+    parse(&shell, shell.tkns);
     
     if (shell.cmds)
     {
@@ -253,49 +253,49 @@ void test_string(char *input)
         printf("No command parsed\n");
     }
     printf("--- END PARSING ---\n\n");
-	// cleanup_t(&shell);
-	// cleanup_p(&shell);
+	cleanup_t(&shell);
+	cleanup_p(&shell);
 }
 
 int main(void)
-{
-    printf("TOKENIZATION & REDIRECTION TEST\n");
-    printf("===============================\n\n");
+ {
+//     printf("TOKENIZATION & REDIRECTION TEST\n");
+//     printf("===============================\n\n");
     
-    // Basic command tests
-    printf("=== BASIC COMMANDS ===\n");
-    test_string("echo hehhi");
-    test_string("ls -l");
-    test_string("pwd");
+//     // Basic command tests
+//     printf("=== BASIC COMMANDS ===\n");
+//     test_string("echo hehhi");
+//     test_string("ls -l");
+//     test_string("pwd");
     
- // Quote tests
-    printf("=== QUOTE TESTS ===\n");
-    test_string("echo 'hello world'");
-    test_string("echo \"hello world\"");
-    test_string("echo 'single' \"double\"");
+//  // Quote tests
+//     printf("=== QUOTE TESTS ===\n");
+//     test_string("echo 'hello world'");
+//     test_string("echo \"hello world\"");
+//     test_string("echo 'single' \"double\"");
     
-    // Basic redirection tests
-    printf("=== BASIC REDIRECTION TESTS ===\n");
-    test_string("cat < file.txt");
-    test_string("ls > output.txt");
-    test_string("echo hello >> log.txt");
-    test_string("cat << EOF");
+//     // Basic redirection tests
+//     printf("=== BASIC REDIRECTION TESTS ===\n");
+//     test_string("cat < file.txt");
+//     test_string("ls > output.txt");
+//     test_string("echo hello >> log.txt");
+//     test_string("cat << EOF");
     
-    // // // Command with arguments and redirections
-    // printf("=== COMPLEX REDIRECTION TESTS ===\n");
-    // test_string("ls -l > output.txt");
-    // test_string("cat file.txt > output.txt");
-    // test_string("echo hello world >> log.txt");
-    // test_string("grep pattern < input.txt > output.txt");
+//     // // Command with arguments and redirections
+//     printf("=== COMPLEX REDIRECTION TESTS ===\n");
+//     test_string("ls -l > output.txt");
+//     test_string("cat file.txt > output.txt");
+//     test_string("echo hello world >> log.txt");
+//     test_string("grep pattern < input.txt > output.txt");
     
-    // // Multiple redirections
-    // printf("=== MULTIPLE REDIRECTION TESTS ===\n");
-    // test_string("cat < input.txt > output.txt");
-    // test_string("sort < data.txt >> sorted.txt");
+//     // Multiple redirections
+//     printf("=== MULTIPLE REDIRECTION TESTS ===\n");
+//     test_string("cat < input.txt > output.txt");
+//     test_string("sort < data.txt >> sorted.txt");
     
     // // Pipe tests (if you want to test those too)
     // printf("=== PIPE TESTS ===\n");
-    // test_string("ls | grep .c");
+    test_string("ls | grep .c");
     // test_string("cat file.txt | grep hello");
     // test_string("ls -l | wc -l");
     

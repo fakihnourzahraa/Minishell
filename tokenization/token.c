@@ -17,11 +17,11 @@ int	set_token(t_shell *shell, char *a, int i)
 	t_token	*b;
 	t_token	*n;
 
-	n = init_token();
 	i = skip_spaces(a, i);
 	if ((a[i] == 34 || a[i] == 39))
-		return (free(n), split_q(a, shell, i));
-	else if (a[i] == '|')
+		return (split_q(a, shell, i));
+	n = init_token();
+	if (a[i] == '|')
 		i = set_single(1, i, '|', n);
 	else if (a[i] == '>' && a[i + 1] == '>')
 		i = set_double(4, '>', n, i);
@@ -32,7 +32,7 @@ int	set_token(t_shell *shell, char *a, int i)
 	else if (a[i] == '>')
 		i = set_single(3, i, '>', n);
 	else
-		return (split_word(a, i, shell));
+		return (split_word(a, i, shell, n));
 	add_token(shell, n);
 	return (i);
 }

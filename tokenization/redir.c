@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redir.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/10 11:10:26 by nour              #+#    #+#             */
-/*   Updated: 2025/09/12 17:10:04 by nour             ###   ########.fr       */
+/*   Updated: 2025/09/13 14:16:36 by nfakih           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,16 @@ void	add_redir(t_shell *shell, t_redir *c)
 		r->next = c;
 	}
 }
+t_redir	*init_redir(void)
+{
+	t_redir	*r;
+	
+	r = malloc(sizeof(t_redir));
+	r->fd = -1;
+	r->s = NULL;
+	r->type = R_EMPTY;
+	r->next = NULL;
+}
 
 void	fill_r(t_token *t, t_shell *shell)
 {
@@ -48,7 +58,7 @@ void	fill_r(t_token *t, t_shell *shell)
 
 	if (t->type == T_EOF)
 		return ;
-	r = malloc(sizeof(t_redir));
+	r = init_redir();
 	if (t->type == IN)
 		r->type = R_IN;
 	else if (t->type == OUT)

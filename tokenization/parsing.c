@@ -6,37 +6,56 @@
 /*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/04 22:53:52 by nour              #+#    #+#             */
-/*   Updated: 2025/09/13 13:38:28 by nfakih           ###   ########.fr       */
+/*   Updated: 2025/09/13 15:23:36 by nfakih           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "tokenization.h"
 
-int	word_count(t_shell *shell)
+int	word_count(t_token *token)
 {
-	t_token *t;
 	int		i;
 
 	i = 0;
-	t = shell->tkns;
-	while (t && t->type != T_EOF)
+	while (token && token->type != T_EOF && token->type != PIPE)
 	{
-		if (t->type == WORD)
+		if (token->type == WORD)
 			i++;
-		t = t->next;
+		token = token->next;
 	}
 	return (i);
 }
-void	init_args(t_shell *shell, int wc)
+void	add_cmd(t_shell *shell, t_cmd *cmd)
 {
-	shell->cmds->args = malloc(sizeof(char *) * (wc + 1));
-	shell->cmds->path =	NULL;
-	shell->cmds->rd = NULL;
-	shell->cmds->i_fd =	-1;
-	shell->cmds->o_fd = -1;
-	shell->cmds->pid = -1;
-	shell->cmds->builtin = (t_builtin)NULL;
-	shell->cmds->next = NULL;
+	t_cmd	*cur;
+
+	if (!shell->cmds)
+		shell->cmds = cmd;
+	else
+	{
+		cur = shell->cmds;
+		while (cur->next)
+			cur = cur->next;
+		cur->next = cmd;
+	}
+	    printf("Added command: %s\n", cmd->cmd); 
+}
+t_cmd	*init_cmd(t_shell *shell, t_token *t)
+{
+	int	wc;
+	t_cmd	*cmd;
+	
+	wc = word_count(t);
+	cmd = malloc(sizeof(t_cmd));
+	cmd->args = malloc(sizeof(char *) * (wc + 1));
+	cmd->path =	NULL;
+	cmd->rd = NULL;
+	cmd->i_fd =	-1;
+	cmd->o_fd = -1;
+	cmd->pid = -1;
+	cmd->builtin = (t_builtin)NULL;
+	cmd->next = NULL;
+	return (cmd);
 }
 
 void	cleanup_parsing(t_shell *shell)
@@ -61,20 +80,50 @@ void	cleanup_parsing(t_shell *shell)
 		free(c);
 	}
 }
-void	parse(t_shell *shell)
+void TT(t_token_type type)
 {
-	t_token	*token;
+    switch(type) {
+        case WORD: printf("WORD"); break;
+        case PIPE: printf("PIPE"); break;
+        case IN: printf("IN"); break;
+        case OUT: printf("OUT"); break;
+        case APPEND: printf("APPEND"); break;
+        case HEREDOC: printf("HEREDOC"); break;
+        case T_EOF: printf("T_EOF"); break;
+        default: printf("UNKNOWN"); break;
+    }
+}
+void print_toke(t_token *token)
+{
+    t_token *current = token;
+    int i = 0;
+    
+    printf("\n--- TOKENS ---\n");
+    while (current)
+    {
+        printf("Token %d: ", i++);
+        TT(current->type);
+        printf(" | Content: '%s' | Quotes: %d\n", 
+               current->s ? current->s : "(null)", 
+               current->quotes);
+        if (current->type == T_EOF)
+            break;
+        current = current->next;
+    }
+    printf("--- END TOKENS ---\n\n");
+}
+void	parse(t_shell *shell, t_token *token)
+{
 	int		i;
-	int		wc;
-	
-	token = shell->tkns;
+	t_cmd	*cmd;
+	printf("IN PARSING");
+	print_toke(token);
+
 	if (!token || token->type != WORD)
 		return ;
-	shell->cmds = malloc(sizeof(t_cmd));
-	wc = word_count(shell);
-	init_args(shell, wc);
-	shell->cmds->cmd = ft_strdup(token->s);
-	shell->cmds->args[0] = ft_strdup(token->s);
+	cmd = init_cmd(shell, token);
+	cmd->cmd = ft_strdup(token->s);
+	cmd->args[0] = ft_strdup(token->s);
 	i = 1;
 	token = token->next;
 	while (token && token->type != T_EOF)
@@ -82,21 +131,30 @@ void	parse(t_shell *shell)
 		if(token->type == WORD)
 		{
 			if (token->quotes == 1)
-				shell->cmds->args[i] = ft_strtrim(token->s, "'");
+				cmd->args[i] = ft_strtrim(token->s, "'");
 			else if (token->quotes == 2)
-				shell->cmds->args[i] = ft_strtrim(token->s, "\"");
+				cmd->args[i] = ft_strtrim(token->s, "\"");
 			else
-				shell->cmds->args[i] = ft_strdup(token->s);
+				cmd->args[i] = ft_strdup(token->s);
 			i++;
+		}
+		else if (token->type == PIPE)
+		{
+			cmd->args[i] = NULL;
+			add_cmd(shell, cmd);
+			parse(shell, token->next);
+			return ;
 		}
 		else
 		{
 			fill_r(token, shell);
 			token = token->next;
 		}
+		if (token)
 			token = token->next;
 	}
-	shell->cmds->args[i] = NULL;
+	cmd->args[i] = NULL;
+	add_cmd(shell, cmd);
 }
 //extra token.next so it skips filename
 

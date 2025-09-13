@@ -6,7 +6,7 @@
 /*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/31 13:23:45 by nfakih            #+#    #+#             */
-/*   Updated: 2025/09/13 12:47:17 by nfakih           ###   ########.fr       */
+/*   Updated: 2025/09/13 14:11:47 by nfakih           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ int	word_len(char *a, int i)
 //takes pos of first " returns pos of last "
 // i++ cause i is gonna be " at first
 //
-int	split_word(char *a, int i, t_shell *shell)
+int	split_word(char *a, int i, t_shell *shell, t_token *n)
 {
 	char	*b;
 	int		j;
@@ -90,7 +90,7 @@ int	split_word(char *a, int i, t_shell *shell)
 	j = 0;
 	if (a[i] && a[i] == '\0')
 		return (i);
-	t = init_token();
+	t = n;
 	i = skip_spaces(a, i);
 	len = word_len(a, i);
 	if (len == 0)
