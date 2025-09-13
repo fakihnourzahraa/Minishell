@@ -6,7 +6,7 @@
 /*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/28 16:10:17 by nour              #+#    #+#             */
-/*   Updated: 2025/09/11 21:53:32 by nfakih           ###   ########.fr       */
+/*   Updated: 2025/09/13 12:46:16 by nfakih           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,6 @@
 int	    skip_spaces(char *a, int i);
 bool	skipable_space(char a);
 int	    split_word(char *a, int i, t_shell *shell);
-int	    split_q(char *a, t_shell *shell, int i);
 int		split_quote(char *a, int i, t_shell *shell, char n);
 void	parse(t_shell *shell);
 int	    tokenize_line(t_shell *shell);
@@ -60,5 +59,8 @@ t_token	*init_token(void);
 void	add_token(t_shell *shell, t_token *n);
 void	fill_r(t_token *t, t_shell *shell);
 void	add_redir(t_shell *shell, t_redir *c);
+int		set_single(int n, int i, char a, t_token *t);
+int		set_double(int n, char a, t_token *t, int i);
+int		split_q(char *a, t_shell *shell, int i);
 
 #endif

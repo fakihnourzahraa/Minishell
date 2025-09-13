@@ -2,6 +2,7 @@
 	"files.associations": {
 		"minishell.h": "c",
 		"parsing.h": "c",
-		"errno.h": "c"
+		"errno.h": "c",
+		"tokenization.h": "c"
 	}
 }
