@@ -6,7 +6,7 @@
 /*   By: miwehbe <miwehbe@student.42beirut.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/28 11:35:19 by miwehbe           #+#    #+#             */
-/*   Updated: 2025/09/12 11:42:07 by miwehbe          ###   ########.fr       */
+/*   Updated: 2025/09/13 16:22:53 by miwehbe          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,7 +141,7 @@ void parse_and_execute(t_shell *shell, char *input)
 }
 
 
-// for testing red with pipe
+// Fixed main function with proper memory management
 
 int main(int argc, char **argv, char **envp)
 {
@@ -222,6 +222,11 @@ int main(int argc, char **argv, char **envp)
                     else
                         current_cmd->next = new_cmd;
                     current_cmd = new_cmd;
+                }
+                else
+                {
+                    // FIX 1: Free unused current_args if no arguments collected
+                    free(current_args);
                 }
                 
                 // Reset for next command
@@ -317,7 +322,16 @@ int main(int argc, char **argv, char **envp)
         }
         else
         {
+            // FIX 2: Also need to free any orphaned redirections if no command was created
             free(current_args);
+            // Free any remaining redirections that weren't attached to a command
+            while (current_redir)
+            {
+                t_redir *tmp = current_redir->next;
+                free(current_redir->s);
+                free(current_redir);
+                current_redir = tmp;
+            }
         }
 
         // Execute commands
@@ -381,11 +395,12 @@ int main(int argc, char **argv, char **envp)
         free(shell.in);
     }
     
+    // FIX 3: Clear readline history before exit
+    rl_clear_history();
+    
     // Cleanup shell
     if (shell.env)
         free_env_list(shell.env);
     
     return shell.exit_status;
 }
-
-
