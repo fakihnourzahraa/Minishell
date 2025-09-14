@@ -52,3 +52,21 @@ void sort_exported_vars(t_env **arr, int count)
     i++;
   }
 }
+
+int is_valid_identifier(const char *str)
+{
+  int i ;
+
+  if(!str || str[0] =='\0')
+    return (0);
+  if(!ft_isalpha(str[0]) && str[0] != '_')
+    return (0);
+  i =1;
+  while(str[i])
+  {
+    if(!ft_isalnum(str[i]) && str[i] != '_')
+      return (0);
+    i++;
+  }
+  return (1);
+}

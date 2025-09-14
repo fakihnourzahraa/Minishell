@@ -32,7 +32,6 @@ void free_envp(char **envp)
 
   if (!envp)
     return;
-
   i = 0;
   while (envp[i])
   {

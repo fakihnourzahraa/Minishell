@@ -12,6 +12,7 @@ SRCS = main/main.c \
        builtins/cd.c\
        builtins/env.c\
        builtins/export.c\
+       builtins/unset.c\
        builtins/builutils.c\
        exec/buitl.c\
        exec/execute_single.c\

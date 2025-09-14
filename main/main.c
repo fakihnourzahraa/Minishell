@@ -6,11 +6,92 @@
 /*   By: miwehbe <miwehbe@student.42beirut.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/28 11:35:19 by miwehbe           #+#    #+#             */
-/*   Updated: 2025/09/13 16:22:53 by miwehbe          ###   ########.fr       */
+/*   Updated: 2025/09/14 12:19:55 by miwehbe          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include"main.h"
+
+void cleanup_shell(t_shell *shell)
+{
+    // Free environment list
+    if (shell->env)
+    {
+        free_env_list(shell->env);
+        shell->env = NULL;
+    }
+    
+    // Free command chain if any remaining
+    if (shell->cmds)
+    {
+        free_cmd_chain(shell->cmds);
+        shell->cmds = NULL;
+    }
+    
+    // Free any remaining input
+    if (shell->in)
+    {
+        free(shell->in);
+        shell->in = NULL;
+    }
+    
+    // Clear readline history
+    rl_clear_history();
+}
+
+void free_cmd_chain_complete(t_cmd *cmd)
+{
+    t_cmd *next;
+    
+    while (cmd) 
+    {
+        next = cmd->next;
+        
+        // Free command name
+        if (cmd->cmd) 
+        {
+            free(cmd->cmd);
+            cmd->cmd = NULL;
+        }
+        
+        // Free path
+        if (cmd->path)
+        {
+            free(cmd->path);
+            cmd->path = NULL;
+        }
+            
+        // Free arguments array
+        if (cmd->args) 
+        {
+            for (int i = 0; cmd->args[i]; i++)
+            {
+                free(cmd->args[i]);
+                cmd->args[i] = NULL;
+            }
+            free(cmd->args);
+            cmd->args = NULL;
+        }
+        
+        // Free redirections
+        t_redir *redir = cmd->rd;
+        while (redir) 
+        {
+            t_redir *next_redir = redir->next;
+            if (redir->s)
+            {
+                free(redir->s);
+                redir->s = NULL;
+            }
+            free(redir);
+            redir = next_redir;
+        }
+        cmd->rd = NULL;
+        
+        free(cmd);
+        cmd = next;
+    }
+}
 
 void init_shell(t_shell *shell, char **envp)
 {
@@ -24,24 +105,30 @@ void init_shell(t_shell *shell, char **envp)
     shell->sto = NULL;
     shell->exit = false;
     
-    // Replace envp copying with t_env initialization
+    // Initialize environment from envp
     shell->env = init_env_from_envp(envp);
-    shell->envp = NULL;  // Don't need this anymore
+    shell->envp = NULL;
 }
-
 
 t_redir *create_redir(t_r_type type, char *file)
 {
     t_redir *redir = malloc(sizeof(t_redir));
+    if (!redir)
+        return NULL;
+        
     redir->type = type;
     redir->s = ft_strdup(file);
     redir->next = NULL;
+    redir->fd = -1;
     return redir;
 }
 
 t_cmd *create_cmd(char **args, t_redir *redir)
 {
     t_cmd *cmd = malloc(sizeof(t_cmd));
+    if (!cmd)
+        return NULL;
+        
     cmd->cmd = ft_strdup(args[0]);
     cmd->args = args;
     cmd->rd = redir;
@@ -54,31 +141,13 @@ t_cmd *create_cmd(char **args, t_redir *redir)
     return cmd;
 }
 
-void free_cmd_chain(t_cmd *cmd)
-{
-    t_cmd *next;
-    t_redir *redir, *next_redir;
-    
-    while (cmd) {
-        next = cmd->next;
-        if (cmd->cmd) free(cmd->cmd);
-        redir = cmd->rd;
-        while (redir) {
-            next_redir = redir->next;
-            free(redir->s);
-            free(redir);
-            redir = next_redir;
-        }
-        free(cmd);
-        cmd = next;
-    }
-}
-
 void parse_and_execute(t_shell *shell, char *input)
 {
     char **tokens = ft_split(input, ' ');
-    if (!tokens || !tokens[0]) {
-        if (tokens) free_split(tokens);
+    if (!tokens || !tokens[0]) 
+    {
+        if (tokens) 
+            free_split(tokens);
         return;
     }
     
@@ -88,60 +157,96 @@ void parse_and_execute(t_shell *shell, char *input)
     int arg_count = 0;
     t_redir *redir = NULL;
     
-    for (int i = 0; tokens[i]; i++) {
-        if (ft_strcmp(tokens[i], "|") == 0) {
+    for (int i = 0; tokens[i]; i++) 
+    {
+        if (ft_strcmp(tokens[i], "|") == 0) 
+        {
             // Create command and add to chain
-            cmd_args[arg_count] = NULL;
-            t_cmd *new_cmd = create_cmd(cmd_args, redir);
-            if (!first_cmd) first_cmd = new_cmd;
-            else current_cmd->next = new_cmd;
-            current_cmd = new_cmd;
+            if (arg_count > 0)
+            {
+                cmd_args[arg_count] = NULL;
+                t_cmd *new_cmd = create_cmd(cmd_args, redir);
+                if (!first_cmd) 
+                    first_cmd = new_cmd;
+                else 
+                    current_cmd->next = new_cmd;
+                current_cmd = new_cmd;
+            }
+            else
+            {
+                free(cmd_args);
+            }
             
             // Reset for next command
             cmd_args = malloc(sizeof(char *) * 10);
             arg_count = 0;
             redir = NULL;
         }
-        else if (ft_strcmp(tokens[i], "<") == 0 && tokens[i+1]) {
+        else if (ft_strcmp(tokens[i], "<") == 0 && tokens[i+1]) 
+        {
             redir = create_redir(R_IN, tokens[++i]);
         }
-        else if (ft_strcmp(tokens[i], ">") == 0 && tokens[i+1]) {
+        else if (ft_strcmp(tokens[i], ">") == 0 && tokens[i+1]) 
+        {
             redir = create_redir(R_OUT, tokens[++i]);
         }
-        else if (ft_strcmp(tokens[i], ">>") == 0 && tokens[i+1]) {
+        else if (ft_strcmp(tokens[i], ">>") == 0 && tokens[i+1]) 
+        {
             redir = create_redir(R_APPEND, tokens[++i]);
         }
-        else if (ft_strcmp(tokens[i], "<<") == 0 && tokens[i+1]) {
+        else if (ft_strcmp(tokens[i], "<<") == 0 && tokens[i+1]) 
+        {
             redir = create_redir(R_HEREDOC, tokens[++i]);
         }
-        else {
-            cmd_args[arg_count++] = tokens[i];
+        else 
+        {
+            cmd_args[arg_count++] = ft_strdup(tokens[i]);
         }
     }
     
     // Create last command
-    if (arg_count > 0) {
+    if (arg_count > 0) 
+    {
         cmd_args[arg_count] = NULL;
         t_cmd *new_cmd = create_cmd(cmd_args, redir);
-        if (!first_cmd) first_cmd = new_cmd;
-        else current_cmd->next = new_cmd;
+        if (!first_cmd) 
+            first_cmd = new_cmd;
+        else 
+            current_cmd->next = new_cmd;
+    }
+    else
+    {
+        free(cmd_args);
+        // Free any orphaned redirections
+        while (redir)
+        {
+            t_redir *tmp = redir->next;
+            if (redir->s)
+                free(redir->s);
+            free(redir);
+            redir = tmp;
+        }
     }
     
     // Execute
-    if (first_cmd) {
-        if (first_cmd->next) {
+    if (first_cmd) 
+    {
+        if (first_cmd->next) 
+        {
             execute_pipeline(shell, first_cmd);
-        } else {
+        } 
+        else 
+        {
             execute_single(shell, first_cmd);
         }
-        free_cmd_chain(first_cmd);
+        
+        // IMPORTANT: Free the command chain after execution
+        free_cmd_chain_complete(first_cmd);
     }
     
+    // Free tokens
     free_split(tokens);
 }
-
-
-// Fixed main function with proper memory management
 
 int main(int argc, char **argv, char **envp)
 {
@@ -167,12 +272,14 @@ int main(int argc, char **argv, char **envp)
             g_signal = 0;
             shell.exit_status = 130;
             free(shell.in);
+            shell.in = NULL;
             continue;
         }
 
         if (shell.in[0] == '\0')
         {
             free(shell.in);
+            shell.in = NULL;
             continue;
         }
 
@@ -183,6 +290,7 @@ int main(int argc, char **argv, char **envp)
         if (!tokens || !tokens[0])
         {
             free(shell.in);
+            shell.in = NULL;
             if (tokens)
                 free_split(tokens);
             continue;
@@ -225,7 +333,6 @@ int main(int argc, char **argv, char **envp)
                 }
                 else
                 {
-                    // FIX 1: Free unused current_args if no arguments collected
                     free(current_args);
                 }
                 
@@ -242,6 +349,7 @@ int main(int argc, char **argv, char **envp)
                 new_redir->type = R_OUT;
                 new_redir->s = ft_strdup(tokens[i + 1]);
                 new_redir->next = NULL;
+                new_redir->fd = -1;
                 
                 if (!current_redir)
                     current_redir = new_redir;
@@ -256,6 +364,7 @@ int main(int argc, char **argv, char **envp)
                 new_redir->type = R_IN;
                 new_redir->s = ft_strdup(tokens[i + 1]);
                 new_redir->next = NULL;
+                new_redir->fd = -1;
                 
                 if (!current_redir)
                     current_redir = new_redir;
@@ -270,6 +379,7 @@ int main(int argc, char **argv, char **envp)
                 new_redir->type = R_APPEND;
                 new_redir->s = ft_strdup(tokens[i + 1]);
                 new_redir->next = NULL;
+                new_redir->fd = -1;
                 
                 if (!current_redir)
                     current_redir = new_redir;
@@ -284,6 +394,7 @@ int main(int argc, char **argv, char **envp)
                 new_redir->type = R_HEREDOC;
                 new_redir->s = ft_strdup(tokens[i + 1]);
                 new_redir->next = NULL;
+                new_redir->fd = -1;
                 
                 if (!current_redir)
                     current_redir = new_redir;
@@ -322,9 +433,8 @@ int main(int argc, char **argv, char **envp)
         }
         else
         {
-            // FIX 2: Also need to free any orphaned redirections if no command was created
             free(current_args);
-            // Free any remaining redirections that weren't attached to a command
+            // Free any orphaned redirections
             while (current_redir)
             {
                 t_redir *tmp = current_redir->next;
@@ -349,39 +459,8 @@ int main(int argc, char **argv, char **envp)
                     execute_single(&shell, cmd_list);
             }
             
-            // Free command list
-            t_cmd *cmd_tmp;
-            while (cmd_list)
-            {
-                cmd_tmp = cmd_list->next;
-                
-                // Free redirections
-                t_redir *redir_tmp;
-                while (cmd_list->rd)
-                {
-                    redir_tmp = cmd_list->rd->next;
-                    free(cmd_list->rd->s);
-                    free(cmd_list->rd);
-                    cmd_list->rd = redir_tmp;
-                }
-                
-                // Free args
-                if (cmd_list->args)
-                {
-                    for (int j = 0; cmd_list->args[j]; j++)
-                        free(cmd_list->args[j]);
-                    free(cmd_list->args);
-                }
-                
-                // Free command fields
-                if (cmd_list->cmd)
-                    free(cmd_list->cmd);
-                if (cmd_list->path)
-                    free(cmd_list->path);
-                
-                free(cmd_list);
-                cmd_list = cmd_tmp;
-            }
+            // Free command list completely
+            free_cmd_chain_complete(cmd_list);
         }
 
         // Handle signals after execution
@@ -393,14 +472,11 @@ int main(int argc, char **argv, char **envp)
 
         free_split(tokens);
         free(shell.in);
+        shell.in = NULL;
     }
     
-    // FIX 3: Clear readline history before exit
-    rl_clear_history();
-    
-    // Cleanup shell
-    if (shell.env)
-        free_env_list(shell.env);
+    // Clean up everything before exit
+    cleanup_shell(&shell);
     
     return shell.exit_status;
 }

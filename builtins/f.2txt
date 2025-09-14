@@ -68,3 +68,23 @@ Uses libft printing functions for all output (ft_putstr_fd, ft_putchar_fd).
 .handle_export_with_value:Handles arguments in the form NAME=value,its needed for Properly sets environment variables and marks them as exported Set value + export
 .handle_export_without_value:Handles arguments in the form NAME (no =),Mark existing or create empty var
 .collect_exported_vars:Collects all exported variables into a temporary array.Needed for sorting/printing
+
+
+**unset:
+
+handle_unset_arg(t_shell *shell, char *arg):
+Step 1: Checks if the argument is a valid environment variable name using is_valid_identifier.
+Valid names: start with a letter or underscore, followed by letters, numbers, or underscores.
+Example of invalid: 123VAR, MY-VAR.
+Step 2: If invalid:
+Print an error message to stderr (fd 2), in Bash style.
+Set the shell’s exit status to 1 to signal an error.
+Return early → do not try to remove it.
+Step 3: If valid:
+Call unset_env_var(&shell->env, arg) to remove the variable from the linked list.
+
+builtin_unset(t_cmd *cmd, t_shell *shell):
+Purpose: Main function called for the unset builtin.
+Step 1: Checks if any arguments are given (cmd->args[1] is first user argument).
+No args → do nothing, exit status = 0.
+Matches Bash behavior: unset without arguments is valid and does nothing.

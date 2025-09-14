@@ -27,10 +27,16 @@ static void exec_external_child(t_shell *shell, t_cmd *cmd, char *path)
     char **envp_array;
 
     if (apply_redirections(cmd, shell) == -1)
+    {
+        free(path);
         exit(1);
+    }
     envp_array = env_to_envp(shell->env);
     if (!envp_array)
+    {
+        free(path);
         exit(1);
+    }
     execve(path, cmd->args, envp_array);
     free_envp(envp_array);
     free(path);
@@ -45,16 +51,23 @@ static int execute_external_command(t_shell *shell, t_cmd *cmd)
 
     path = get_cmd_path(cmd->args[0], shell);
     if (!path)
-        return (printf("minishell: %s: command not found\n",
-                        cmd->args[0]), shell->exit_status = 127, 1);
+    {
+        printf("minishell: %s: command not found\n", cmd->args[0]);
+        shell->exit_status = 127;
+        return (1);
+    }
     pid = fork();
     if (pid < 0)
-        return (perror("fork"), free(path), 1);
+    {
+        perror("fork");
+        free(path);
+        return (1);
+    }
     if (pid == 0)
         exec_external_child(shell, cmd, path);
+    free(path);
     waitpid(pid, &status, 0);
     wait_child(shell, status);
-    free(path);
     return (1);
 }
 
@@ -65,7 +78,10 @@ static int execute_builtin_with_redirect(t_shell *shell, t_cmd *cmd)
 
     pid = fork();
     if (pid < 0)
-        return (perror("fork"), 1);
+    {
+        perror("fork");
+        return (1);
+    }
     if (pid == 0)
     {
         if (apply_redirections(cmd, shell) == -1)

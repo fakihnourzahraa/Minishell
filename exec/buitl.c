@@ -28,8 +28,8 @@ int is_builtin(char *cmd)
     return (BUILTIN_ENV);
   if (ft_strcmp(cmd, "export") == 0)
     return (BUILTIN_EXPORT);
-  /*if (ft_strcmp(cmd, "unset") == 0)
-    return (BUILTIN_UNSET);*/
+  if (ft_strcmp(cmd, "unset") == 0)
+    return (BUILTIN_UNSET);
   return (0);
 }
 
@@ -83,8 +83,8 @@ int execute_builtin(t_cmd *cmd, t_shell *shell)
         builtin_env(cmd, shell);
       else if (ft_strcmp(cmd->args[0], "export") == 0)
         builtin_export(cmd, shell);
-      /*else if (ft_strcmp(cmd->args[0], "unset") == 0)
-        builtin_unset(cmd, shell);*/
+      else if (ft_strcmp(cmd->args[0], "unset") == 0)
+        builtin_unset(cmd, shell);
       //printf("DEBUG: Child about to exit\n");
       exit(shell->exit_status);
     }
@@ -115,8 +115,8 @@ int execute_builtin(t_cmd *cmd, t_shell *shell)
       builtin_env(cmd, shell);
     else if (ft_strcmp(cmd->args[0], "export") == 0)
         builtin_export(cmd, shell);
-    /*else if (ft_strcmp(cmd->args[0], "unset") == 0)
-        builtin_unset(cmd, shell);*/
+    else if (ft_strcmp(cmd->args[0], "unset") == 0)
+        builtin_unset(cmd, shell);
     //printf("DEBUG: Child about to exit\n");
     else
       return (0);
