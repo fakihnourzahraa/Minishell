@@ -26,9 +26,12 @@ int g_signal = 0;
 void sigint_handler(int signum)
 {
     (void)signum;
+
     g_signal = SIGINT;
-    write(1, "\n", 1);
-    // Don't call any readline functions here!
+
+    rl_replace_line("", 0); // clear current input line
+    rl_on_new_line();       // move cursor to new line
+    rl_redisplay();         // redraw the prompt immediately
 }
 
 void signals_prompt(void)

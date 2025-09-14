@@ -14,13 +14,13 @@
 
 static t_env *create_env_node_from_str(char *str)
 {
-  t_env   *node;
-  char    *equal_sign;
-  int     name_len;
+  t_env *node;
+  char *equal_sign;
+  int name_len;
 
   node = malloc(sizeof(t_env));
   if (!node)
-    return (NULL);
+    return NULL;
   equal_sign = ft_strchr(str, '=');
   if (equal_sign)
   {
@@ -33,35 +33,54 @@ static t_env *create_env_node_from_str(char *str)
     node->name = ft_strdup(str);
     node->val = ft_strdup("");
   }
+
+  if (!node->name || !node->val)
+  {
+    free(node->name);
+    free(node->val);
+    free(node);
+    return NULL;
+  }
   node->avail = true;
   node->next = NULL;
-  return (node);
+  return node;
 }
 
 t_env *init_env_from_envp(char **envp)
 {
-  t_env   *head;
-  t_env   *current;
-  t_env   *newnode;
-  int     i;
+    t_env *head = NULL;
+    t_env *current = NULL;
+    t_env *newnode;
+    int i = 0;
 
-  head = NULL;
-  current = NULL;
-  i = 0;
-  while (envp[i])
-  {
-    newnode = create_env_node_from_str(envp[i]);
-    if (!newnode)
-      return (NULL);
-    if (!head)
-      head = newnode;
-    else
-      current->next = newnode;
-    current = newnode;
-    i++;
-  }
-  return (head);
+    while (envp[i])
+    {
+        newnode = create_env_node_from_str(envp[i]);
+        if (!newnode)
+        {
+            // Free already created nodes to prevent leaks
+            t_env *tmp;
+            while (head)
+            {
+                tmp = head->next;
+                free(head->name);
+                free(head->val);
+                free(head);
+                head = tmp;
+            }
+            return NULL;
+        }
+        if (!head)
+            head = newnode;
+        else
+            current->next = newnode;
+
+        current = newnode;
+        i++;
+    }
+    return head;
 }
+
 
 // Find environment variable by name
 t_env *find_env_var(t_env *env, const char *name)

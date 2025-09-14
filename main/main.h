@@ -28,5 +28,6 @@ void	signals_prompt(void);
 void	signals_child_heredoc(void);
 void	signals_child(void);
 void	signals_parent(void);
-
+void cleanup_shell(t_shell *shell);
+void free_cmd_chain_complete(t_cmd *cmd);
 #endif
