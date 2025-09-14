@@ -6,7 +6,7 @@
 /*   By: miwehbe <miwehbe@student.42beirut.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/28 11:35:19 by miwehbe           #+#    #+#             */
-/*   Updated: 2025/09/14 18:11:37 by miwehbe          ###   ########.fr       */
+/*   Updated: 2025/09/14 19:48:27 by miwehbe          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -373,12 +373,6 @@ void execute_commands(t_shell *shell, t_cmd *cmd_chain)
     }
 }
 
-// Global cleanup function
-void cleanup_on_exit(void)
-{
-    // This will be called on exit
-}
-
 int main(int argc, char **argv, char **envp)
 {
     t_shell shell;
@@ -393,10 +387,7 @@ int main(int argc, char **argv, char **envp)
     init_exec_shell(&shell, envp);
     signals_prompt();
     
-    // Register cleanup function
-    atexit(cleanup_on_exit);
-    
-    while (!shell.exit)
+    while (!shell.exit)  // ← This checks the exit flag
     {
         // Get user input
         input = readline("minishell$ ");
@@ -454,8 +445,15 @@ int main(int argc, char **argv, char **envp)
         // Execute using YOUR execution functions
         execute_commands(&shell, cmd_chain);
         
-        // Show exit status (comment this out if you don't want it)
-        // printf("Exit status: %d\n", shell.exit_status);
+        // ✅ ADD THIS: Check if exit was called during execution
+        if (shell.exit)
+        {
+            // Clean up current command before exiting
+            free_cmd_chain(cmd_chain);
+            free_split(tokens);
+            free(input);
+            break;  // Exit the loop gracefully
+        }
         
         // Handle signal after execution
         if (g_signal == SIGINT)
@@ -470,7 +468,7 @@ int main(int argc, char **argv, char **envp)
         free(input);
     }
     
-    // Final cleanup - THIS WAS MISSING!
+    // ✅ Final cleanup - ALWAYS RUNS NOW!
     cleanup_exec_shell(&shell);
     
     return shell.exit_status;
