@@ -1,253 +1,323 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   main_test.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: test                                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/09/15 19:54:50 by nour              #+#    #+#             */
-/*   Updated: 2025/09/15 19:55:18 by nour             ###   ########.fr       */
+/*   Created: 2025/09/05 21:00:00 by test              #+#    #+#             */
+/*   Updated: 2025/09/05 21:00:00 by test             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdbool.h>
+#include "minishell.h"
+#include "tokenization/tokenization.h"
 
-// ----------------- Your Structs -----------------
-typedef struct s_env
+void	cleanup_t(t_shell *shell)
 {
-    char *name;
-    char *val;
-    bool avail;
-    struct s_env *next;
-} t_env;
+	t_token *t;
 
-typedef enum e_r_type { R_IN, R_OUT, R_APPEND, R_HEREDOC } t_r_type;
-
-typedef struct s_redir
-{
-    char *s;
-    t_r_type type;
-    int fd;
-    struct s_redir *next;
-} t_redir;
-
-typedef struct s_cmd
-{
-    char *cmd;
-    char **args;
-    t_redir *rd;
-    struct s_cmd *next;
-} t_cmd;
-
-typedef struct s_shell
-{
-    t_env *env;
-    t_cmd *cmds;
-    char *in;
-} t_shell;
-
-// ----------------- Helper Functions -----------------
-char *ft_strdup(const char *s)
-{
-    if (!s) return NULL;
-    size_t len = strlen(s);
-    char *dup = malloc(len + 1);
-    if (dup) strcpy(dup, s);
-    return dup;
+	while (shell->tkns)
+	{
+		if (shell->tkns->s)
+			free(shell->tkns->s);
+		t = shell->tkns;
+		shell->tkns = shell->tkns->next;
+		free(t);
+	}
+	shell->tkns = NULL;
 }
 
-char *ft_strndup(const char *s, size_t n)
-{
-    char *dup = malloc(n + 1);
-    if (!dup) return NULL;
-    strncpy(dup, s, n);
-    dup[n] = '\0';
-    return dup;
-}
+// void	cleanup_p(t_shell *shell)
+// {
+// 	t_cmd *c;
+// 	int		i;
 
-// ----------------- ENV Functions -----------------
-t_env *create_env_node_from_str(char *str)
-{
-    t_env *node = malloc(sizeof(t_env));
-    if (!node) return NULL;
+// 	i = 0;
+// 	while (shell->cmds)
+// 	{
+// 		if (shell->cmds->args)
+// 		{
+// 			while (shell->cmds->args[i])
+// 			{
+// 				free(shell->cmds->args[i]);
+// 				i++;
+// 			}
+// 			free(shell->cmds->args);
+// 		}
+// 		c = shell->cmds;
+// 		shell->cmds = shell->cmds->next;
+// 		free(c);
+// 	}
+// }
+// void cleanup_p(t_shell *shell)
+// {
+//     t_cmd   *current;
+//     t_cmd   *next;
+//     t_redir *redir;
+//     t_redir *next_redir;
+//     int     i;
 
-    char *equal = strchr(str, '=');
-    if (equal)
+//     if (!shell || !shell->cmds)
+//         return;
+
+//     current = shell->cmds;
+//     while (current)
+//     {
+//         next = current->next;
+        
+//         // Free command name
+//         if (current->cmd)
+//             free(current->cmd);
+        
+//         // Free command path
+//         if (current->path)
+//             free(current->path);
+        
+//         // Free arguments array
+//         if (current->args)
+//         {
+//             i = 0;
+//             while (current->args[i])
+//             {
+//                 free(current->args[i]);
+//                 i++;
+//             }
+//             free(current->args);
+//         }
+        
+//         // Free redirections
+//         redir = current->rd;
+//         while (redir)
+//         {
+//             next_redir = redir->next;
+//             if (redir->s)
+//                 free(redir->s);
+//             free(redir);
+//             redir = next_redir;
+//         }
+        
+//         // Free the command structure itself
+//         free(current);
+//         current = next;
+//     }
+//     shell->cmds = NULL;  // Important: set to NULL after cleanup
+// }
+void cleanup_p(t_shell *shell)
+{
+    t_cmd   *current;
+	t_cmd *c;
+    t_cmd   *next;
+    int     i;
+
+    if (!shell)
+        return;
+   current = shell->cmds;
+    while (current)
     {
-        node->name = ft_strndup(str, equal - str);
-        node->val = ft_strdup(equal + 1);
-    }
-    else
-    {
-        node->name = ft_strdup(str);
-        node->val = ft_strdup("");
-    }
-    node->avail = true;
-    node->next = NULL;
-    return node;
-}
-
-t_env *init_env_from_envp(char **envp)
-{
-    t_env *head = NULL, *curr = NULL;
-    for (int i = 0; envp[i]; i++)
-    {
-        t_env *node = create_env_node_from_str(envp[i]);
-        if (!head) head = node;
-        else curr->next = node;
-        curr = node;
-    }
-    return head;
-}
-
-void free_env_list(t_env *env)
-{
-    while (env)
-    {
-        t_env *tmp = env->next;
-        free(env->name);
-        free(env->val);
-        free(env);
-        env = tmp;
-    }
-}
-
-// ----------------- REDIR & CMD Functions -----------------
-t_redir *create_redir(t_r_type type, char *file)
-{
-    t_redir *r = malloc(sizeof(t_redir));
-    r->type = type;
-    r->s = ft_strdup(file);
-    r->fd = -1;
-    r->next = NULL;
-    return r;
-}
-
-t_cmd *create_cmd_safe(char **args, t_redir *rd)
-{
-    t_cmd *cmd = malloc(sizeof(t_cmd));
-    cmd->cmd = ft_strdup(args[0]);
-    cmd->args = args;
-    cmd->rd = rd;
-    cmd->next = NULL;
-    return cmd;
-}
-
-void free_redir_list(t_redir *r)
-{
-    while (r)
-    {
-        t_redir *tmp = r->next;
-        free(r->s);
-        free(r);
-        r = tmp;
-    }
-}
-
-void free_cmd_chain_complete(t_cmd *cmd)
-{
-    while (cmd)
-    {
-        t_cmd *tmp = cmd->next;
-        free(cmd->cmd);
-        if (cmd->args)
+        if (current->cmd)
+            free(current->cmd);
+        if (current->path)
+            free(current->path);
+        if (current->args)
         {
-            for (int i = 0; cmd->args[i]; i++)
-                free(cmd->args[i]);
-            free(cmd->args);
+            i = 0;
+            while (current->args[i])
+            {
+                free(current->args[i]);
+                i++;
+            }
+            free(current->args);
         }
-        free_redir_list(cmd->rd);
-        free(cmd);
-        cmd = tmp;
+        t_redir *redir = current->rd;
+        while (redir)
+        {
+            t_redir *next_redir = redir->next;
+            if (redir->s)
+                free(redir->s);
+            free(redir);
+            redir = next_redir;
+        }
+        c = current;
+		current = current->next;
+        free(c);
+    }
+    shell->cmds = NULL;
+}
+void print_token_type(t_token_type type)
+{
+    switch(type) {
+        case WORD: printf("WORD"); break;
+        case PIPE: printf("PIPE"); break;
+        case IN: printf("IN"); break;
+        case OUT: printf("OUT"); break;
+        case APPEND: printf("APPEND"); break;
+        case HEREDOC: printf("HEREDOC"); break;
+        case T_EOF: printf("T_EOF"); break;
+        default: printf("UNKNOWN"); break;
     }
 }
 
-// ----------------- PARSE & EXECUTE SAFE -----------------
-char **ft_split(const char *str, char delim)
+void print_redir_type(t_r_type type)
 {
-    // Minimal split for testing: split by single space
-    int count = 0;
-    for (const char *s = str; *s; s++)
-        if (*s == delim) count++;
-    char **res = malloc(sizeof(char *) * (count + 2));
+    switch(type) {
+        case R_IN: printf("R_IN"); break;
+        case R_OUT: printf("R_OUT"); break;
+        case R_APPEND: printf("R_APPEND"); break;
+        case R_HEREDOC: printf("R_HEREDOC"); break;
+        default: printf("UNKNOWN_REDIR"); break;
+    }
+}
+
+void print_tokens(t_shell *shell)
+{
+    t_token *current = shell->tkns;
     int i = 0;
-    const char *start = str;
-    for (const char *s = str; ; s++)
+    
+    printf("\n--- TOKENS ---\n");
+    while (current)
     {
-        if (*s == delim || *s == '\0')
-        {
-            size_t len = s - start;
-            char *tok = malloc(len + 1);
-            strncpy(tok, start, len);
-            tok[len] = '\0';
-            res[i++] = tok;
-            start = s + 1;
-        }
-        if (*s == '\0') break;
+        printf("Token %d: ", i++);
+        print_token_type(current->type);
+        printf(" | Content: '%s' | Quotes: %d\n", 
+               current->s ? current->s : "(null)", 
+               current->quotes);
+        if (current->type == T_EOF)
+            break;
+        current = current->next;
     }
-    res[i] = NULL;
-    return res;
+    printf("--- END TOKENS ---\n\n");
 }
 
-void free_split_safe(char **split)
+void print_redirections(t_shell *shell)
 {
-    if (!split) return;
-    for (int i = 0; split[i]; i++) free(split[i]);
-    free(split);
+    t_redir *current;
+    int i = 0;
+    
+    if (!shell->cmds || !shell->cmds->rd)
+    {
+        printf("--- NO REDIRECTIONS ---\n\n");
+        return;
+    }
+    
+    current = shell->cmds->rd;
+    printf("--- REDIRECTIONS ---\n");
+    while (current)
+    {
+        printf("Redir %d: ", i++);
+        print_redir_type(current->type);
+        printf(" | File: '%s' | FD: %d\n", 
+               current->s ? current->s : "(null)", 
+               current->fd);
+        current = current->next;
+    }
+    printf("--- END REDIRECTIONS ---\n\n");
 }
 
-// Minimal parse function
-void parse_and_execute_safe(t_shell *shell, char *input)
-{
-    char **tokens = ft_split(input, ' ');
-
-    int argc = 0;
-    while (tokens[argc]) argc++;
-
-    char **args = malloc(sizeof(char *) * (argc + 1));
-    for (int i = 0; i < argc; i++)
-        args[i] = ft_strdup(tokens[i]);
-    args[argc] = NULL;
-
-    t_redir *r = NULL; // no redirs in this test
-    t_cmd *cmd = create_cmd_safe(args, r);
-    shell->cmds = cmd;
-
-    // Normally execute here, but we skip execution
-
-    // Free memory
-    free_cmd_chain_complete(cmd);
-    shell->cmds = NULL;
-    free_split_safe(tokens);
-}
-
-// ----------------- INIT & CLEANUP -----------------
-void init_shell(t_shell *shell, char **envp)
-{
-    shell->env = init_env_from_envp(envp);
-    shell->cmds = NULL;
-    shell->in = NULL;
-}
-
-void cleanup_shell(t_shell *shell)
-{
-    if (shell->env) free_env_list(shell->env);
-}
-
-// ----------------- MAIN -----------------
-int main(void)
+void test_string(char *input)
 {
     t_shell shell;
-    char *envp[] = {"PATH=/usr/bin", "HOME=/home/user", "USER=guest", NULL};
-    init_shell(&shell, envp);
-
-    parse_and_execute_safe(&shell, "echo hello world");
-    parse_and_execute_safe(&shell, "ls -l /tmp");
-
-    cleanup_shell(&shell);
-    return 0;
+    t_cmd   *c;
+	memset(&shell, 0, sizeof(t_shell)); 
+    
+    printf("Testing: \"%s\"\n", input);
+    printf("=====================================\n");
+    
+    shell.in = input;
+    
+    int result = tokenize_line(&shell);
+    if (result == -1)
+    {
+        printf("ERROR: Tokenization failed!\n\n");
+        return;
+    }
+    
+    print_tokens(&shell);
+    
+    // Parse ONCE - this should handle redirections internally
+    printf("--- PARSING ---\n");
+    parse(&shell, shell.tkns);
+    
+    c = shell.cmds;
+    while (c)
+    {
+        printf("Command: %s\n", c->cmd ? c->cmd : "(null)");
+        printf("Args:\n");
+        if (c->args)
+        {
+            for (int i = 0; c->args[i]; i++)
+                printf("  [%d]: '%s'\n", i, c->args[i]);
+        }
+        print_redirections(&shell);
+        c = c->next;
+    }
+    printf("--- END PARSING ---\n\n");
+	cleanup_t(&shell);
+	cleanup_p(&shell);
 }
 
+int main(void)
+ {
+//     printf("TOKENIZATION & REDIRECTION TEST\n");
+//     printf("===============================\n\n");
+    
+//     // Basic command tests
+//     printf("=== BASIC COMMANDS ===\n");
+//     test_string("echo hehhi");
+//     test_string("ls -l");
+//     test_string("pwd");
+    
+//  // Quote tests
+//     printf("=== QUOTE TESTS ===\n");
+//     test_string("echo 'hello world'");
+//     test_string("echo \"hello world\"");
+//     test_string("echo 'single' \"double\"");
+    
+//     // Basic redirection tests
+//     printf("=== BASIC REDIRECTION TESTS ===\n");
+//     test_string("cat < file.txt");
+//     test_string("ls > output.txt");
+//     test_string("echo hello >> log.txt");
+//     test_string("cat << EOF");
+    
+//     // // Command with arguments and redirections
+//     printf("=== COMPLEX REDIRECTION TESTS ===\n");
+//     test_string("ls -l > output.txt");
+//     test_string("cat file.txt > output.txt");
+//     test_string("echo hello world >> log.txt");
+//     test_string("grep pattern < input.txt > output.txt");
+    
+//     // Multiple redirections
+//     printf("=== MULTIPLE REDIRECTION TESTS ===\n");
+//     test_string("cat < input.txt > output.txt");
+//     test_string("sort < data.txt >> sorted.txt");
+    
+    // // Pipe tests (if you want to test those too)
+    // printf("=== PIPE TESTS ===\n");
+  //  test_string("ls | grep .c");
+    // test_string("cat file.txt | grep hello");
+    // test_string("ls -l | wc -l");
+    
+    // // Pipe with redirection
+    // printf("=== PIPE + REDIRECTION TESTS ===\n");
+    // test_string("ls | grep .c > result.txt");
+     test_string("cat < input.txt | sort > output.txt");
+    
+    // // Edge cases
+    // printf("=== EDGE CASE TESTS ===\n");
+    // test_string("echo > ");          // Missing filename
+    // test_string("< file.txt");       // No command
+    // test_string("echo < > file.txt"); // Invalid syntax
+    // test_string("   echo   hello   > output.txt   "); // Extra spaces
+    // test_string("");                 // Empty input
+    
+    // // Error cases for redirection
+    // printf("=== ERROR CASE TESTS ===\n");
+    // test_string(">");               // Just redirection operator
+    // test_string("< >");             // Two operators
+    // test_string("echo >");          // Missing filename
+    // test_string(">> file.txt");     // No command before append
+    
+    // printf("All tests completed!\n");
+    return 0;
+}

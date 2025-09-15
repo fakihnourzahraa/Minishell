@@ -6,7 +6,7 @@
 /*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/10 11:10:26 by nour              #+#    #+#             */
-/*   Updated: 2025/09/15 19:51:38 by nour             ###   ########.fr       */
+/*   Updated: 2025/09/16 00:06:20 by nour             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ void	add_redir(t_cmd *cmds, t_redir *c)
 {
 	t_redir	*r;
 
+	printf("adding redirection...");
 	if (!cmds)
 		return ;
 	if (!cmds->rd)
@@ -42,7 +43,9 @@ void	add_redir(t_cmd *cmds, t_redir *c)
 			r = r->next;
 		r->next = c;
 	}
+	printf("redirection added: %s\n", c->s);
 }
+
 t_redir	*init_redir(void)
 {
 	t_redir	*r;
@@ -55,12 +58,10 @@ t_redir	*init_redir(void)
 	return (r);
 }
 
-void	fill_r(t_token *t, t_cmd *cmd)
+void	fill_r(t_token *t, t_shell *shell)
 {
 	t_redir *r;
 
-	if (t->type == T_EOF)
-		return ;
 	r = init_redir();
 	if (t->type == IN)
 		r->type = R_IN;
@@ -70,11 +71,9 @@ void	fill_r(t_token *t, t_cmd *cmd)
 		r->type = R_APPEND;
 	else if (t->type == HEREDOC)
 		r->type = R_HEREDOC;
-	else
-		return ;
 	if (t->next && t->next->s)
 		r->s = ft_strdup(t->next->s);
 	else
 		r->s = NULL;
-	add_redir(cmd, r);
+	add_r(shell, r);
 }
