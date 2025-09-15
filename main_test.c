@@ -217,6 +217,7 @@ void print_redirections(t_shell *shell)
 void test_string(char *input)
 {
     t_shell shell;
+    t_cmd   *c;
 	memset(&shell, 0, sizeof(t_shell)); 
     
     printf("Testing: \"%s\"\n", input);
@@ -237,20 +238,18 @@ void test_string(char *input)
     printf("--- PARSING ---\n");
     parse(&shell, shell.tkns);
     
-    if (shell.cmds)
+    c = shell.cmds;
+    while (c)
     {
-        printf("Command: %s\n", shell.cmds->cmd ? shell.cmds->cmd : "(null)");
+        printf("Command: %s\n", c->cmd ? c->cmd : "(null)");
         printf("Args:\n");
-        if (shell.cmds->args)
+        if (c->args)
         {
-            for (int i = 0; shell.cmds->args[i]; i++)
-                printf("  [%d]: '%s'\n", i, shell.cmds->args[i]);
+            for (int i = 0; c->args[i]; i++)
+                printf("  [%d]: '%s'\n", i, c->args[i]);
         }
         print_redirections(&shell);
-    }
-    else
-    {
-        printf("No command parsed\n");
+        c = c->next;
     }
     printf("--- END PARSING ---\n\n");
 	cleanup_t(&shell);
