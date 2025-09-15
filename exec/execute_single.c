@@ -26,6 +26,9 @@ static void exec_external_child(t_shell *shell, t_cmd *cmd, char *path)
 {
     char **envp_array;
 
+    signal(SIGINT, SIG_DFL);
+    signal(SIGQUIT, SIG_DFL);
+    
     if (apply_redirections(cmd, shell) == -1)
     {
         free(path);
@@ -84,6 +87,8 @@ static int execute_builtin_with_redirect(t_shell *shell, t_cmd *cmd)
     }
     if (pid == 0)
     {
+        signal(SIGINT, SIG_DFL);
+        signal(SIGQUIT, SIG_DFL);
         if (apply_redirections(cmd, shell) == -1)
             exit(1);
         execute_builtin(cmd, shell);
