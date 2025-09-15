@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redir.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/10 11:10:26 by nour              #+#    #+#             */
-/*   Updated: 2025/09/13 14:16:36 by nfakih           ###   ########.fr       */
+/*   Updated: 2025/09/15 19:07:45 by nour             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,8 @@ void	add_redir(t_shell *shell, t_redir *c)
 {
 	t_redir	*r;
 
+	if (!shell->cmds)
+		return ;
 	if (!shell->cmds->rd)
 		shell->cmds->rd = c;
 	else

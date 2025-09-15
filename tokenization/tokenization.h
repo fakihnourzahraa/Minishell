@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokenization.h                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/28 16:10:17 by nour              #+#    #+#             */
-/*   Updated: 2025/09/13 14:33:18 by nfakih           ###   ########.fr       */
+/*   Updated: 2025/09/15 19:12:39 by nour             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,5 +62,7 @@ void	add_redir(t_shell *shell, t_redir *c);
 int		set_single(int n, int i, char a, t_token *t);
 int		set_double(int n, char a, t_token *t, int i);
 int		split_q(char *a, t_shell *shell, int i);
+void    TT(t_token_type type);
+void    print_toke(t_token *token);
 
 #endif
