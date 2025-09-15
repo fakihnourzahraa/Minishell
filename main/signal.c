@@ -35,15 +35,25 @@ int g_signal = 0;
 }*/
 
 
-void sigint_handler(int signum)
+/*void sigint_handler(int signum)
 {
     (void)signum;
     g_signal = SIGINT;
     rl_replace_line("", 0);
     rl_on_new_line();
     rl_redisplay();
+}*/
+void sigint_handler(int signum)
+{
+    (void)signum;
+    
+    g_signal = SIGINT;
+    
+    printf("\n");
+    rl_on_new_line();
+    rl_replace_line("", 0);
+    //rl_redisplay();
 }
-
 void signals_prompt(void)
 {
     signal(SIGINT, sigint_handler);

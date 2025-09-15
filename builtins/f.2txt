@@ -1,90 +1,46 @@
-***cd :
-we do first fct get target dir :this fct is responsible to determine which directory should cd work on it ,no arg or ~ go to home,- go to old pwd 
-we do cd_handle_error : to check if home or oldpwd exit
-we do update_pwd : getcwd (null,0) its allocate a string contain the absolue path of curr dir 0 mesn allocate as much space u need ,null mean we dont have a buffer
+some explination:
 
-get_target_dir:
-Purpose: decide which directory cd should go to.
-If no argument or ~ → use $HOME.
-If - → use $OLDPWD and print it.
-Otherwise → use the argument directly.
-If $HOME or $OLDPWD are missing → print error and set exit_status = 1
-
-. handle_cd_error (helper):
-Purpose: avoid repeating the same error printing code.
-Takes a candidate directory, an error message, and the shell.
-If the directory is NULL → prints the error, sets exit_status, returns NULL.
-Otherwise → just returns the directory.
-
-update_pwd:
-Purpose: after a successful chdir(), update shell environment variables.
-Calls getcwd(NULL, 0) to get the new absolute path.
-Updates OLDPWD with the previous working directory.
-Updates PWD with the new working directory.
-Handles getcwd failure with perror.
-Frees the allocated new_pwd.
-
-change_directory:
-Calls the system function chdir(target) to actually change the process’s working directory.
-If chdir fails (e.g., directory doesn’t exist, permission denied), it:
-Prints the error using perror.
-Sets exit_status = 1.
-If it succeeds:
-Calls update_pwd to refresh $PWD and $OLDPWD.
-Sets exit_status = 0.
-
-void     builtin_c:
-This is the main entry for the cd command.
-It first saves the current working directory (PWD) in old_pwd.
-Then it decides what the target directory should be (using get_target_dir).
-If the target cannot be determined (e.g., $HOME or $OLDPWD not set), it returns early.
-Otherwise, it calls change_directory to perform the actual directory change and update environment variables.
+***cd 
+:ok cd yane change directory bt8yre ana wen haliyan ,
+cd :yane ruh al home ../cd ~ :mtl cd la wahde ../ cd - : ruh ala ldrc l adim../cd path : ruh ala hayde l path specificaly
+.get_target_dir: handle specific case :yane mtl ~ (ruh al home) ,-(ruh al opld dir)
+.change_directory : bt3yt lal system call chdir(),ize work bt3yt la update pwd ,ize la bas print error
+.update_pwd:bt3ml update lal env (ya old pwd ,ya new dir)
+.handle_cd_error: btshuf ize l home wl old pwd exit abl ma est3mlun
+.builtin_cd:mqin fct ,btkhud old pwd,figure out wen bnde nruh,tris chdir.
+!chdir : change the current working directory to the directory given as path (0 suces,-1 fail)
+!getcwd : return the absolute path of current dirct(ia333ze 3tete buff bt3bi bl path ,ize null bt3mll malloc la string big enough to hold path)
 
 
-****env:
-we do a helper fct named print_env_list ,calls the helper function to print all exported env variables.
-note:
-.ft_putstr_fd(str, fd)
-Purpose: Prints a string str to the given file descriptor fd.
-Usage in builtin_env:
-Print error messages to stderr → fd = 2.
-Print variable names and values to stdout → fd = 1
 
-.ft_putchar_fd(c, fd)
-Purpose: Prints a single character c to the given file descriptor fd.
-Usage in builtin_env:
-Print the = between NAME and VALUE.
-Print the newline \n after each variable.
+***echo
+:ok btkb l argument ku ende a standard output ,wby default eend with newline./3ne case echo -n(or -nnnnnn)ma btrj3 al sateer
+.is_n_flag:bt3ml check ize fi -n (fa arg lezm yblsh b - b3d - lezm ykun kl char huwe n)
+.print_echo: bttb3 kl l argument mn specific start wize fi space bthtu
+.builtin_echo:hye main fct hon by default newline = true,wblsh mn arg 1 b3ml skip la echo bshuf ize -n aw la(ize fi newline = false)
 
-builtin_env:Check for invalid arguments → print error if any, exit_status = 1.
-If valid, call helper to print all exported variables.
-Set exit_status = 0 → successful execution.
-Uses libft printing functions for all output (ft_putstr_fd, ft_putchar_fd).
+***env
+:env ize ma mae arg bttb3 kl env li mwjud bl shell,ize fi arg bt3ml run la given arg with the cure env var
+.print_env_list:bt3ml print la kl envr li mwjude bl t_env ,bt3ml loop al linked list wprint name -= value
+.execute_env_command:executes a command with the current environment mn3ml fork wmn3ml ltest bl child
+.builtin_env:main fct,ize no arg:print env avail, ize fi arg: call execute_env_command with them.
 
+***export
+:mnst3mle ta nht env variable aw mark them as exported(list of exported variable)
+.print_exported_vars:Handles export with no args → prints all exported variables(bt3ml collect la kl vars bi array ,sort them,print them in form declare -x..)
+.handle_export_with_value: Handles arguments like VAR=value,bt3ml split la name(abl =)wl value(baad =),bt3ml check lal name ize valid(start with letter or _ ,contain only lett,dig,_)
+.set_env_var : create/update the variable in your environment.
+.handle_export_without_value:Handles arguments like VAR (without value),Check identifier validity,If variable already exists → mark it as exported,if it doesn’t exist → create it with empty string as value
+.builtin_export:main fct ,if no arg:print expor,otherwise loop through each arg if there is = or not
 
-****export :
-.print_exported_vars:Prints all exported variables in sorted alphabetical order,it is neededd bcz export with no arguments should list all exported variables in bash-compatible format,export with no args
-.is_valid_identifier:Checks if a variable name is valid. Bash rules:Must start with a letter or,Can contain letters, digits, _.Prevent invalid env vars
-.handle_export_with_value:Handles arguments in the form NAME=value,its needed for Properly sets environment variables and marks them as exported Set value + export
-.handle_export_without_value:Handles arguments in the form NAME (no =),Mark existing or create empty var
-.collect_exported_vars:Collects all exported variables into a temporary array.Needed for sorting/printing
+!!!!!
+..export can show variables with no value.
+..env only shows variables with a value that will be passed to child processes.
 
-
-**unset:
-
-handle_unset_arg(t_shell *shell, char *arg):
-Step 1: Checks if the argument is a valid environment variable name using is_valid_identifier.
-Valid names: start with a letter or underscore, followed by letters, numbers, or underscores.
-Example of invalid: 123VAR, MY-VAR.
-Step 2: If invalid:
-Print an error message to stderr (fd 2), in Bash style.
-Set the shell’s exit status to 1 to signal an error.
-Return early → do not try to remove it.
-Step 3: If valid:
-Call unset_env_var(&shell->env, arg) to remove the variable from the linked list.
-
-builtin_unset(t_cmd *cmd, t_shell *shell):
-Purpose: Main function called for the unset builtin.
-Step 1: Checks if any arguments are given (cmd->args[1] is first user argument).
-No args → do nothing, exit status = 0.
-Matches Bash behavior: unset without arguments is valid and does nothing.
+***unset
+:unset removes variables from the shell,If a variable is exported, it’s also removed from the environment,Only removes valid identifiers.
+.builtin_unset → loops args → calls handle_unset_arg(If no arguments → nothing to do, exit status = 0.Loop through all arguments → call handle_unset_arg on each
+If no errors occurred → set exit status = 0.)
+.handle_unset_arg → checks validity → removes variable from t_env
+(Check if arg is a valid variable name.If not → print error and set exit status = 1.
+If valid → call unset_env_var to remove it from your t_env linked list.)

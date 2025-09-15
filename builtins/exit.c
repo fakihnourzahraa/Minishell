@@ -129,7 +129,7 @@ static void	process_exit_argument(t_cmd *cmd, t_shell *shell, int arg_count)
 	{
 		ft_putendl_fd("minishell: exit: numeric argument required", 2);
 		shell->exit_status = 255;
-		shell->exit = true;
+		//shell->exit = true;
 		return;
 	}
 	if (arg_count > 2)
@@ -140,7 +140,7 @@ static void	process_exit_argument(t_cmd *cmd, t_shell *shell, int arg_count)
 	}
 	exit_code = ft_atoll(cmd->args[1]);
 	shell->exit_status = (unsigned char)exit_code;
-	shell->exit = true;  // Set flag instead of exit()
+	shell->exit = true; 
 }
 
 void	builtin_exit(t_cmd *cmd, t_shell *shell)
@@ -152,8 +152,8 @@ void	builtin_exit(t_cmd *cmd, t_shell *shell)
 	if (arg_count >= 2)
 	{
 		process_exit_argument(cmd, shell, arg_count);
-		if (shell->exit_status == 1)
-			return ;
+		/*if (shell->exit_status == 1)
+			return ;*/
 	}
 	else
 	{

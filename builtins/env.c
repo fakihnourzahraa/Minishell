@@ -87,17 +87,13 @@ static void execute_env_command(t_shell *shell, char **cmd_args)
     free(path);
 }
 
-// Main builtin_env function
 void builtin_env(t_cmd *cmd, t_shell *shell)
 {
-    // If no arguments, just print environment variables
     if (cmd->args[1] == NULL)
     {
         print_env_list(shell->env);
         shell->exit_status = 0;
         return;
     }
-    
-    // If there are arguments, execute the command with current environment
     execute_env_command(shell, &cmd->args[1]);
 }
