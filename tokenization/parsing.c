@@ -6,7 +6,7 @@
 /*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/04 22:53:52 by nour              #+#    #+#             */
-/*   Updated: 2025/09/15 19:41:16 by nour             ###   ########.fr       */
+/*   Updated: 2025/09/15 23:49:58 by nour             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,12 +82,16 @@ void	parse(t_shell *shell, t_token *token)
 			i++;
 			token = token->next;
 		}
-		else
+		else if (token->type != PIPE)
 		{
-			fill_r(token, token->next);
+			fill_r(token, cmd);
 			token = token->next;
 			if (token && token->type == WORD)
 				token = token->next;
+		}
+		else
+		{
+			
 		}
 	}
 	cmd->args[i] = NULL;

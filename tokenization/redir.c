@@ -6,7 +6,7 @@
 /*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/10 11:10:26 by nour              #+#    #+#             */
-/*   Updated: 2025/09/15 19:40:12 by nour             ###   ########.fr       */
+/*   Updated: 2025/09/15 19:51:38 by nour             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,17 +27,17 @@
 // 	t_redir		*next;
 // }				t_redir;
 
-void	add_redir(t_shell *shell, t_redir *c)
+void	add_redir(t_cmd *cmds, t_redir *c)
 {
 	t_redir	*r;
 
-	if (!shell->cmds)
+	if (!cmds)
 		return ;
-	if (!shell->cmds->rd)
-		shell->cmds->rd = c;
+	if (!cmds->rd)
+		cmds->rd = c;
 	else
 	{
-		r = shell->cmds->rd;
+		r = cmds->rd;
 		while (r->next)
 			r = r->next;
 		r->next = c;
@@ -52,9 +52,10 @@ t_redir	*init_redir(void)
 	r->s = NULL;
 	r->type = R_EMPTY;
 	r->next = NULL;
+	return (r);
 }
 
-void	fill_r(t_token *t, t_shell *shell)
+void	fill_r(t_token *t, t_cmd *cmd)
 {
 	t_redir *r;
 
@@ -75,5 +76,5 @@ void	fill_r(t_token *t, t_shell *shell)
 		r->s = ft_strdup(t->next->s);
 	else
 		r->s = NULL;
-	add_redir(shell, r);
+	add_redir(cmd, r);
 }
