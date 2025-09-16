@@ -6,7 +6,7 @@
 /*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/04 22:53:52 by nour              #+#    #+#             */
-/*   Updated: 2025/09/16 13:04:39 by nfakih           ###   ########.fr       */
+/*   Updated: 2025/09/16 15:12:08 by nfakih           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,6 @@ void	parse(t_shell *shell, t_token *token)
 			i = parse_word(token, cmd, i);
 		else if (token->type != PIPE)
 		{
-			printf("redir entered");
 			fill_r(token, cmd);
 			if (token->next && token->next->type == WORD)
 				token = token->next;
