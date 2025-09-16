@@ -6,7 +6,7 @@
 /*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/16 16:30:14 by nfakih            #+#    #+#             */
-/*   Updated: 2025/09/16 16:54:35 by nfakih           ###   ########.fr       */
+/*   Updated: 2025/09/16 17:51:01 by nfakih           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,25 +43,13 @@ void init_exec_shell(t_shell *shell, char **envp)
     shell->sti = NULL;
     shell->sto = NULL;
 }
-int main(int argc, char **argv, char **envp)
+int	while_l(t_shell *shell, char *input)
 {
-    t_shell *shell;
-    char *input;
-    char **tokens;
-    (void)argc;
-    (void)argv;
-
-    init_exec_shell(&shell, envp);
-    signals_prompt();
-    while (!shell->exit)
+	while (!shell->exit)
     {
         input = readline("minishell$ ");
         if (!input)
-        {
-			free_env(shell);
-            printf("exit\n");
-            break;
-        }
+			return (0);//	return free_env(shell); which inclues printf exit;
         if (g_signal == SIGINT)
         {
             g_signal = 0;
@@ -77,9 +65,10 @@ int main(int argc, char **argv, char **envp)
         }
         add_history(input);
         g_signal = 0;
-		if (!nour(shell))
-			exit (127);
-        execute_commands(&shell);
+		// if (!nour(shell))
+		// 	exit (127);
+		//add execute commands to nour
+        execute_commands(shell);
         if (g_signal == SIGINT)
         {
             g_signal = 0;
@@ -87,13 +76,24 @@ int main(int argc, char **argv, char **envp)
         }
         if (shell->exit)
         {
-            free_cmd_chain(shell->cmds);
-            free_split(tokens);
-            free(input);
+            cleanup_p(shell);
+            cleanup_t(shell);
+           // free(input);
             break;
         }
-        cleanup_p(tokens);
-        free(input);
+        cleanup_p(shell);
+       // free(input);
     }
-    return shell->exit_status;
+}
+int main(int argc, char **argv, char **envp)
+{
+    t_shell *shell;
+	char	*input;
+    (void)argc;
+    (void)argv;
+
+    init_exec_shell(shell, envp);
+    signals_prompt();
+	while_l(shell, input);
+    return (shell->exit_status);
 }
