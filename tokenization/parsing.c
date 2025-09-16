@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/04 22:53:52 by nour              #+#    #+#             */
-/*   Updated: 2025/09/16 11:19:55 by nour             ###   ########.fr       */
+/*   Updated: 2025/09/16 13:04:39 by nfakih           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,36 +25,15 @@ int	word_count(t_token *token)
 	}
 	return (i);
 }
-void	add_cmd(t_shell *shell, t_cmd *cmd)
+int	parse_word(t_token *token, t_cmd *cmd, int i)
 {
-	t_cmd	*cur;
-
-	if (!shell->cmds)
-		shell->cmds = cmd;
+	if (token->quotes == 1)
+		cmd->args[i] = ft_strtrim(token->s, "'");
+	else if (token->quotes == 2)
+		cmd->args[i] = ft_strtrim(token->s, "\"");
 	else
-	{
-		cur = shell->cmds;
-		while (cur->next)
-			cur = cur->next;
-		cur->next = cmd;
-	}
-}
-t_cmd	*init_cmd(t_shell *shell, t_token *t)
-{
-	int	wc;
-	t_cmd	*cmd;
-	
-	wc = word_count(t);
-	cmd = malloc(sizeof(t_cmd));
-	cmd->args = malloc(sizeof(char *) * (wc + 1));
-	cmd->path =	NULL;
-	cmd->rd = NULL;
-	cmd->i_fd =	-1;
-	cmd->o_fd = -1;
-	cmd->pid = -1;
-	cmd->builtin = (t_builtin)NULL;
-	cmd->next = NULL;
-	return (cmd);
+		cmd->args[i] = ft_strdup(token->s);
+	return (i + 1);
 }
 
 void	parse(t_shell *shell, t_token *token)
@@ -65,28 +44,17 @@ void	parse(t_shell *shell, t_token *token)
 	if (!token || token->type != WORD)
 		return ;
 	cmd = init_cmd(shell, token);
-	cmd->cmd = ft_strdup(token->s);
-	cmd->args[0] = ft_strdup(token->s);
 	i = 1;
 	token = token->next;
 	while (token && token->type != T_EOF)
 	{
 		if(token->type == WORD)
-		{
-			if (token->quotes == 1)
-				cmd->args[i] = ft_strtrim(token->s, "'");
-			else if (token->quotes == 2)
-				cmd->args[i] = ft_strtrim(token->s, "\"");
-			else
-				cmd->args[i] = ft_strdup(token->s);
-			i++;
-			token = token->next;
-		}
+			i = parse_word(token, cmd, i);
 		else if (token->type != PIPE)
 		{
+			printf("redir entered");
 			fill_r(token, cmd);
-			token = token->next;
-			if (token && token->type == WORD)
+			if (token->next && token->next->type == WORD)
 				token = token->next;
 		}
 		else
@@ -96,20 +64,12 @@ void	parse(t_shell *shell, t_token *token)
 			token = token->next;
 			cmd = cmd->next;
 			cmd = init_cmd(shell, token);
-			cmd->cmd = ft_strdup(token->s);
-			cmd->args[0] = ft_strdup(token->s);
 			i = 1;
-			token = token->next;
 		}
+		token = token->next;
 	}
 	cmd->args[i] = NULL;
 	add_cmd(shell, cmd);
-	// if (token && token->type == PIPE)
-	// {
-	// 	token = token->next;
-	// 	parse(shell, token);
-	// }
-	
 }
 
 // FIXED: This function now processes redirections for the CURRENT command only

@@ -34,6 +34,7 @@ int	set_token(t_shell *shell, char *a, int i)
 	else
 		return (split_word(a, i, shell, n));
 	add_token(shell, n);
+	i = skip_spaces(a, i);
 	return (i);
 }
 //in quotations we can have new lines etc
@@ -91,6 +92,7 @@ int	tokenize_line(t_shell *shell)
 		i = set_token(shell, a, i);
 		if (i == -1)
 			return (cleanup_token(shell), -1);
+		i = skip_spaces(a, i);
 		if (a[i] == '\0' || j == i)
 			break ;
 	}

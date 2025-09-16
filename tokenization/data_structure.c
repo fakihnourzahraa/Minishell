@@ -6,7 +6,7 @@
 /*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/13 12:45:13 by nfakih            #+#    #+#             */
-/*   Updated: 2025/09/13 13:51:53 by nfakih           ###   ########.fr       */
+/*   Updated: 2025/09/16 13:01:53 by nfakih           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,3 +53,37 @@ int	split_q(char *a, t_shell *shell, int i)
 //or tokenizes whats between quotes, or -1 on error
 //34 is " 39 is '
 //shell->tkns->quotes = (a[z] % 3) + 1; is its single quote it'll be 0 + 1 else 1 + 1
+
+void	add_cmd(t_shell *shell, t_cmd *cmd)
+{
+	t_cmd	*cur;
+
+	if (!shell->cmds)
+		shell->cmds = cmd;
+	else
+	{
+		cur = shell->cmds;
+		while (cur->next)
+			cur = cur->next;
+		cur->next = cmd;
+	}
+}
+t_cmd	*init_cmd(t_shell *shell, t_token *t)
+{
+	int	wc;
+	t_cmd	*cmd;
+	
+	wc = word_count(t);
+	cmd = malloc(sizeof(t_cmd));
+	cmd->args = malloc(sizeof(char *) * (wc + 1));
+	cmd->path =	NULL;
+	cmd->rd = NULL;
+	cmd->i_fd =	-1;
+	cmd->o_fd = -1;
+	cmd->pid = -1;
+	cmd->builtin = (t_builtin)NULL;
+	cmd->next = NULL;
+	cmd->cmd = ft_strdup(t->s);
+	cmd->args[0] = ft_strdup(t->s);
+	return (cmd);
+}

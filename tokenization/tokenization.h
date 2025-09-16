@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokenization.h                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/28 16:10:17 by nour              #+#    #+#             */
-/*   Updated: 2025/09/16 11:17:35 by nour             ###   ########.fr       */
+/*   Updated: 2025/09/16 12:42:56 by nfakih           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,5 +64,8 @@ int		set_double(int n, char a, t_token *t, int i);
 int		split_q(char *a, t_shell *shell, int i);
 void    TT(t_token_type type);
 void    print_toke(t_token *token);
+void	add_cmd(t_shell *shell, t_cmd *cmd);
+t_cmd	*init_cmd(t_shell *shell, t_token *t);
+int		word_count(t_token *token);
 
 #endif
