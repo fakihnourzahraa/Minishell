@@ -6,7 +6,7 @@
 /*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/28 16:10:17 by nour              #+#    #+#             */
-/*   Updated: 2025/09/13 14:16:12 by nfakih           ###   ########.fr       */
+/*   Updated: 2025/09/16 16:47:19 by nfakih           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,8 @@
 # include <readline/history.h>
 # include <errno.h>
 # include "libft/libft.h"
+# include "tokenization/tokenization.h"
+# include "main/main.h"
 
 typedef struct s_token	t_token;
 typedef struct s_cmd	t_cmd;
@@ -136,6 +138,8 @@ typedef struct s_shell
 //current working directory (for pwd builtin)
 //sti: original std in fd
 //sto: original std out fd
+void	cleanup_t(t_shell *shell);
+void 	cleanup_p(t_shell *shell);
 
 #endif
 

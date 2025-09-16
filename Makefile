@@ -4,7 +4,7 @@ CFLAGS = -Wall -Wextra -Werror
 LIBFT = -L libft -lft
 
 
-SRCS = main/main.c \
+SRCS =	main.c \
        main/signal.c \
        builtins/echo.c \
        builtins/pwd.c \
@@ -29,6 +29,15 @@ SRCS = main/main.c \
        env/envir2.c \
        env/envir3.c \
        env/envir.utils.c \
+	   tokenization/signal.c\
+		tokenization/data_structure.c\
+		tokenization/debug.c\
+		tokenization/edge.c\
+		tokenization/parse.c\
+		tokenization/redir.c\
+		tokenization/token_helpers.c\
+		tokenization/token.c
+
 
 OBJS = $(SRCS:.c=.o)
 

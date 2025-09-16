@@ -23,11 +23,13 @@ extern int g_signal;
 # include "../libft/libft.h"
 #include "../builtins/builtin.h"
 #include "../exec/exec.h"
+#include "env/env.h"
+
 void	sigint_handler(int signum);
 void	signals_prompt(void);
 void	signals_child_heredoc(void);
 void	signals_child(void);
 void	signals_parent(void);
-void cleanup_shell(t_shell *shell);
-void free_cmd_chain_complete(t_cmd *cmd);
+void 	cleanup_shell(t_shell *shell);
+void 	free_cmd_chain_complete(t_cmd *cmd);
 #endif
