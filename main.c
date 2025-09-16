@@ -158,17 +158,6 @@ void print_token_type(t_token_type type)
     }
 }
 
-void print_redir_type(t_r_type type)
-{
-    switch(type) {
-        case R_IN: printf("R_IN"); break;
-        case R_OUT: printf("R_OUT"); break;
-        case R_APPEND: printf("R_APPEND"); break;
-        case R_HEREDOC: printf("R_HEREDOC"); break;
-        default: printf("UNKNOWN_REDIR"); break;
-    }
-}
-
 void print_tokens(t_shell *shell)
 {
     t_token *current = shell->tkns;
@@ -189,19 +178,30 @@ void print_tokens(t_shell *shell)
     printf("--- END TOKENS ---\n\n");
 }
 
-void print_redirections(t_shell *shell)
+void print_redir_type(t_r_type type)
+{
+    switch(type) {
+        case R_IN: printf("R_IN"); break;
+        case R_OUT: printf("R_OUT"); break;
+        case R_APPEND: printf("R_APPEND"); break;
+        case R_HEREDOC: printf("R_HEREDOC"); break;
+        default: printf("UNKNOWN_REDIR"); break;
+    }
+}
+
+// Fixed version - prints redirections for each command
+void print_redirections_for_cmd(t_cmd *cmd, int cmd_num)
 {
     t_redir *current;
     int i = 0;
     
-    if (!shell->cmds || !shell->cmds->rd)
+    if (!cmd || !cmd->rd)
     {
-        printf("--- NO REDIRECTIONS ---\n\n");
-        return;
+          return;
     }
     
-    current = shell->cmds->rd;
-    printf("--- REDIRECTIONS ---\n");
+    current = cmd->rd;
+    printf("--- REDIRECTIONS FOR CMD %d ---\n", cmd_num);
     while (current)
     {
         printf("Redir %d: ", i++);
@@ -211,14 +211,15 @@ void print_redirections(t_shell *shell)
                current->fd);
         current = current->next;
     }
-    printf("--- END REDIRECTIONS ---\n\n");
-}
-
+  }
+// Updated test_string function
 void test_string(char *input)
 {
     t_shell shell;
     t_cmd   *c;
-	memset(&shell, 0, sizeof(t_shell)); 
+    int     cmd_num = 0;
+    
+    memset(&shell, 0, sizeof(t_shell)); 
     
     printf("Testing: \"%s\"\n", input);
     printf("=====================================\n");
@@ -234,26 +235,38 @@ void test_string(char *input)
     
     print_tokens(&shell);
     
-    // Parse ONCE - this should handle redirections internally
+    // // Add token validation check here
+    if (check_tkns(shell.tkns) == -1)
+    {
+        printf("SYNTAX ERROR: Invalid token sequence detected!\n\n");
+        cleanup_t(&shell);
+		cleanup_p(&shell);
+        return;
+    }
+    
     printf("--- PARSING ---\n");
     parse(&shell, shell.tkns);
     
     c = shell.cmds;
     while (c)
     {
-        printf("Command: %s\n", c->cmd ? c->cmd : "(null)");
+        printf("Command %d: %s\n", cmd_num, c->cmd ? c->cmd : "(null)");
         printf("Args:\n");
         if (c->args)
         {
             for (int i = 0; c->args[i]; i++)
                 printf("  [%d]: '%s'\n", i, c->args[i]);
         }
-        print_redirections(&shell);
+        
+        // Print redirections for THIS specific command
+        print_redirections_for_cmd(c, cmd_num);
+        
         c = c->next;
+        cmd_num++;
     }
     printf("--- END PARSING ---\n\n");
-	cleanup_t(&shell);
-	cleanup_p(&shell);
+    cleanup_t(&shell);
+    cleanup_p(&shell);
 }
 
 int main(void)
@@ -301,24 +314,55 @@ int main(void)
     
     // Pipe with redirection
     printf("=== PIPE + REDIRECTION TESTS ===\n");
-    test_string("ls | grep .c > result.txt");
-//     test_string("echo hello | echo bye");
-//     // Edge cases
-//     printf("=== EDGE CASE TESTS ===\n");
-//    test_string("cat file.txt | grep error");
-//    test_string("echo > ");          // Missing filename
-//    test_string("< file.txt");       // No command
-//      test_string("echo < > file.txt"); // Invalid syntax
-//      test_string("   echo   hello   > output.txt   "); // Extra spaces
-//      test_string("");                 // Empty input
+test_string("ls | grep .c | wc -l");
+   test_string("ls | grep .c > result.txt | grep .y > a.txt");
+    test_string("echo hello | echo bye");
+    // Edge cases
+    printf("=== EDGE CASE TESTS ===\n");
+   test_string("cat file.txt | grep error");
+   test_string("echo > ");          // Missing filename
+   test_string("< file.txt");       // No command
+     test_string("echo < > file.txt"); // Invalid syntax
+     test_string("   echo   hello   > output.txt   "); // Extra spaces
+     test_string("");                 // Empty input
     
-//     // Error cases for redirection
-//     printf("=== ERROR CASE TESTS ===\n");
-//     test_string(">");               // Just redirection operator
-//     test_string("< >");             // Two operators
-//     test_string("echo >");          // Missing filename
-//     test_string(">> file.txt");     // No command before append
+    // Error cases for redirection
+    printf("=== ERROR CASE TESTS ===\n");
+    test_string(">");               // Just redirection operator
+    test_string("< >");             // Two operators
+    test_string("echo >");          // Missing filename
+    test_string(">> file.txt");     // No command before append
     
-    // printf("All tests completed!\n");
-    return 0;
+	 test_string("|");                    // Just pipe
+    test_string("| grep hello");         // Starts with pipe
+    test_string(">");                    // Just redirection
+    test_string("> file.txt");          // Starts with redirection
+    test_string("<");                    // Just input redirection
+    test_string("< file.txt");          // Starts with input redirection
+    test_string(">>");                   // Just append
+    test_string(">> file.txt");         // Starts with append
+    test_string("<<");                   // Just heredoc
+    test_string("<< EOF");   
+
+	 test_string("echo hello |");         // Ends with pipe
+    test_string("cat file.txt >");       // Ends with output redirection
+    test_string("ls -l <");              // Ends with input redirection
+    test_string("echo hello >>");        // Ends with append
+    test_string("cat <<");               // Ends with heredoc
+    test_string("echo | ls |"); 
+
+	    test_string("cat > > file.txt");     // Double output redirection
+    test_string("cat < < file.txt");     // Double input redirection
+     test_string("cat >> >> file.txt");   // Double append
+     test_string("cat << << EOF");        // Double heredoc
+test_string("echo > | grep");        // Double pipe
+     test_string("cat > < file.txt");     // Mixed redirections
+    test_string("cat < > file.txt");     // Mixed redirections
+     test_string("cat >> < file.txt");    // Mixed redirections
+  test_string("cat | > file.txt");     // Pipe then redirection
+   test_string("cat | < file.txt");     // Pipe then input redirection
+   test_string("cat | >> file.txt");    // Pipe then append
+    test_string("cat | 'EOF' ");  
+     printf("All tests completed!\n");
+     return 0;
 }

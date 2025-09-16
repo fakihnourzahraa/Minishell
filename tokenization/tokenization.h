@@ -6,7 +6,7 @@
 /*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/28 16:10:17 by nour              #+#    #+#             */
-/*   Updated: 2025/09/16 12:42:56 by nfakih           ###   ########.fr       */
+/*   Updated: 2025/09/16 15:47:48 by nfakih           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,5 +67,6 @@ void    print_toke(t_token *token);
 void	add_cmd(t_shell *shell, t_cmd *cmd);
 t_cmd	*init_cmd(t_shell *shell, t_token *t);
 int		word_count(t_token *token);
+int		check_tkns(t_token *tkn);
 
 #endif
