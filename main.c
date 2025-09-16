@@ -289,24 +289,25 @@ int main(void)
     
 //     // Multiple redirections
 //     printf("=== MULTIPLE REDIRECTION TESTS ===\n");
-//     test_string("cat < input.txt > output.txt");
-//     test_string("sort < data.txt >> sorted.txt");
+test_string("cat<input.tx");
+    // test_string("cat < input.txt > output.txt");
+    // test_string("sort < data.txt >> sorted.txt");
     
     // // Pipe tests (if you want to test those too)
     // printf("=== PIPE TESTS ===\n");
-  //  test_string("ls | grep .c");
+//    test_string("ls | grep .c");
     // test_string("cat file.txt | grep hello");
     // test_string("ls -l | wc -l");
     
     // // Pipe with redirection
     // printf("=== PIPE + REDIRECTION TESTS ===\n");
     // test_string("ls | grep .c > result.txt");
-     test_string("cat < input.txt | sort > output.txt");
-    
+    // test_string("echo hello | echo bye");
     // // Edge cases
     // printf("=== EDGE CASE TESTS ===\n");
-    // test_string("echo > ");          // Missing filename
-    // test_string("< file.txt");       // No command
+  //  test_string("cat file.txt | grep error");
+  //  test_string("echo > ");          // Missing filename
+   // test_string("< file.txt");       // No command
     // test_string("echo < > file.txt"); // Invalid syntax
     // test_string("   echo   hello   > output.txt   "); // Extra spaces
     // test_string("");                 // Empty input

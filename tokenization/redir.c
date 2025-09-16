@@ -6,7 +6,7 @@
 /*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/10 11:10:26 by nour              #+#    #+#             */
-/*   Updated: 2025/09/16 00:06:20 by nour             ###   ########.fr       */
+/*   Updated: 2025/09/16 11:30:21 by nour             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,6 @@ void	add_redir(t_cmd *cmds, t_redir *c)
 {
 	t_redir	*r;
 
-	printf("adding redirection...");
 	if (!cmds)
 		return ;
 	if (!cmds->rd)
@@ -43,7 +42,6 @@ void	add_redir(t_cmd *cmds, t_redir *c)
 			r = r->next;
 		r->next = c;
 	}
-	printf("redirection added: %s\n", c->s);
 }
 
 t_redir	*init_redir(void)
@@ -58,7 +56,7 @@ t_redir	*init_redir(void)
 	return (r);
 }
 
-void	fill_r(t_token *t, t_shell *shell)
+void	fill_r(t_token *t, t_cmd *cmd)
 {
 	t_redir *r;
 
@@ -75,5 +73,5 @@ void	fill_r(t_token *t, t_shell *shell)
 		r->s = ft_strdup(t->next->s);
 	else
 		r->s = NULL;
-	add_r(shell, r);
+	add_redir(cmd, r);
 }
