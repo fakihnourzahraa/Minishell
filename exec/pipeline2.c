@@ -48,7 +48,7 @@ int handle_input_redirections(t_cmd *cmd, t_shell *shell)
 {
   t_redir *redir;
   int input_fd;
-  int temp_fd;  // FIX: Track previous fd to close it
+  int temp_fd;  // Track previous fd to close it
 
   input_fd = STDIN_FILENO;
   redir = cmd->rd;
@@ -56,21 +56,23 @@ int handle_input_redirections(t_cmd *cmd, t_shell *shell)
   {
     if (redir->type == R_IN)
     {
-      temp_fd = input_fd;  // FIX: Save previous fd
+      temp_fd = input_fd;  //  Save previous fd
       input_fd = open(redir->s, O_RDONLY);
       if (input_fd < 0)
         handle_file_error(redir->s);
-      // FIX: Close previous fd if it's not stdin
+      redir->fd = input_fd;
+      //  Close previous fd if it's not stdin
       if (temp_fd != STDIN_FILENO && temp_fd > 2)
         close(temp_fd);
     }
     else if (redir->type == R_HEREDOC)
     {
-      temp_fd = input_fd;  // FIX: Save previous fd
+      temp_fd = input_fd;  // : Save previous fd
       input_fd = run_heredoc(redir->s, shell);
       if (input_fd < 0)
         exit(130);
-      // FIX: Close previous fd if it's not stdin
+      //redir->fd = output_fd;
+      //  Close previous fd if it's not stdin
       if (temp_fd != STDIN_FILENO && temp_fd > 2)
         close(temp_fd);
     }
@@ -107,7 +109,7 @@ int handle_output_redirections(t_cmd *cmd)
 {
   t_redir *redir;
   int output_fd;
-  int temp_fd;  // FIX: Track previous fd to close it
+  int temp_fd;  //  Track previous fd to close it
 
   output_fd = STDOUT_FILENO;
   redir = cmd->rd;
@@ -115,27 +117,29 @@ int handle_output_redirections(t_cmd *cmd)
   {
     if (redir->type == R_OUT)
     {
-      temp_fd = output_fd;  // FIX: Save previous fd
+      temp_fd = output_fd;  //  Save previous fd
       output_fd = open(redir->s, O_WRONLY | O_CREAT | O_TRUNC, 0644);
       if (output_fd < 0)
       {
         perror(redir->s);
         exit(1);
       }
-      // FIX: Close previous fd if it's not stdout
+      //redir->fd = output_fd;
+      //  Close previous fd if it's not stdout
       if (temp_fd != STDOUT_FILENO && temp_fd > 2)
         close(temp_fd);
     }
     else if (redir->type == R_APPEND)
     {
-      temp_fd = output_fd;  // FIX: Save previous fd
+      temp_fd = output_fd;  //: Save previous fd
       output_fd = open(redir->s, O_WRONLY | O_CREAT | O_APPEND, 0644);
       if (output_fd < 0)
       {
         perror(redir->s);
         exit(1);
       }
-      // FIX: Close previous fd if it's not stdout
+      //redir->fd = output_fd;
+      //  Close previous fd if it's not stdout
       if (temp_fd != STDOUT_FILENO && temp_fd > 2)
         close(temp_fd);
     }

@@ -6,7 +6,7 @@
 /*   By: miwehbe <miwehbe@student.42beirut.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/28 11:35:19 by miwehbe           #+#    #+#             */
-/*   Updated: 2025/09/15 19:49:43 by miwehbe          ###   ########.fr       */
+/*   Updated: 2025/09/16 13:33:13 by miwehbe          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -219,7 +219,7 @@ t_cmd *create_cmd_with_redir(char **tokens, int start, int end)
     cmd->i_fd = STDIN_FILENO;
     cmd->o_fd = STDOUT_FILENO;
     cmd->pid = -1;
-    cmd->builtin = is_builtin(cmd->cmd);
+    cmd->builtin = (cmd->cmd);
     cmd->next = NULL;
 
     return cmd;

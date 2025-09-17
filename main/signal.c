@@ -12,15 +12,6 @@
 
 #include "main.h"
 
-/*void sigint_handler(int signum)
-{
-  (void)signum;
-  g_signal = SIGINT;  // Store signal for main loop
-  write(1,"\n",1);
-  rl_on_new_line();// tell readline we are on a new line
-  rl_replace_line("",0); // clear current input
-  rl_redisplay();// redraw prompt
-}*/
 int g_signal = 0;
 
 /*void sigint_handler(int signum)
@@ -34,15 +25,6 @@ int g_signal = 0;
     rl_redisplay();         // redraw the prompt immediately
 }*/
 
-
-/*void sigint_handler(int signum)
-{
-    (void)signum;
-    g_signal = SIGINT;
-    rl_replace_line("", 0);
-    rl_on_new_line();
-    rl_redisplay();
-}*/
 void sigint_handler(int signum)
 {
     (void)signum;

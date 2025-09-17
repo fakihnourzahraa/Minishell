@@ -18,7 +18,7 @@ int open_infile(char *filename)
 
   if(!filename)
     return (-1);
-  fd = open(filename,O_RDONLY);
+  fd = open(filename, O_RDONLY);
   if(fd ==-1)
     perror("minishell");
   return (fd);

@@ -27,7 +27,7 @@ void	free_paths(char **paths)
 	free(paths);
 }
 
-void free_pipes(int **pipes, int pipe_count)//3
+void free_pipes(int **pipes, int pipe_count)
 {
 	int i;
 

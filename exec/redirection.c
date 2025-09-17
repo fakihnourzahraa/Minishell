@@ -80,9 +80,6 @@ int	apply_redirections(t_cmd *cmd, t_shell *shell)
 }
 */
 
-
-#include "exec.h"
-
 static int	handle_in_redir(t_shell *shell, t_redir *redir)
 {
 	int	fd;
@@ -131,7 +128,6 @@ static int	handle_heredoc_redir(t_redir *redir, t_shell *shell)
 int	apply_redirections(t_cmd *cmd, t_shell *shell)
 {
 	t_redir	*current;
-
 	if (!cmd || !cmd->rd)
 		return (0);
 	current = cmd->rd;

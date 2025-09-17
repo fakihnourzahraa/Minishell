@@ -453,8 +453,6 @@ static void heredoc_child_process(int write_fd, char *delimiter)
             close(write_fd);
             exit(0);
         }
-        
-        // Write line to pipe
         write(write_fd, line, ft_strlen(line));
         write(write_fd, "\n", 1);
         free(line);
