@@ -20,9 +20,9 @@ int	is_r(t_token *a)
 }
 int	check_tkns(t_token *tkn)
 {
-	t_token	*cur;
+	//t_token	*cur;
 	
-	cur = tkn;
+	//cur = tkn;
 	if (tkn->type != WORD && tkn->type != T_EOF)
 		return (-1);
 	while (tkn)

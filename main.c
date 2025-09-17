@@ -288,18 +288,38 @@ void init_shell(t_shell *shell, char **envp)
 
 void cleanup_shell(t_shell *shell)
 {
-    if (shell->env)
-    {
-        free_env_list(shell->env);
-        shell->env = NULL;
-    }
+    if (!shell)
+        return;
+
+    cleanup_t(shell);
+    cleanup_p(shell);
+
     if (shell->in)
     {
         free(shell->in);
         shell->in = NULL;
     }
-    cleanup_t(shell);
-    cleanup_p(shell);
+
+    if (shell->cwd)
+    {
+        free(shell->cwd);
+        shell->cwd = NULL;
+    }
+
+    if (shell->sti)
+    {
+        free(shell->sti);
+        shell->sti = NULL;
+    }
+
+    if (shell->sto)
+    {
+        free(shell->sto);
+        shell->sto = NULL;
+    }
+
+    cleanup_env(shell);
+
     rl_clear_history();
 }
 
@@ -344,14 +364,14 @@ void mira_execution(t_shell *shell)
 
 int process_input(t_shell *shell, char *input)
 {
-    // Store input in shell
+    //printf("DEBUG: process_input started\n");
     shell->in = ft_strdup(input);
     if (!shell->in)
         return (-1);
     
-    // Step 1: Nour's parsing work
     if (nour_parsing(shell) == -1)
     {
+        //printf("DEBUG: nour_parsing failed, calling cleanup\n");
         cleanup_t(shell);
         cleanup_p(shell);
         free(shell->in);
@@ -359,18 +379,16 @@ int process_input(t_shell *shell, char *input)
         return (-1);
     }
     
-    // Step 2: Mira's execution work  
+    //printf("DEBUG: calling mira_execution\n");
     mira_execution(shell);
-    
-    // Step 3: Cleanup for next iteration
+    //printf("DEBUG: mira_execution FINISHED - about to cleanup\n");
     cleanup_t(shell);
     cleanup_p(shell);
     free(shell->in);
     shell->in = NULL;
-    
+    //printf("DEBUG: process_input finished\n");
     return (0);
 }
-
 int main_loop(t_shell *shell)
 {
     char *input;
@@ -454,9 +472,9 @@ int main(int argc, char **argv, char **envp)
     // Set up signal handling
     signals_prompt();
     
-    printf("=== MINISHELL - INTEGRATED PARSING + EXECUTION TEST ===\n");
-    printf("Type commands to test both parsing and execution together\n");
-    printf("Use 'exit' to quit\n\n");
+    //printf("=== MINISHELL - INTEGRATED PARSING + EXECUTION TEST ===\n");
+    //printf("Type commands to test both parsing and execution together\n");
+    //printf("Use 'exit' to quit\n\n");
     
     // Main loop
     int exit_status = main_loop(&shell);

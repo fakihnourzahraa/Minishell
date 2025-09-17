@@ -23,5 +23,6 @@ int     unset_env_var(t_env **env, const char *name);
 char    **env_to_envp(t_env *env);
 void    free_env_list(t_env *env);
 void    free_envp(char **envp);
+void free_envp_partial(char **envp, int count);
 
 #endif

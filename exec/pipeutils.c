@@ -12,7 +12,6 @@
 
 #include "exec.h"
 
-
 void close_unused_pipes(int **pipes, int pipe_count, int current_cmd)//5
 {
 	int i;

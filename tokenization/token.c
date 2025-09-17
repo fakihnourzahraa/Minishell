@@ -14,7 +14,7 @@
 
 int	set_token(t_shell *shell, char *a, int i)
 {
-	t_token	*b;
+	//t_token	*b;
 	t_token	*n;
 
 	i = skip_spaces(a, i);

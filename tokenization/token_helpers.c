@@ -112,11 +112,11 @@ int	split_quote(char *a, int i, t_shell *shell, char n)
 {
 	char	*b;
 	int		j;
-	int		start;
+	//int		start;
 	int		len;
 	t_token	*t;
 	
-	start = i;
+	//start = i;
 	i++;
 	len = 0;
 	while (a[i + len] && a[i + len] != n)

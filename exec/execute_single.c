@@ -91,6 +91,7 @@ static int execute_builtin_with_redirect(t_shell *shell, t_cmd *cmd)
         signal(SIGQUIT, SIG_DFL);
         if (apply_redirections(cmd, shell) == -1)
             exit(1);
+    
         execute_builtin(cmd, shell);
         exit(shell->exit_status);
     }

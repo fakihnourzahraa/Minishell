@@ -40,3 +40,16 @@ void free_envp(char **envp)
   }
   free(envp);
 }
+
+void free_envp_partial(char **envp, int count)
+{
+  int i ;
+
+  i = 0;
+  while (i < count)
+  {
+    free(envp[i]);
+    i++;
+  }
+  free(envp);
+}

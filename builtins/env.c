@@ -29,15 +29,12 @@ static void    print_env_list(t_env *env)
     current = current->next;
   }
 }
-
 static void execute_env_command(t_shell *shell, char **cmd_args)
 {
     char *path;
     char **envp_array;
     pid_t pid;
     int status;
-
-    // Get the path for the command
     path = get_cmd_path(cmd_args[0], shell);
     if (!path)
     {
@@ -47,8 +44,6 @@ static void execute_env_command(t_shell *shell, char **cmd_args)
         shell->exit_status = 127;
         return;
     }
-
-    // Fork and execute
     pid = fork();
     if (pid < 0)
     {
@@ -57,23 +52,21 @@ static void execute_env_command(t_shell *shell, char **cmd_args)
         shell->exit_status = 1;
         return;
     }
-    else if (pid == 0)  // Child process
+    else if (pid == 0)
     {
-        // Convert t_env to envp array
         envp_array = env_to_envp(shell->env);
         if (!envp_array)
+        {
+            free(path);
             exit(1);
-        
-        // Execute the command
+        }
         execve(path, cmd_args, envp_array);
-        
-        // If execve fails
         perror("execve");
         free_envp(envp_array);
         free(path);
         exit(127);
     }
-    else  // Parent process
+    else
     {
         waitpid(pid, &status, 0);
         if (WIFEXITED(status))
@@ -82,9 +75,8 @@ static void execute_env_command(t_shell *shell, char **cmd_args)
             shell->exit_status = 128 + WTERMSIG(status);
         else
             shell->exit_status = 1;
+        free(path);
     }
-    
-    free(path);
 }
 
 void builtin_env(t_cmd *cmd, t_shell *shell)

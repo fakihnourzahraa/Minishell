@@ -21,6 +21,7 @@ int	set_single(int n, int i, char a, t_token *t)
 	b[1] = '\0';
 	t->type = n;
 	t->s = b;
+	//printf("DEBUG: set_single created '%s' at address %p\n", b, b);
 	return (i + 1);
 }
 int	set_double(int n, char a, t_token *t, int i)
@@ -73,6 +74,7 @@ t_cmd	*init_cmd(t_shell *shell, t_token *t)
 	int	wc;
 	t_cmd	*cmd;
 	
+	(void)shell;
 	wc = word_count(t);
 	cmd = malloc(sizeof(t_cmd));
 	cmd->args = malloc(sizeof(char *) * (wc + 1));

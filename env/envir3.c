@@ -41,13 +41,6 @@ static char *create_env_string(t_env *node)
   return (str);
 }
 
-static void free_envp_partial(char **envp, int count)
-{
-  while (count > 0)
-    free(envp[--count]);
-  free(envp);
-}
-
 static int fill_envp_array(char **envp, t_env *env)
 {
   t_env   *current;

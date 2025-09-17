@@ -61,7 +61,7 @@ void	parse(t_shell *shell, t_token *token)
 			cmd->args[i] = NULL;
 			add_cmd(shell, cmd);
 			token = token->next;
-			cmd = cmd->next;
+			//cmd = cmd->next;
 			cmd = init_cmd(shell, token);
 			i = 1;
 		}

@@ -27,7 +27,6 @@
 # include <readline/history.h>
 # include <errno.h>
 
-
 typedef struct s_token	t_token;
 typedef struct s_cmd	t_cmd;
 typedef struct s_redir	t_redir;
@@ -144,7 +143,7 @@ typedef struct s_shell
 # include "exec/exec.h"
 void	cleanup_t(t_shell *shell);
 void 	cleanup_p(t_shell *shell);
-
+void cleanup_env(t_shell *shell);
 #endif
 
 //nour work on it week 1 
