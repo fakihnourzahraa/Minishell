@@ -14,17 +14,6 @@
 
 int g_signal = 0;
 
-/*void sigint_handler(int signum)
-{
-    (void)signum;
-    printf("DEBUG: Signal handler called!\n");
-    g_signal = SIGINT;
-
-    rl_replace_line("", 0); // clear current input line
-    rl_on_new_line();       // move cursor to new line
-    rl_redisplay();         // redraw the prompt immediately
-}*/
-
 void sigint_handler(int signum)
 {
     (void)signum;
@@ -52,7 +41,7 @@ void signals_child_heredoc(void)
 
 void signals_parent(void)
 {
-    signal(SIGINT, SIG_IGN);    // Ignore Ctrl+C during child execution
+    signal(SIGINT, SIG_IGN);
     signal(SIGQUIT, SIG_IGN);
     signal(SIGTSTP, SIG_IGN);
 }

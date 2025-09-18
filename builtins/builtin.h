@@ -28,4 +28,6 @@ void    sort_exported_vars(t_env **arr, int count);
 int     collect_exported_vars(t_shell *shell, t_env **arr);
 int     is_valid_identifier(const char *str);
 void    swap_env(t_env **a, t_env **b);
+void update_shlvl_on_start(t_shell *shell);
+void update_shlvl_on_exit(t_shell *shell);
 #endif

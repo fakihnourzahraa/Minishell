@@ -37,7 +37,7 @@ static char *get_target_dir(t_shell *shell, char *arg)
     target = get_env_value(shell->env, "OLDPWD");
     target = handle_cd_error(target, "minishell: OLDPWD not set", shell);
     if (target)
-      ft_putendl_fd(target, 1);// Print target directory for cd -
+      ft_putendl_fd(target, 1);
   }
   else
     target = arg;

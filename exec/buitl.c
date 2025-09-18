@@ -67,7 +67,7 @@ int execute_builtin(t_cmd *cmd, t_shell *shell)
       perror("fork");
       return (1);
     }
-    else if (pid == 0) // Child
+    else if (pid == 0)
     {
       if (apply_redirections(cmd, shell) == -1)
         exit(1);

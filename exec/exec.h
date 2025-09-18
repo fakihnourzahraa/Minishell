@@ -55,5 +55,5 @@ int		handle_input_redirections(t_cmd *cmd, t_shell *shell);
 int		handle_output_redirections(t_cmd *cmd);
 int		execute_multiple_cmds(t_shell *shell, t_cmd *cmds, int cmd_count);
 void	connect_pipes(int *input_fd, int *output_fd, t_pipe_info *info);
-int run_multiple_heredocs(char **delimiters, int delimiter_count, t_shell *shell);
+int		run_multiple_heredocs(char **delimiters, int delimiter_count, t_shell *shell);
 #endif
