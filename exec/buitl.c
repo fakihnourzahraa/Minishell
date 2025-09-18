@@ -35,74 +35,65 @@ int is_builtin(char *cmd)
 
 int execute_builtin(t_cmd *cmd, t_shell *shell)
 {
+  int status;
+
   if (!cmd || !cmd->args || !cmd->args[0])
     return (0);
-    // Handle builtins with redirections
-  if (ft_strcmp(cmd->args[0], "exit") == 0)
+  if (cmd->builtin == BUILTIN_EXIT)
   {
-    builtin_exit(cmd, shell);  // run in parent
-    return 1;
+    builtin_exit(cmd, shell);
+    return (1);
   }
-  if (ft_strcmp(cmd->args[0], "cd") == 0)
+  if (cmd->builtin == BUILTIN_CD)
   {
     builtin_cd(cmd, shell);
-    return 1;
+    return (1);
   }
-  if (ft_strcmp(cmd->args[0], "export") == 0)
+  if (cmd->builtin == BUILTIN_EXPORT)
   {
     builtin_export(cmd, shell);
-    return 1;
+    return (1);
   }
-  if (ft_strcmp(cmd->args[0], "unset") == 0)
+  if (cmd->builtin == BUILTIN_UNSET)
   {
     builtin_unset(cmd, shell);
-    return 1;
+    return (1);
   }
-
   if (cmd->rd)
   {
-		//printf("DEBUG: execute_builtin with redirections - forking child\n");
     pid_t pid = fork();
     if (pid < 0)
     {
       perror("fork");
       return (1);
     }
-    else if (pid == 0)  // Child process
+    else if (pid == 0) // Child
     {
-			//printf("DEBUG: In child process\n");
       if (apply_redirections(cmd, shell) == -1)
         exit(1);
-      if (ft_strcmp(cmd->args[0], "echo") == 0)
+      if (cmd->builtin == BUILTIN_ECHO)
         builtin_echo(cmd, shell);
-      else if (ft_strcmp(cmd->args[0], "pwd") == 0)
+      else if (cmd->builtin == BUILTIN_PWD)
         builtin_pwd(cmd, shell);
-      else if (ft_strcmp(cmd->args[0], "env") == 0)
+      else if (cmd->builtin == BUILTIN_ENV)
         builtin_env(cmd, shell);
-      //printf("DEBUG: Child about to exit\n");
       exit(shell->exit_status);
     }
-    else  // Parent process
+    else // Parent
     {
-			//printf("DEBUG: In parent, waiting for child\n");
-      int status;
       waitpid(pid, &status, 0);
-			//printf("DEBUG: Parent finished waiting\n");
       if (WIFEXITED(status))
         shell->exit_status = WEXITSTATUS(status);
       else
         shell->exit_status = 1;
     }
     return (1);
-    }
-
-    // No redirections - execute builtin directly
-    if (ft_strcmp(cmd->args[0], "echo") == 0)
-      builtin_echo(cmd, shell);
-    else if (ft_strcmp(cmd->args[0], "pwd") == 0)
-      builtin_pwd(cmd, shell);
-    else if (ft_strcmp(cmd->args[0], "env") == 0)
-      builtin_env(cmd, shell);
-    //printf("DEBUG: Child about to exit\n");
-    return (1);
+  }
+  if (cmd->builtin == BUILTIN_ECHO)
+    builtin_echo(cmd, shell);
+  else if (cmd->builtin == BUILTIN_PWD)
+    builtin_pwd(cmd, shell);
+  else if (cmd->builtin == BUILTIN_ENV)
+    builtin_env(cmd, shell);
+  return (1);
 }

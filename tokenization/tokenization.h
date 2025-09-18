@@ -68,5 +68,6 @@ void	add_cmd(t_shell *shell, t_cmd *cmd);
 t_cmd	*init_cmd(t_shell *shell, t_token *t);
 int		word_count(t_token *token);
 int		check_tkns(t_token *tkn);
+void debug_print_redirections(t_cmd *cmd);
 
 #endif

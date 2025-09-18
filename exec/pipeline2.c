@@ -48,8 +48,7 @@ int handle_input_redirections(t_cmd *cmd, t_shell *shell)
 {
   t_redir *redir;
   int input_fd;
-  int temp_fd;  // Track previous fd to close it
-
+  int temp_fd;
   input_fd = STDIN_FILENO;
   redir = cmd->rd;
   while (redir)
@@ -67,7 +66,7 @@ int handle_input_redirections(t_cmd *cmd, t_shell *shell)
     }
     else if (redir->type == R_HEREDOC)
     {
-      temp_fd = input_fd;  // : Save previous fd
+      temp_fd = input_fd;
       input_fd = run_heredoc(redir->s, shell);
       if (input_fd < 0)
         exit(130);
@@ -109,7 +108,7 @@ int handle_output_redirections(t_cmd *cmd)
 {
   t_redir *redir;
   int output_fd;
-  int temp_fd;  //  Track previous fd to close it
+  int temp_fd;
 
   output_fd = STDOUT_FILENO;
   redir = cmd->rd;

@@ -96,6 +96,7 @@ char	*get_cmd_path(const char *cmd, t_shell *shell)
 	return (res);
 }
 
+
 /*
 this file is to get the path of cmnd that is not buitlin(like pipex) nearly to it 
 */

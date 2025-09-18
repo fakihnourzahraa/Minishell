@@ -80,13 +80,13 @@ void builtin_export(t_cmd *cmd, t_shell *shell)
   int i;
   char *equal_pos;
 
+  i = 1;
   if (!cmd->args[1])
   {
     print_exported_vars(shell);
     shell->exit_status = 0;
     return;
   }
-  i = 1;
   while (cmd->args[i])
   {
     equal_pos = ft_strchr(cmd->args[i], '=');

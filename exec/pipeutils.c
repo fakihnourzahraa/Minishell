@@ -45,7 +45,9 @@ static void execute_child_process(t_shell *shell, t_cmd *cmd, t_pipe_info *info)
         cmd->path = get_cmd_path(cmd->args[0], shell);
         if (!cmd->path)
         {
-            printf("minishell: %s: command not found\n", cmd->args[0]);
+            ft_putstr_fd("minishell: ", 2);
+            ft_putstr_fd(cmd->args[0], 2);
+            ft_putstr_fd(": command not found\n", 2);
             exit(127);
         }
         exec_external_with_env(shell, cmd, cmd->path);
