@@ -6,7 +6,7 @@
 /*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/04 22:53:52 by nour              #+#    #+#             */
-/*   Updated: 2025/09/16 15:12:08 by nfakih           ###   ########.fr       */
+/*   Updated: 2025/09/19 13:16:44 by nfakih           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,10 @@ int	parse_word(t_token *token, t_cmd *cmd, int i)
 		cmd->args[i] = ft_strtrim(token->s, "\"");
 	else
 		cmd->args[i] = ft_strdup(token->s);
+	if (token->space)
+		cmd->spaces[i] = 1;
+	else
+		cmd->spaces[i] = 0;
 	return (i + 1);
 }
 
@@ -59,6 +63,7 @@ void	parse(t_shell *shell, t_token *token)
 		else
 		{
 			cmd->args[i] = NULL;
+			cmd->spaces[i] = 0;
 			add_cmd(shell, cmd);
 			token = token->next;
 			//cmd = cmd->next;
@@ -68,6 +73,7 @@ void	parse(t_shell *shell, t_token *token)
 		token = token->next;
 	}
 	cmd->args[i] = NULL;
+	cmd->spaces[i] = 0;
 	add_cmd(shell, cmd);
 }
 

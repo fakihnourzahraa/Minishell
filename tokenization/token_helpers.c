@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token_helpers.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/31 13:23:45 by nfakih            #+#    #+#             */
-/*   Updated: 2025/09/18 23:02:29 by nour             ###   ########.fr       */
+/*   Updated: 2025/09/19 13:32:14 by nfakih           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,6 +101,8 @@ int	split_word(char *a, int i, t_shell *shell, t_token *n)
 		b[j] = a[i + j];
 		j++;
 	}
+	if (a[i + j] && a[i + j] != 32)
+		t->space = 0;
 	b[j] = '\0';
 	t->s = b;
 	t->type = 0;
@@ -124,14 +126,15 @@ int	split_quote(char *a, int i, t_shell *shell, char n)
 	j = -1;
 	while (++j < len)
 		b[j + 1] = a[i + j];
+	t = init_token();
+	if (a[j + 1 + i] && a[j + 1 + i] == ' ')
+		t->space = true;
 	b[len + 1] = n;
 	b[len + 2] = '\0';
-	t = init_token();
 	t->s = b;
 	t->type = WORD;
 	t->quotes = (n == '\'') ? 1 : 2;  // 1 for single, 2 for double
 	add_token(shell, t);
-	
 	// Return position after closing quote
 	return (i + len + 1);
 }
