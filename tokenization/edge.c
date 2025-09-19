@@ -18,6 +18,7 @@ int	is_r(t_token *a)
 		return (1);
 	return (0);
 }
+
 int	check_tkns(t_token *tkn)
 {
 	if (tkn->type != WORD && tkn->type != T_EOF)
@@ -32,3 +33,32 @@ int	check_tkns(t_token *tkn)
 	}
 	return (1);
 }
+
+/*int	check_tkns(t_token *tkn)
+{
+    printf("DEBUG: Checking tokens...\n");
+    
+    if (tkn->type != WORD && tkn->type != T_EOF)
+    {
+        printf("ERROR: First token is not WORD or T_EOF, it's type %d\n", tkn->type);
+        return (-1);
+    }
+    
+    while (tkn)
+    {
+        printf("DEBUG: Checking token type %d, content '%s'\n", tkn->type, tkn->s ? tkn->s : "NULL");
+        
+        if ((is_r(tkn) || tkn->type == PIPE) && tkn->next && (is_r(tkn->next) || tkn->next->type == PIPE))
+        {
+            printf("ERROR: Two consecutive operators\n");
+            return (-1);
+        }
+        if (tkn->next && tkn->next->type == T_EOF && (tkn->type == PIPE || is_r(tkn)))
+        {
+            printf("ERROR: Command ends with operator\n");
+            return (-1);
+        }
+        tkn = tkn->next;
+    }
+    return (1);
+}*/

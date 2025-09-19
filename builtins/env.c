@@ -12,7 +12,7 @@
 
 #include "builtin.h"
 
-void update_shlvl_on_start(t_shell *shell)
+/*void update_shlvl_on_start(t_shell *shell)
 {
     t_env *shlvl = find_env_var(shell->env, "SHLVL");
     int lvl;
@@ -41,6 +41,38 @@ void update_shlvl_on_exit(t_shell *shell)
     if (lvl > 1)
         lvl--;
     set_env_var(&shell->env, "SHLVL", ft_itoa(lvl), true);
+}*/
+
+void update_shlvl_on_start(t_shell *shell)
+{
+    t_env *shlvl = find_env_var(shell->env, "SHLVL");
+    int lvl;
+
+    if (shlvl && shlvl->val)
+        lvl = ft_atoi(shlvl->val) + 1;
+    else
+        lvl = 1;
+    
+    // Use set_env_var consistently for both cases
+    char *new_shlvl = ft_itoa(lvl);
+    set_env_var(&shell->env, "SHLVL", new_shlvl, true);
+    free(new_shlvl);
+}
+
+void update_shlvl_on_exit(t_shell *shell)
+{
+    t_env *shlvl = find_env_var(shell->env, "SHLVL");
+    if (!shlvl)
+        return;
+    
+    int lvl = ft_atoi(shlvl->val);
+    if (lvl > 1)
+        lvl--;
+    
+    // Fix: Store the result and free it
+    char *new_shlvl = ft_itoa(lvl);
+    set_env_var(&shell->env, "SHLVL", new_shlvl, true);
+    free(new_shlvl);  // Free the temporary string
 }
 
 static void    print_env_list(t_env *env)

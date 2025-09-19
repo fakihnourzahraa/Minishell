@@ -11,7 +11,38 @@
 /* ************************************************************************** */
 
 #include "minishell.h"
+
 extern int g_signal;
+
+//int execute_external_command(t_shell *shell, t_cmd *cmd);
+//void debug_cmd_structure(t_cmd *cmd);
+
+/*void debug_cmd_structure(t_cmd *cmd)
+{
+    printf("=== COMMAND DEBUG ===\n");
+    printf("cmd->cmd: '%s'\n", cmd->cmd ? cmd->cmd : "NULL");
+    printf("cmd->builtin: %d\n", cmd->builtin);
+    
+    if (cmd->args) {
+        for (int i = 0; cmd->args[i]; i++) {
+            printf("cmd->args[%d]: '%s'\n", i, cmd->args[i]);
+        }
+    } else {
+        printf("cmd->args: NULL\n");
+    }
+    
+    t_redir *r = cmd->rd;
+    if (r) {
+        printf("REDIRECTIONS:\n");
+        while (r) {
+            printf("  type=%d, file='%s'\n", r->type, r->s ? r->s : "NULL");
+            r = r->next;
+        }
+    } else {
+        printf("No redirections\n");
+    }
+    printf("=== END DEBUG ===\n");
+}*/
 
 void init_shell(t_shell *shell, char **envp)
 {
@@ -83,6 +114,54 @@ int nour_parsing(t_shell *shell)
     return (0);
 }
 
+/*int nour_parsing(t_shell *shell)
+{
+    printf("DEBUG: Starting tokenization for: \"%s\"\n", shell->in);
+    
+    int tokenize_result = tokenize_line(shell);
+    if (tokenize_result == -1)
+    {
+        printf("ERROR: Tokenization failed!\n");
+        return (-1);
+    }
+    
+    printf("DEBUG: Tokenization successful\n");
+    print_toke(shell->tkns);  // This should show your tokens
+    
+    if (check_tkns(shell->tkns) == -1)
+    {
+        printf("SYNTAX ERROR: Invalid token sequence detected!\n");
+        return (-1);
+    }
+    
+    printf("DEBUG: Starting parsing...\n");
+    parse(shell, shell->tkns);
+    
+    // Add this debug to see what commands were created
+    printf("DEBUG: Commands created:\n");
+    t_cmd *current = shell->cmds;
+    int cmd_num = 0;
+    while (current)
+    {
+        printf("Command %d: cmd='%s'\n", cmd_num, current->cmd ? current->cmd : "NULL");
+        if (current->args)
+        {
+            for (int i = 0; current->args[i]; i++)
+                printf("  Arg[%d]: '%s'\n", i, current->args[i]);
+        }
+        t_redir *redir = current->rd;
+        while (redir)
+        {
+            printf("  Redir: type=%d, file='%s'\n", redir->type, redir->s ? redir->s : "(null)");
+            redir = redir->next;
+        }
+        
+        current = current->next;
+        cmd_num++;
+    }
+    
+    return (0);
+}*/
 void mira_execution(t_shell *shell)
 {
     t_cmd *cmd_chain = shell->cmds;
@@ -107,6 +186,43 @@ void mira_execution(t_shell *shell)
             execute_single(shell, cmd_chain);
     }
 }
+
+/*void mira_execution(t_shell *shell)
+{
+    t_cmd *cmd_chain = shell->cmds;
+    
+    if (!cmd_chain)
+        return;
+    
+    t_cmd *current = cmd_chain;
+    while (current)
+    {
+        current->builtin = is_builtin(current->cmd);
+        current = current->next;
+    }
+    
+    // ADD DEBUG HERE
+    printf("=== DEBUGGING COMMAND STRUCTURE ===\n");
+    current = cmd_chain;
+    int cmd_num = 0;
+    while (current)
+    {
+        printf("--- Command %d ---\n", cmd_num++);
+        debug_cmd_structure(current);
+        current = current->next;
+    }
+    printf("=== END DEBUGGING ===\n");
+    
+    if (cmd_chain->next)
+        execute_pipeline(shell, cmd_chain);
+    else
+    {
+        if (cmd_chain->builtin != NOT_BUILTIN)
+            execute_builtin(cmd_chain, shell);
+        else
+            execute_single(shell, cmd_chain);  // This calls the function from exec/execute_single.c
+    }
+}*/
 
 int process_input(t_shell *shell, char *input)
 {
