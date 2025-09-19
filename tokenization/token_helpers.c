@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token_helpers.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/31 13:23:45 by nfakih            #+#    #+#             */
-/*   Updated: 2025/09/13 14:11:47 by nfakih           ###   ########.fr       */
+/*   Updated: 2025/09/18 23:02:29 by nour             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,11 +112,9 @@ int	split_quote(char *a, int i, t_shell *shell, char n)
 {
 	char	*b;
 	int		j;
-	//int		start;
 	int		len;
 	t_token	*t;
-	
-	//start = i;
+
 	i++;
 	len = 0;
 	while (a[i + len] && a[i + len] != n)

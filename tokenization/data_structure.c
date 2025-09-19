@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   data_structure.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/13 12:45:13 by nfakih            #+#    #+#             */
-/*   Updated: 2025/09/16 13:01:53 by nfakih           ###   ########.fr       */
+/*   Updated: 2025/09/18 23:05:15 by nour             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,12 @@ int	split_q(char *a, t_shell *shell, int i)
 	while (a[j])
 	{
 		if (a[j] == a[i])
+		{
+			if (j == i + 1)
+				return (i + 2);
 			return (split_quote(a, i, shell, a[i]));
+		}
+			
 		j++;
 	}
 	return (-1);

@@ -14,7 +14,6 @@
 
 int	set_token(t_shell *shell, char *a, int i)
 {
-	//t_token	*b;
 	t_token	*n;
 
 	i = skip_spaces(a, i);
@@ -69,7 +68,7 @@ void	cleanup_token(t_shell *shell)
 {
 	t_token *t;
 
-	while (shell->tkns->s)
+	while (shell->tkns && shell->tkns->s)
 	{
 		free(shell->tkns->s);
 		t = shell->tkns;
