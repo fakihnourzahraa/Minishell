@@ -6,7 +6,7 @@
 /*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/13 12:45:13 by nfakih            #+#    #+#             */
-/*   Updated: 2025/09/19 13:33:45 by nfakih           ###   ########.fr       */
+/*   Updated: 2025/09/19 18:26:33 by nfakih           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,9 @@ t_cmd	*init_cmd(t_shell *shell, t_token *t)
 	wc = word_count(t);
 	cmd = malloc(sizeof(t_cmd));
 	cmd->args = malloc(sizeof(char *) * (wc + 1));
+	cmd->args = NULL;
 	cmd->spaces = malloc(sizeof(int *) * (wc + 1));
+	cmd->spaces = NULL;
 	cmd->path =	NULL;
 	cmd->rd = NULL;
 	cmd->i_fd =	-1;
