@@ -6,7 +6,7 @@
 /*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/04 22:53:52 by nour              #+#    #+#             */
-/*   Updated: 2025/09/19 13:16:44 by nfakih           ###   ########.fr       */
+/*   Updated: 2025/09/19 14:04:27 by nfakih           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,9 @@ void	parse(t_shell *shell, t_token *token)
 	int		i;
 	t_cmd	*cmd;
 
-	if (!token || token->type != WORD)
+	// if (!token || token->type == PIPE || token->type != T_EOF)
+	// 	return ;
+	if (!token || token->type == PIPE)
 		return ;
 	cmd = init_cmd(shell, token);
 	i = 1;

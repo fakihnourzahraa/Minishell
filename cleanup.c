@@ -6,7 +6,7 @@
 /*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/16 16:46:40 by nfakih            #+#    #+#             */
-/*   Updated: 2025/09/19 13:36:34 by nfakih           ###   ########.fr       */
+/*   Updated: 2025/09/19 14:08:31 by nfakih           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,9 +65,9 @@ void cleanup_p(t_shell *shell)
             }
             free(current->args);
         }
-
-        cleanup_redirs(current->rd);
-
+		if (current->spaces)
+            free(current->spaces);
+	    cleanup_redirs(current->rd);
         tmp = current;
         current = current->next;
         free(tmp);
