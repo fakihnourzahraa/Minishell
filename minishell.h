@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/28 16:10:17 by nour              #+#    #+#             */
-/*   Updated: 2025/09/19 13:11:09 by nfakih           ###   ########.fr       */
+/*   Updated: 2025/09/19 17:35:13 by nour             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,9 @@ typedef	enum	s_token_type
 	APPEND,
 	HEREDOC,
 	T_EOF,
-	EMPTY
+	EMPTY,
+	EXPANSION,
+	EXIT_STATUS
 }				t_token_type;
 
 typedef struct s_token
