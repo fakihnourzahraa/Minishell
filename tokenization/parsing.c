@@ -42,6 +42,7 @@ int	parse_word(t_token *token, t_cmd *cmd, int i)
 
 void	parse(t_shell *shell, t_token *token)
 {
+	//printf("DEBUG: FIRST LINE OF PARSE() REACHED\n");
 	int		i;
 	t_cmd	*cmd;
 

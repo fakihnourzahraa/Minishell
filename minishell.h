@@ -144,6 +144,7 @@ typedef struct s_shell
 # include "builtins/builtin.h"
 # include "env/env.h"
 # include "exec/exec.h"
+#include "expansion/expansion.h"
 void	cleanup_t(t_shell *shell);
 void 	cleanup_p(t_shell *shell);
 void cleanup_env(t_shell *shell);

@@ -1062,3 +1062,37 @@ int main(int argc, char **argv, char **envp)
     
     return (shell->exit_status);
 }*/
+
+
+
+
+/*void update_shlvl_on_start(t_shell *shell)
+{
+    t_env *shlvl = find_env_var(shell->env, "SHLVL");
+    int lvl;
+
+    if (shlvl && shlvl->val)
+        lvl = ft_atoi(shlvl->val) + 1;
+    else
+        lvl = 1;
+    if (!shlvl)
+    {
+        set_env_var(&shell->env, "SHLVL", "1",true);
+    }
+    else
+    {
+        free(shlvl->val);
+        shlvl->val = ft_itoa(lvl);
+    }
+}
+
+void update_shlvl_on_exit(t_shell *shell)
+{
+    t_env *shlvl = find_env_var(shell->env, "SHLVL");
+    if (!shlvl)
+        return;
+    int lvl = ft_atoi(shlvl->val);
+    if (lvl > 1)
+        lvl--;
+    set_env_var(&shell->env, "SHLVL", ft_itoa(lvl), true);
+}*/
