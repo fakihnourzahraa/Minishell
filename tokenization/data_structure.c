@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   data_structure.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/13 12:45:13 by nfakih            #+#    #+#             */
-/*   Updated: 2025/09/19 18:26:33 by nfakih           ###   ########.fr       */
+/*   Updated: 2025/09/21 02:42:56 by nour             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,8 +81,7 @@ t_cmd	*init_cmd(t_shell *shell, t_token *t)
 	wc = word_count(t);
 	cmd = malloc(sizeof(t_cmd));
 	cmd->args = malloc(sizeof(char *) * (wc + 1));
-	cmd->args = NULL;
-	cmd->spaces = malloc(sizeof(int *) * (wc + 1));
+	//cmd->spaces = malloc(sizeof(int *) * (wc + 1));
 	cmd->spaces = NULL;
 	cmd->path =	NULL;
 	cmd->rd = NULL;
@@ -91,24 +90,32 @@ t_cmd	*init_cmd(t_shell *shell, t_token *t)
 	cmd->pid = -1;
 	cmd->builtin = (t_builtin)NULL;
 	cmd->next = NULL;
-	if (t->quotes == 1)
+	if (t->s == NULL)
 	{
-		cmd->cmd = ft_strtrim(t->s, "'");
-		cmd->args[0] = ft_strtrim(t->s, "'");
+		cmd->args[0] = NULL;
+		cmd->cmd = NULL;
+		return (cmd);
 	}
-	else if (t->quotes == 2)
-	{
-		cmd->cmd = ft_strtrim(t->s, "\"");
-		cmd->args[0] = ft_strtrim(t->s, "\"");
-	}
-	else
-	{
-		cmd->cmd = ft_strdup(t->s);
-		cmd->args[0] = ft_strdup(t->s);
-	}
-	if (t->space)
-		cmd->spaces[0] = 1;
-	else
-		cmd->spaces[0] = 0;
+	cmd->args[0] = ft_strdup(t->s);
+	cmd->cmd = ft_strdup(t->s);
+	// if (t->quotes == 1)
+	// {
+	// 	cmd->cmd = ft_strtrim(t->s, "'");
+	// 	cmd->args[0] = ft_strtrim(t->s, "'");
+	// }
+	// else if (t->quotes == 2)
+	// {
+	// 	cmd->cmd = ft_strtrim(t->s, "\"");
+	// 	cmd->args[0] = ft_strtrim(t->s, "\"");
+	// }
+	// else
+	// {
+	// 	cmd->cmd = ft_strdup(t->s);
+	// 	cmd->args[0] = ft_strdup(t->s);
+	// }
+	// if (t->space)
+	// 	cmd->spaces[0] = 1;
+	// else
+	// 	cmd->spaces[0] = 0;
 	return (cmd);
 }

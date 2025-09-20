@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cleanup.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/16 16:46:40 by nfakih            #+#    #+#             */
-/*   Updated: 2025/09/19 14:08:31 by nfakih           ###   ########.fr       */
+/*   Updated: 2025/09/20 21:25:26 by nour             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,20 +75,20 @@ void cleanup_p(t_shell *shell)
     shell->cmds = NULL;
 }
 
-void cleanup_env(t_shell *shell)
-{
-    if (shell->env)
-    {
-        free_env_list(shell->env);
-        shell->env = NULL;
-    }
+// void cleanup_env(t_shell *shell)
+// {
+//     if (shell->env)
+//     {
+//         free_env_list(shell->env);
+//         shell->env = NULL;
+//     }
 
-    if (shell->envp)
-    {
-        free_envp(shell->envp);
-        shell->envp = NULL;
-    }
-}
+//     if (shell->envp)
+//     {
+//         free_envp(shell->envp);
+//         shell->envp = NULL;
+//     }
+// }
 
 /*void cleanup_p(t_shell *shell)
 {
