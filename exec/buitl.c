@@ -70,13 +70,17 @@ int execute_builtin(t_cmd *cmd, t_shell *shell)
     else if (pid == 0)
     {
       if (apply_redirections(cmd, shell) == -1)
+      {
+        cleanup_child_process(shell);
         exit(1);
+      }
       if (cmd->builtin == BUILTIN_ECHO)
         builtin_echo(cmd, shell);
       else if (cmd->builtin == BUILTIN_PWD)
         builtin_pwd(cmd, shell);
       else if (cmd->builtin == BUILTIN_ENV)
         builtin_env(cmd, shell);
+      cleanup_child_process(shell);
       exit(shell->exit_status);
     }
     else // Parent

@@ -53,6 +53,7 @@ void	free_split(char **split);
 int		create_single_pipe(int **pipes, int index);
 int		handle_input_redirections(t_cmd *cmd, t_shell *shell);
 int		handle_output_redirections(t_cmd *cmd);
+void cleanup_child_process(t_shell *shell);
 int		execute_multiple_cmds(t_shell *shell, t_cmd *cmds, int cmd_count);
 void	connect_pipes(int *input_fd, int *output_fd, t_pipe_info *info);
 int		run_multiple_heredocs(char **delimiters, int delimiter_count, t_shell *shell);

@@ -12,6 +12,35 @@
 
 #include "exec.h"
 
+/*void cleanup_child_process(t_shell *shell)
+{
+    cleanup_t(shell);
+    cleanup_p(shell);
+
+    if (shell->in)
+    {
+        free(shell->in);
+        shell->in = NULL;
+    }
+    shell->env = NULL;
+}*/
+void cleanup_child_process(t_shell *shell)
+{
+    if (shell->env)
+    {
+        free_env_list(shell->env);
+        shell->env = NULL;
+    }
+
+    cleanup_t(shell);
+    cleanup_p(shell);
+
+    if (shell->in)
+    {
+        free(shell->in);
+        shell->in = NULL;
+    }
+}
 static void wait_child(t_shell *shell, int status)
 {
     if (WIFEXITED(status))
@@ -31,17 +60,20 @@ static void exec_external_child(t_shell *shell, t_cmd *cmd, char *path)
     
     if (apply_redirections(cmd, shell) == -1)
     {
+        cleanup_child_process(shell);
         free(path);
         exit(1);
     }
     envp_array = env_to_envp(shell->env);
     if (!envp_array)
     {
+        cleanup_child_process(shell);
         free(path);
         exit(1);
     }
     execve(path, cmd->args, envp_array);
-    free_envp(envp_array);
+    cleanup_child_process(shell);  
+    //free_envp(envp_array);
     free(path);
     exit(127);
 }
@@ -90,9 +122,14 @@ static int execute_builtin_with_redirect(t_shell *shell, t_cmd *cmd)
         signal(SIGINT, SIG_DFL);
         signal(SIGQUIT, SIG_DFL);
         if (apply_redirections(cmd, shell) == -1)
+        {
+            cleanup_child_process(shell);
             exit(1);
+        }
+            //exit(1);
     
         execute_builtin(cmd, shell);
+        cleanup_child_process(shell); 
         exit(shell->exit_status);
     }
     waitpid(pid, &status, 0);

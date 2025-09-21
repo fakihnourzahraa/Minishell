@@ -12,7 +12,7 @@
 
 #include "env.h"
 
-void free_env_list(t_env *env)
+/*void free_env_list(t_env *env)
 {
   t_env *next;
 
@@ -21,6 +21,22 @@ void free_env_list(t_env *env)
     next = env->next;
     free(env->name);
     free(env->val);
+    free(env);
+    env = next;
+  }
+}*/
+
+void free_env_list(t_env *env)
+{
+  t_env *next;
+
+  while (env)
+  {
+    next = env->next;
+    if (env->name)
+        free(env->name);
+    if (env->val)
+        free(env->val);
     free(env);
     env = next;
   }

@@ -75,20 +75,20 @@ void cleanup_p(t_shell *shell)
     shell->cmds = NULL;
 }
 
-// void cleanup_env(t_shell *shell)
-// {
-//     if (shell->env)
-//     {
-//         free_env_list(shell->env);
-//         shell->env = NULL;
-//     }
+void cleanup_env(t_shell *shell)
+{
+    if (shell->env)
+     {
+         free_env_list(shell->env);
+         shell->env = NULL;
+     }
 
-//     if (shell->envp)
-//     {
-//         free_envp(shell->envp);
-//         shell->envp = NULL;
-//     }
-// }
+     if (shell->envp)    
+    {
+         free_envp(shell->envp);
+         shell->envp = NULL;
+     }
+ }
 
 /*void cleanup_p(t_shell *shell)
 {

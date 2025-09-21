@@ -72,7 +72,7 @@ void	add_cmd(t_shell *shell, t_cmd *cmd)
 		cur->next = cmd;
 	}
 }
-t_cmd	*init_cmd(t_shell *shell, t_token *t)
+/*t_cmd	*init_cmd(t_shell *shell, t_token *t)
 {
 	int		wc;
 	t_cmd	*cmd;
@@ -98,6 +98,8 @@ t_cmd	*init_cmd(t_shell *shell, t_token *t)
 	}
 	cmd->args[0] = ft_strdup(t->s);
 	cmd->cmd = ft_strdup(t->s);
+	//printf("DEBUG: init_cmd allocated cmd: '%s' at %p\n", cmd->cmd, cmd->cmd);
+  //printf("DEBUG: init_cmd allocated args[0]: '%s' at %p\n", cmd->args[0], cmd->args[0]);
 	// if (t->quotes == 1)
 	// {
 	// 	cmd->cmd = ft_strtrim(t->s, "'");
@@ -117,5 +119,74 @@ t_cmd	*init_cmd(t_shell *shell, t_token *t)
 	// 	cmd->spaces[0] = 1;
 	// else
 	// 	cmd->spaces[0] = 0;
+	return (cmd);
+}*/
+
+/* Fixed version of init_cmd in tokenization/data_structure.c */
+
+t_cmd	*init_cmd(t_shell *shell, t_token *t)
+{
+	int		wc;
+	t_cmd	*cmd;
+	int		i;
+	
+	(void)shell;
+	wc = word_count(t);
+	cmd = malloc(sizeof(t_cmd));
+	if (!cmd)
+		return (NULL);
+		
+	// Allocate and INITIALIZE the arrays properly
+	cmd->args = malloc(sizeof(char *) * (wc + 1));
+	if (!cmd->args)
+	{
+		free(cmd);
+		return (NULL);
+	}
+	
+	cmd->spaces = malloc(sizeof(int) * (wc + 1));
+	if (!cmd->spaces)
+	{
+		free(cmd->args);
+		free(cmd);
+		return (NULL);
+	}
+	
+	// Initialize arrays to safe values
+	i = 0;
+	while (i <= wc)
+	{
+		cmd->args[i] = NULL;
+		cmd->spaces[i] = 0;
+		i++;
+	}
+	
+	// Initialize other fields
+	cmd->path = NULL;
+	cmd->rd = NULL;
+	cmd->i_fd = -1;
+	cmd->o_fd = -1;
+	cmd->pid = -1;
+	cmd->builtin = NOT_BUILTIN;
+	cmd->next = NULL;
+	
+	// Set the command and first argument
+	if (t->quotes == 1)
+	{
+		cmd->cmd = ft_strtrim(t->s, "'");
+		cmd->args[0] = ft_strtrim(t->s, "'");
+	}
+	else if (t->quotes == 2)
+	{
+		cmd->cmd = ft_strtrim(t->s, "\"");
+		cmd->args[0] = ft_strtrim(t->s, "\"");
+	}
+	else
+	{
+		cmd->cmd = ft_strdup(t->s);
+		cmd->args[0] = ft_strdup(t->s);
+	}
+	
+	cmd->spaces[0] = t->space ? 1 : 0;
 	return (cmd);
 }

@@ -21,9 +21,7 @@ static void heredoc_child(int write_fd, char **delims, int count)
     int idx;
 
     idx = 0;
-    signal(SIGINT, SIG_DFL);
-    signal(SIGQUIT, SIG_IGN);
-
+    signals_child_heredoc();
     while (1)
     {
         line = readline("> ");
@@ -80,7 +78,7 @@ static int run_heredoc_internal(char **delims, int count, t_shell *shell)
     signal(SIGINT, SIG_IGN);
     waitpid(pid, &status, 0);
     shell->in_h = 0;
-    signals_prompt();
+    //signals_prompt();
 
     if (WIFSIGNALED(status))
     {

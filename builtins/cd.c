@@ -44,23 +44,32 @@ static char *get_target_dir(t_shell *shell, char *arg)
   return (target);
 }
 
-static void    update_pwd(t_shell *shell, const char *old_pwd)
+static void update_pwd(t_shell *shell, const char *old_pwd)
 {
   char *new_pwd;
 
-  new_pwd = getcwd(NULL,0);
-  if(new_pwd == NULL)
+  new_pwd = getcwd(NULL, 0);
+  if (new_pwd == NULL)
   {
-    perror("minishell :getcwd fail");
+    perror("minishell: getcwd fail");
     shell->exit_status = 1;
     return;
   }
-  set_env_var(&shell->env,"OLDPWD",old_pwd,true);
-  set_env_var(&shell->env, "PWD",new_pwd,true);
+  if (old_pwd != NULL)
+    set_env_var(&shell->env, "OLDPWD", old_pwd, true);
+  else
+  {
+    char *current_pwd = get_env_value(shell->env, "PWD");
+    if (current_pwd)
+      set_env_var(&shell->env, "OLDPWD", current_pwd, true);
+    else
+      unset_env_var(&shell->env, "OLDPWD");
+  }
+  set_env_var(&shell->env, "PWD", new_pwd, true);
   free(new_pwd);
 }
 
-static void	change_directory(t_shell *shell, char *target, const char *old_pwd)
+static void change_directory(t_shell *shell, char *target, const char *old_pwd)
 {
 	if (chdir(target) < 0)
 	{
@@ -72,14 +81,14 @@ static void	change_directory(t_shell *shell, char *target, const char *old_pwd)
 	shell->exit_status = 0;
 }
 
-void     builtin_cd(t_cmd *cmd, t_shell *shell)
+void builtin_cd(t_cmd *cmd, t_shell *shell)
 {
-  char	*old_pwd;
-	char	*target;
+  char *old_pwd;
+  char *target;
 
-	old_pwd = get_env_value(shell->env, "PWD");
-	target = get_target_dir(shell, cmd->args[1]);
-	if (!target)
-		return ;
-	change_directory(shell, target, old_pwd);
+  old_pwd = get_env_value(shell->env, "PWD");
+  target = get_target_dir(shell, cmd->args[1]);
+  if (!target)
+    return ;
+  change_directory(shell, target, old_pwd);
 }

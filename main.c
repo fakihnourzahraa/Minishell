@@ -76,6 +76,11 @@ void cleanup_shell(t_shell *shell)
         free(shell->in);
         shell->in = NULL;
     }
+    if (shell->env)
+    {
+        free_env_list(shell->env);
+        shell->env = NULL;
+    }
 
     if (shell->cwd)
     {
@@ -186,15 +191,15 @@ int nour_parsing(t_shell *shell)
 }*/
 void mira_execution(t_shell *shell)
 {
-    printf("DEBUG: mira_execution started\n");
+    //printf("DEBUG: mira_execution started\n");
     t_cmd *cmd_chain = shell->cmds;
     
     if (!cmd_chain)
     {
-        printf("DEBUG: No commands to execute\n");
+        //printf("DEBUG: No commands to execute\n");
         return;
     }
-    printf("DEBUG: Command found: '%s'\n", cmd_chain->cmd ? cmd_chain->cmd : "NULL");
+    //printf("DEBUG: Command found: '%s'\n", cmd_chain->cmd ? cmd_chain->cmd : "NULL");
     t_cmd *current = cmd_chain;
     while (current)
     {
@@ -278,61 +283,6 @@ int process_input(t_shell *shell, char *input)
     return (0);
 }
 
-int main_loop(t_shell *shell)
-{
-    char *input;
-    
-    while (!shell->exit)
-    {
-        if (g_signal == SIGINT)
-        {
-            g_signal = 0;
-            shell->exit_status = 130;
-        }
-        input = readline("minishell$ ");
-        
-        if (!input)
-        {
-            update_shlvl_on_exit(shell);
-            printf("exit\n");
-            break;
-        }
-        if (g_signal == SIGINT)
-        {
-            g_signal = 0;
-            shell->exit_status = 130;
-            free(input);
-            continue; 
-        }
-        if (input[0] == '\0')
-        {
-            free(input);
-            continue;
-        }
-        add_history(input);
-        g_signal = 0;
-        if (process_input(shell, input) == -1)
-        {
-            printf("Error processing command\n");
-        }
-        
-        // Handle signal after execution
-        if (g_signal == SIGINT)
-        {
-            g_signal = 0;
-            shell->exit_status = 130;
-        }
-        if (shell->exit)
-        {
-            free(input);
-            break;
-        }
-        free(input);
-    }
-
-    return (shell->exit_status);
-}
-
 /*int main_loop(t_shell *shell)
 {
     char *input;
@@ -366,60 +316,6 @@ int main_loop(t_shell *shell)
         }
         add_history(input);
         g_signal = 0;
-        
-        // ===== ADD YOUR TEST COMMANDS HERE =====
-        if (ft_strcmp(input, "test_expansion") == 0)
-        {
-            printf("=== TESTING EXPANSION FUNCTIONS ===\n");
-            
-            // Test exit status
-            printf("\n--- Testing Exit Status ---\n");
-            shell->exit_status = 0;
-            char *result = get_exit_status_string(shell);
-            printf("Exit status 0: '%s'\n", result ? result : "NULL");
-            if (result) free(result);
-            
-            shell->exit_status = 127;
-            result = get_exit_status_string(shell);
-            printf("Exit status 127: '%s'\n", result ? result : "NULL");
-            if (result) free(result);
-            
-            // Test environment variables
-            printf("\n--- Testing Environment Variables ---\n");
-            result = expand_variable(shell, "HOME");
-            printf("HOME: '%s'\n", result ? result : "NULL");
-            if (result) free(result);
-            
-            result = expand_variable(shell, "PATH");
-            printf("PATH: '%s'\n", result ? result : "NULL");
-            if (result) free(result);
-            
-            result = expand_variable(shell, "NONEXISTENT");
-            printf("NONEXISTENT: '%s'\n", result ? result : "NULL");
-            if (result) free(result);
-            
-            // Test $? variable
-            printf("\n--- Testing $? Variable ---\n");
-            shell->exit_status = 42;
-            result = expand_variable(shell, "?");
-            printf("$? when exit_status=42: '%s'\n", result ? result : "NULL");
-            if (result) free(result);
-            
-            printf("\n=== TESTS COMPLETED ===\n");
-            free(input);
-            continue; // Skip normal command processing
-        }
-        
-        if (ft_strcmp(input, "test_exit") == 0)
-        {
-            char *result = get_exit_status_string(shell);
-            printf("Current exit status: '%s'\n", result ? result : "NULL");
-            if (result) free(result);
-            free(input);
-            continue;
-        }
-        // ===== END TEST COMMANDS =====
-        
         if (process_input(shell, input) == -1)
         {
             printf("Error processing command\n");
@@ -440,8 +336,71 @@ int main_loop(t_shell *shell)
     }
 
     return (shell->exit_status);
+}*/
+
+int main_loop(t_shell *shell)
+{
+    char *input;
+    signals_prompt();
+    while (!shell->exit)
+    {
+        //signals_prompt();  // ← Move this inside the loop!
+        
+        if (g_signal == SIGINT)
+        {
+            g_signal = 0;
+            shell->exit_status = 130;
+        }
+        
+        input = readline("minishell$ ");
+        
+        if (!input)
+        {
+            update_shlvl_on_exit(shell);
+            printf("exit\n");
+            break;
+        }
+        
+        if (g_signal == SIGINT)
+        {
+            g_signal = 0;
+            shell->exit_status = 130;
+            free(input);
+            continue; 
+        }
+        
+        if (input[0] == '\0')
+        {
+            free(input);
+            continue;
+        }
+        
+        add_history(input);
+        g_signal = 0;
+        
+        // Normal command processing
+        if (process_input(shell, input) == -1)
+        {
+            printf("Error processing command\n");
+        }
+        
+        if (g_signal == SIGINT)
+        {
+            g_signal = 0;
+            shell->exit_status = 130;
+        }
+        
+        if (shell->exit)
+        {
+            free(input);
+            break;
+        }
+        
+        free(input);
+    }
+
+    return (shell->exit_status);
 }
-*/
 int main(int argc, char **argv, char **envp)
 {
     t_shell shell;

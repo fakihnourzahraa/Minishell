@@ -34,11 +34,12 @@ static void	print_echo(char **args, int start, bool newline, int *space)
 {
 	int	i;
 
+	(void)space;
 	i = start;
 	while (args[i])
 	{
 		ft_putstr_fd(args[i], 1);
-		if (args[i + 1] && space[i])
+		if (args[i + 1])//&& space[i])
 			ft_putchar_fd(' ', 1);
 		i++;
 	}
