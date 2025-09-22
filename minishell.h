@@ -6,7 +6,7 @@
 /*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/28 16:10:17 by nour              #+#    #+#             */
-/*   Updated: 2025/09/19 17:35:13 by nour             ###   ########.fr       */
+/*   Updated: 2025/09/22 19:37:50 by nour             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,6 @@ typedef struct s_cmd
 	int		i_fd;
 	int		o_fd;
 	pid_t	pid;
-	int		*spaces;
 	t_builtin builtin;
 	t_cmd	*next;
 }			t_cmd;

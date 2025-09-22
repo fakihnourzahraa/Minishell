@@ -6,7 +6,7 @@
 /*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/04 22:53:52 by nour              #+#    #+#             */
-/*   Updated: 2025/09/21 02:48:14 by nour             ###   ########.fr       */
+/*   Updated: 2025/09/22 19:35:39 by nour             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,23 +20,48 @@ int	word_count(t_token *token)
 	while (token && token->type != T_EOF && token->type != PIPE)
 	{
 		if (token->type == WORD)
+		{
+			if (token->type == WORD && token->space == 0)
+			{
+				while (token && token->space == 0)
+					token = token->next;
+			}
+			else
+				token = token->next;
 			i++;
-		token = token->next;
+		}
+		else
+			token = token->next;
 	}
 	return (i);
 }
-int	parse_word(t_token *token, t_cmd *cmd, int i)
+int	parse_word(t_token **t, t_cmd *cmd, int i)
 {
-	if (token->quotes == 1)
-		cmd->args[i] = ft_strtrim(token->s, "'");
-	else if (token->quotes == 2)
-		cmd->args[i] = ft_strtrim(token->s, "\"");
+	char	*a;
+	char	*b;
+
+	if ((*t)->quotes == 1)
+		cmd->args[i] =  ft_strtrim((*t)->s, "'");
+	else if ((*t)->quotes == 2)
+		cmd->args[i] = ft_strtrim((*t)->s, "\"");
 	else
-		cmd->args[i] = ft_strdup(token->s);
-	// if (token->space)
-	// 	cmd->spaces[i] = 1;
-	// else
-	// 	cmd->spaces[i] = 0;
+		cmd->args[i] = ft_strdup((*t)->s);
+	while ((*t)->space == 0 && (*t)->type == WORD && (*t)->next && (*t)->next->type == WORD)
+	{
+		(*t) = (*t)->next;
+		if ((*t)->quotes == 1)
+			a =  ft_strtrim((*t)->s, "'");
+		else if ((*t)->quotes == 2)
+			a = ft_strtrim((*t)->s, "\"");
+		else
+			a = ft_strdup((*t)->s);
+		b = cmd->args[i];
+		cmd->args[i] = ft_strjoin(b, a);
+		free(a);
+		free(b);
+	}
+	if (i == 0)
+		cmd->cmd = ft_strdup(cmd->args[0]);
 	return (i + 1);
 }
 
@@ -51,12 +76,11 @@ void	parse(t_shell *shell, t_token *token)
 	if (!token || token->type == PIPE)
 		return ;
 	cmd = init_cmd(shell, token);
-	i = 1;
-	token = token->next;
+	i = 0;
 	while (token && token->type != T_EOF)
 	{
 		if(token->type == WORD)
-			i = parse_word(token, cmd, i);
+			 i = parse_word(&token, cmd, i);
 		else if (token->type != PIPE)
 		{
 			fill_r(token, cmd);

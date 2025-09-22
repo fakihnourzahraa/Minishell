@@ -3,15 +3,23 @@
 /*                                                        :::      ::::::::   */
 /*   token_helpers.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/31 13:23:45 by nfakih            #+#    #+#             */
-/*   Updated: 2025/09/19 13:32:14 by nfakih           ###   ########.fr       */
+/*   Updated: 2025/09/22 12:03:33 by nour             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "tokenization.h"
 
+int		skipforvar(char *a, int i)
+{ 
+	while (a[i] && (ft_isalnum(a[i]) || skipable_space(a[i])))
+	{
+		i++;
+	}
+	return (i);
+}
 bool	skipable_space(char a)
 {
 	if (a == 32 || a == 9 || a == 11 || a == 12)
@@ -40,11 +48,18 @@ int	word_len(char *a, int i)
 
 	j = 0;
 	while (a[i] && !skipable_space(a[i]) && 
-		   a[i] != '|' && a[i] != '<' && a[i] != '>' && 
-		   a[i] != '\'' && a[i] != '"')
+		   a[i] != '|' && a[i] != '<' && a[i] != '>')
 	{
-		i++;
-		j++;
+		// if (a[i] == '$')
+		// {
+		// 	i += env_length(a, i);
+		// 	j += env_length(a, i);
+		// }
+		// else
+		// {
+			i++;
+			j++;
+		// }
 	}
 	return (j);
 }
@@ -98,7 +113,13 @@ int	split_word(char *a, int i, t_shell *shell, t_token *n)
 	b = malloc(sizeof(char) * (len + 1));
 	while (len > j)
 	{
-		b[j] = a[i + j];
+		// if (a[i + j] == '$')
+		// {
+		// 	j = concat(a, b, j, i);
+		// 	i = var_length(a, i + j);
+		// }
+		// else
+			b[j] = a[i + j];
 		j++;
 	}
 	if (a[i + j] && a[i + j] != 32)
@@ -120,21 +141,33 @@ int	split_quote(char *a, int i, t_shell *shell, char n)
 	i++;
 	len = 0;
 	while (a[i + len] && a[i + len] != n)
-		len++;	
+	{
+		// if (n == '"' && a[i + len] == '$')
+		// 	len = env_length(a, i + len);
+		// else
+			len++;
+	}
 	b = malloc(sizeof(char) * (len + 3));
 	b[0] = n;
 	j = -1;
 	while (++j < len)
-		b[j + 1] = a[i + j];
+	{
+		// if (a[i + j] == '$')
+		// {
+		// 	j = concat(a, b, j, i);
+		// 	i = var_length(a, i + j);
+		// }
+		// else
+			b[j + 1] = a[i + j];
+	}
 	t = init_token();
-	if (a[j + 1 + i] && a[j + 1 + i] == ' ')
-		t->space = true;
+	if (a[j + 1 + i] && !skipable_space(a[j + 1 + i]))
+		t->space = false;
 	b[len + 1] = n;
 	b[len + 2] = '\0';
 	t->s = b;
 	t->type = WORD;
-	t->quotes = (n == '\'') ? 1 : 2;  // 1 for single, 2 for double
+	t->quotes = (n == '\'') ? 1 : 2;
 	add_token(shell, t);
-	// Return position after closing quote
 	return (i + len + 1);
 }

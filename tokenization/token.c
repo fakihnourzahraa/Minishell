@@ -48,7 +48,7 @@ t_token	*init_token(void)
 	n->s = NULL;
 	n->quotes = 0;
 	n->next = NULL;
-	n->space = 0;
+	n->space = 1;
 	return (n);
 }
 void	add_token(t_shell *shell, t_token *n)
