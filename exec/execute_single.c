@@ -12,29 +12,13 @@
 
 #include "exec.h"
 
-/*void cleanup_child_process(t_shell *shell)
-{
-    if (shell->env)
-    {
-        free_env_list(shell->env);
-        shell->env = NULL;
-    }
-    cleanup_t(shell);
-    cleanup_p(shell);
-
-    if (shell->in)
-    {
-        free(shell->in);
-        shell->in = NULL;
-    }
-}*/
 void cleanup_child_process(t_shell *shell)
 {
-    printf("DEBUG: cleanup_child_process called in PID %d\n", getpid()); // ← Add this
+    //printf("DEBUG: cleanup_child_process called in PID %d\n", getpid()); // ← Add this
     
     if (shell->env)
     {
-        printf("DEBUG: freeing environment variables\n"); // ← Add this
+        //printf("DEBUG: freeing environment variables\n"); // ← Add this
         free_env_list(shell->env);
         shell->env = NULL;
     }
@@ -46,7 +30,7 @@ void cleanup_child_process(t_shell *shell)
         free(shell->in);
         shell->in = NULL;
     }
-    printf("DEBUG: cleanup_child_process finished\n"); // ← Add this
+    //printf("DEBUG: cleanup_child_process finished\n"); // ← Add this
 }
 
 static void wait_child(t_shell *shell, int status)

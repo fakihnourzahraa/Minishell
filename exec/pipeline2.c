@@ -179,11 +179,21 @@ void exec_external_with_env(t_shell *shell, t_cmd *cmd, char *path)
   if (!envp_array)
   {
     free(path);
+    if (shell->in)
+    {
+      free(shell->in);
+      shell->in = NULL;
+    }
     exit(1);
   }
   execve(path, cmd->args, envp_array);
   perror("execve");
   free_envp(envp_array);
   free(path);
+  if (shell->in)
+  {
+    free(shell->in);
+    shell->in = NULL;
+  }
   exit(127);
 }

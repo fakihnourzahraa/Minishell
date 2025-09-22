@@ -179,6 +179,7 @@ static int run_heredoc_internal(char **delims, int count, t_shell *shell)
     return (-1);
 }
 
+
 int run_heredoc(char *delimiter, t_shell *shell)
 {
     char *delims[2] = { delimiter, NULL };

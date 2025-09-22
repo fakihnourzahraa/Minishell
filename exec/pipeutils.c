@@ -38,7 +38,8 @@ static void execute_child_process(t_shell *shell, t_cmd *cmd, t_pipe_info *info)
     if (cmd->builtin != NOT_BUILTIN)
     {
         execute_builtin(cmd, shell);//if they are builtin they run directly
-        exit(shell->exit_status);//after run we should exit correctly
+        cleanup_pipeline_child(shell);
+        exit(shell->exit_status);
     }
     else
     {
@@ -48,6 +49,7 @@ static void execute_child_process(t_shell *shell, t_cmd *cmd, t_pipe_info *info)
             ft_putstr_fd("minishell: ", 2);
             ft_putstr_fd(cmd->args[0], 2);
             ft_putstr_fd(": command not found\n", 2);
+            cleanup_pipeline_child(shell);
             exit(127);
         }
         exec_external_with_env(shell, cmd, cmd->path);
