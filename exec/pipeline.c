@@ -26,7 +26,7 @@ int count_commands(t_cmd *cmds)
 }
 // this fct to only count cmnd 
 
-int **setup_pipes(int cmd_count)
+/*int **setup_pipes(int cmd_count)
 {
   int **pipes;
   int pipe_count;
@@ -49,8 +49,48 @@ int **setup_pipes(int cmd_count)
     i++;
   }
   return (pipes);
+}*/
+int **setup_pipes(int cmd_count)
+{
+    int **pipes;
+    int pipe_count;
+    int i;
+
+    if (cmd_count < 2)
+        return (NULL);
+        
+    pipe_count = cmd_count - 1;
+    pipes = malloc(sizeof(int *) * pipe_count);
+    if (!pipes)
+        return (NULL);
+    i = 0;
+    while (i < pipe_count)
+    {
+        pipes[i] = NULL;
+        i++;
+    }
+    i = 0;
+    while (i < pipe_count)
+    {
+        pipes[i] = malloc(sizeof(int) * 2);
+        if (!pipes[i])
+        {
+            cleanup_pipes(pipes, i);
+            return (NULL);
+        }
+        
+        if (pipe(pipes[i]) == -1)
+        {
+            perror("pipe");
+            free(pipes[i]);
+            cleanup_pipes(pipes, i);
+            return (NULL);
+        }
+        i++;
+    }
+    
+    return (pipes);
 }
-//this fct is only to allocate and initial the pipe
 
 void close_all_pipes(int **pipes, int pipe_count)
 {

@@ -51,6 +51,7 @@ static void execute_child_process(t_shell *shell, t_cmd *cmd, t_pipe_info *info)
             exit(127);
         }
         exec_external_with_env(shell, cmd, cmd->path);
+        exit(127);
     }
 }
 

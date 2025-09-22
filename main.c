@@ -68,19 +68,21 @@ void cleanup_shell(t_shell *shell)
     if (!shell)
         return;
 
-    cleanup_t(shell);
-    cleanup_p(shell);
+    //cleanup_t(shell);
+    //cleanup_p(shell);
 
     if (shell->in)
     {
         free(shell->in);
         shell->in = NULL;
     }
-    if (shell->env)
+    cleanup_t(shell);
+    cleanup_p(shell);
+    /*if (shell->env)
     {
         free_env_list(shell->env);
         shell->env = NULL;
-    }
+    }*/
 
     if (shell->cwd)
     {
@@ -277,8 +279,13 @@ int process_input(t_shell *shell, char *input)
     //printf("DEBUG: mira_execution FINISHED - about to cleanup\n");
     cleanup_t(shell);
     cleanup_p(shell);
-    free(shell->in);
-    shell->in = NULL;
+    if (shell->in)
+    {
+        free(shell->in);
+        shell->in = NULL;
+    }
+    //free(shell->in);
+    //shell->in = NULL;
     //printf("DEBUG: process_input finished\n");
     return (0);
 }
@@ -341,11 +348,8 @@ int process_input(t_shell *shell, char *input)
 int main_loop(t_shell *shell)
 {
     char *input;
-    signals_prompt();
     while (!shell->exit)
-    {
-        //signals_prompt();  // ← Move this inside the loop!
-        
+    {   
         if (g_signal == SIGINT)
         {
             g_signal = 0;
@@ -398,7 +402,6 @@ int main_loop(t_shell *shell)
         
         free(input);
     }
-
     return (shell->exit_status);
 }
 int main(int argc, char **argv, char **envp)

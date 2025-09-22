@@ -61,7 +61,12 @@ static void	cleanup_and_wait(t_shell *shell, t_cmd *cmds, t_pipe_info *info)
 {
 	close_all_pipes(info->pipes, info->cmd_count - 1);
 	wait_for_children(cmds, shell);
-	free_pipes(info->pipes, info->cmd_count - 1);
+	//free_pipes(info->pipes, info->cmd_count - 1);
+	if (info->pipes)
+  {
+    free_pipes(info->pipes, info->cmd_count - 1);
+    info->pipes = NULL;  // Prevent double-free
+  }
 	signals_prompt();
 }
 

@@ -12,29 +12,7 @@
 
 #include "env.h"
 
-static t_env *create_env_node(const char *name, const char *value, bool available)
-{
-  t_env *node; 
-  
-  node= malloc(sizeof(t_env));
-  if (!node)
-    return NULL;
-  node->name = ft_strdup(name);
-  node->val = ft_strdup(value);
-  if (!node->name || !node->val)
-  {
-    free(node->name);
-    free(node->val);
-    free(node);
-    return NULL;
-  }
-  node->avail = available;
-  node->next = NULL;
-  return node;
-}
-
-// Set/update environment variable
-int set_env_var(t_env **env, const char *name, const char *value, bool available)
+/*int set_env_var(t_env **env, const char *name, const char *value, bool available)
 {
   t_env *node;
 
@@ -56,6 +34,58 @@ int set_env_var(t_env **env, const char *name, const char *value, bool available
   node->next = *env; // insert at head
   *env = node;
   return 0;
+}*/
+
+static t_env *create_env_node(const char *name, const char *value, bool available)
+{
+  t_env *node; 
+  
+  node= malloc(sizeof(t_env));
+  if (!node)
+    return NULL;
+  node->name = ft_strdup(name);
+  node->val = ft_strdup(value);
+  if (!node->name || !node->val)
+  {
+    free(node->name);
+    free(node->val);
+    free(node);
+    return NULL;
+  }
+  node->avail = available;
+  node->next = NULL;
+  return node;
+}
+
+int set_env_var(t_env **env, const char *name, const char *value, bool available)
+{
+    t_env *node;
+
+    if (!env || !name)
+        return 1;
+        
+    // Check if variable already exists
+    node = find_env_var(*env, name);
+    if (node)
+    {
+        // Update existing variable
+        free(node->val);  // Free old value
+        node->val = ft_strdup(value ? value : "");  // Duplicate new value
+        if (!node->val)
+            return 1;
+        node->avail = available;
+        return 0;
+    }
+    
+    // Create new variable
+    node = create_env_node(name, value ? value : "", available);
+    if (!node)
+        return 1;
+        
+    // Insert at head
+    node->next = *env;
+    *env = node;
+    return 0;
 }
 
 static void remove_head(t_env **env)

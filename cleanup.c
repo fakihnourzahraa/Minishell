@@ -12,19 +12,22 @@
 
 #include "minishell.h"
 
-void	cleanup_t(t_shell *shell)
+void cleanup_t(t_shell *shell)
 {
-	t_token *t;
+    t_token *t;
 
-	while (shell->tkns)
-	{
-		if (shell->tkns->s)
-			free(shell->tkns->s);
-		t = shell->tkns;
-		shell->tkns = shell->tkns->next;
-		free(t);
-	}
-	shell->tkns = NULL;
+    if (!shell)
+        return;
+    
+    while (shell->tkns)
+    {
+        if (shell->tkns->s)
+            free(shell->tkns->s);
+        t = shell->tkns;
+        shell->tkns = shell->tkns->next;
+        free(t);
+    }
+    shell->tkns = NULL;
 }
 
 static void cleanup_redirs(t_redir *redir)
@@ -47,6 +50,8 @@ void cleanup_p(t_shell *shell)
     t_cmd *tmp;
     int i;
 
+    if (!shell)
+        return;
     current = shell->cmds;
     while (current)
     {
@@ -54,7 +59,6 @@ void cleanup_p(t_shell *shell)
             free(current->cmd);
         if (current->path)
             free(current->path);
-
         if (current->args)
         {
             i = 0;
@@ -64,10 +68,15 @@ void cleanup_p(t_shell *shell)
                 i++;
             }
             free(current->args);
+            current->args = NULL;
         }
 		if (current->spaces)
+        {
             free(current->spaces);
+            current->spaces = NULL;
+        }
 	    cleanup_redirs(current->rd);
+        current->rd = NULL;
         tmp = current;
         current = current->next;
         free(tmp);

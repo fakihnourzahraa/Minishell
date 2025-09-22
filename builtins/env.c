@@ -24,6 +24,8 @@ void update_shlvl_on_start(t_shell *shell)
     else
         lvl = 1;
     new_shlvl = ft_itoa(lvl);
+    if (!new_shlvl)
+        return;
     set_env_var(&shell->env, "SHLVL", new_shlvl, true);
     free(new_shlvl);
 }
@@ -41,6 +43,8 @@ void update_shlvl_on_exit(t_shell *shell)
     if (lvl > 1)
         lvl--;
     new_shlvl = ft_itoa(lvl);
+    if (!new_shlvl)
+        return;
     set_env_var(&shell->env, "SHLVL", new_shlvl, true);
     free(new_shlvl);
 }
