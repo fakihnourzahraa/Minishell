@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cleanup.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/16 16:46:40 by nfakih            #+#    #+#             */
-/*   Updated: 2025/09/20 21:25:26 by nour             ###   ########.fr       */
+/*   Updated: 2025/09/23 18:20:37 by nfakih           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,11 +70,6 @@ void cleanup_p(t_shell *shell)
             free(current->args);
             current->args = NULL;
         }
-		if (current->spaces)
-        {
-            free(current->spaces);
-            current->spaces = NULL;
-        }
 	    cleanup_redirs(current->rd);
         current->rd = NULL;
         tmp = current;
@@ -84,20 +79,20 @@ void cleanup_p(t_shell *shell)
     shell->cmds = NULL;
 }
 
-void cleanup_env(t_shell *shell)
-{
-    if (shell->env)
-     {
-         free_env_list(shell->env);
-         shell->env = NULL;
-     }
+// void cleanup_env(t_shell *shell)
+// {
+//     if (shell->env)
+//      {
+//          free_env_list(shell->env);
+//          shell->env = NULL;
+//      }
 
-     if (shell->envp)    
-    {
-         free_envp(shell->envp);
-         shell->envp = NULL;
-     }
- }
+//      if (shell->envp)    
+//     {
+//          free_envp(shell->envp);
+//          shell->envp = NULL;
+//      }
+//  }
 
 /*void cleanup_p(t_shell *shell)
 {

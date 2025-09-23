@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/04 22:53:52 by nour              #+#    #+#             */
-/*   Updated: 2025/09/22 19:35:39 by nour             ###   ########.fr       */
+/*   Updated: 2025/09/23 18:19:41 by nfakih           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,30 @@ int	parse_word(t_token **t, t_cmd *cmd, int i)
 	return (i + 1);
 }
 
-void	parse(t_shell *shell, t_token *token)
+t_token *process_token(t_shell *shell, t_token *token, t_cmd **cmd, int *i)
+{
+	if (token->type == WORD)
+	{
+		*i = parse_word(&token, *cmd, *i);
+	}
+	else if (token->type != PIPE)
+	{
+		fill_r(token, *cmd);
+		if (token->next && token->next->type == WORD)
+			token = token->next;
+	}
+	else
+	{
+		(*cmd)->args[*i] = NULL;
+		add_cmd(shell, *cmd);
+		token = token->next;
+		*cmd = init_cmd(shell, token);
+		*i = 1;
+	}
+	token = token->next;
+	return (token);
+}
+int	parse(t_shell *shell, t_token *token)
 {
 	//printf("DEBUG: FIRST LINE OF PARSE() REACHED\n");
 	int		i;
@@ -74,34 +97,36 @@ void	parse(t_shell *shell, t_token *token)
 	// if (!token || token->type == PIPE || token->type != T_EOF)
 	// 	return ;
 	if (!token || token->type == PIPE)
-		return ;
+		return (-1);
 	cmd = init_cmd(shell, token);
 	i = 0;
 	while (token && token->type != T_EOF)
 	{
-		if(token->type == WORD)
-			 i = parse_word(&token, cmd, i);
-		else if (token->type != PIPE)
-		{
-			fill_r(token, cmd);
-			if (token->next && token->next->type == WORD)
-				token = token->next;
-		}
-		else
-		{
-			cmd->args[i] = NULL;
-			// cmd->spaces[i] = 0;
-			add_cmd(shell, cmd);
-			token = token->next;
-			//cmd = cmd->next;
-			cmd = init_cmd(shell, token);
-			i = 1;
-		}
-		token = token->next;
+		token = process_token(shell, token, &cmd, &i);
+		// if(token->type == WORD)
+		// 	 i = parse_word(&token, cmd, i);
+		// else if (token->type != PIPE)
+		// {
+		// 	fill_r(token, cmd);
+		// 	if (token->next && token->next->type == WORD)
+		// 		token = token->next;
+		// }
+		// else
+		// {
+		// 	cmd->args[i] = NULL;
+		// 	// cmd->spaces[i] = 0;
+		// 	add_cmd(shell, cmd);
+		// 	token = token->next;
+		// 	//cmd = cmd->next;
+		// 	cmd = init_cmd(shell, token);
+		// 	i = 1;
+		// }
+		// token = token->next;
 	}
 	cmd->args[i] = NULL;
 	// cmd->spaces[i] = 0;
 	add_cmd(shell, cmd);
+	return (1);
 }
 
 // FIXED: This function now processes redirections for the CURRENT command only

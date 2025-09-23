@@ -30,16 +30,15 @@ static bool	is_n_flag(char *arg)
 	return (true);
 }
 
-static void	print_echo(char **args, int start, bool newline, int *space)
+static void	print_echo(char **args, int start, bool newline)
 {
 	int	i;
 
-	(void)space;
 	i = start;
 	while (args[i])
 	{
 		ft_putstr_fd(args[i], 1);
-		if (args[i + 1])//&& space[i])
+		if (args[i + 1])
 			ft_putchar_fd(' ', 1);
 		i++;
 	}
@@ -69,6 +68,6 @@ void	builtin_echo(t_cmd *cmd, t_shell *shell)
 			ft_putchar_fd('\n', 1);
 	}
 	else
-		print_echo(cmd->args, start, newline, cmd->spaces);
+		print_echo(cmd->args, start, newline);
 	shell->exit_status = 0;
 }
