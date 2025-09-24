@@ -147,7 +147,7 @@ int handle_output_redirections(t_cmd *cmd)
   return (output_fd);
 }
 
-void setup_cmd_fds(t_cmd *cmd, t_pipe_info *info, t_shell *shell)
+/*void setup_cmd_fds(t_cmd *cmd, t_pipe_info *info, t_shell *shell)
 {
   int input_fd;
   int output_fd;
@@ -169,6 +169,49 @@ void setup_cmd_fds(t_cmd *cmd, t_pipe_info *info, t_shell *shell)
       close(output_fd);
   }
   close_unused_pipes(info->pipes, info->cmd_count - 1, info->cmd_index);
+}*/
+
+void setup_cmd_fds(t_cmd *cmd, t_pipe_info *info, t_shell *shell)
+{
+  int input_fd;
+  int output_fd;
+
+  input_fd = handle_input_redirections(cmd, shell);
+  output_fd = handle_output_redirections(cmd);
+  
+  // Connect pipes if we're in a pipeline
+  if (info)
+    connect_pipes(&input_fd, &output_fd, info);
+    
+  if (input_fd != STDIN_FILENO)
+  {
+    if (dup2(input_fd, STDIN_FILENO) == -1)
+    {
+      perror("dup2 input");
+      if (input_fd > 2)
+        close(input_fd);
+      exit(1);
+    }
+    if (input_fd > 2)
+      close(input_fd);
+  }
+  
+  if (output_fd != STDOUT_FILENO)
+  {
+    if (dup2(output_fd, STDOUT_FILENO) == -1)
+    {
+      perror("dup2 output");
+      if (output_fd > 2)
+        close(output_fd);
+      exit(1);
+    }
+    if (output_fd > 2)
+      close(output_fd);
+  }
+  
+  // Close unused pipes only if we're in a pipeline
+  if (info)
+    close_unused_pipes(info->pipes, info->cmd_count - 1, info->cmd_index);
 }
 
 void exec_external_with_env(t_shell *shell, t_cmd *cmd, char *path)
@@ -179,21 +222,13 @@ void exec_external_with_env(t_shell *shell, t_cmd *cmd, char *path)
   if (!envp_array)
   {
     free(path);
-    if (shell->in)
-    {
-      free(shell->in);
-      shell->in = NULL;
-    }
+    cleanup_pipeline_child(shell);
     exit(1);
   }
   execve(path, cmd->args, envp_array);
   perror("execve");
   free_envp(envp_array);
   free(path);
-  if (shell->in)
-  {
-    free(shell->in);
-    shell->in = NULL;
-  }
+  cleanup_pipeline_child(shell);
   exit(127);
 }

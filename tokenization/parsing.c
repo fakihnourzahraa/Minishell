@@ -40,6 +40,8 @@ int	parse_word(t_token **t, t_cmd *cmd, int i)
 	char	*a;
 	char	*b;
 
+	if (!t || !*t || !cmd)
+		return (i);
 	if ((*t)->quotes == 1)
 		cmd->args[i] =  ft_strtrim((*t)->s, "'");
 	else if ((*t)->quotes == 2)
@@ -60,13 +62,22 @@ int	parse_word(t_token **t, t_cmd *cmd, int i)
 		free(a);
 		free(b);
 	}
-	if (i == 0)
+	/*if (i == 0)
 		cmd->cmd = ft_strdup(cmd->args[0]);
+	return (i + 1);*/
+	if (i == 0 && cmd->args[0])
+	{
+		if (cmd->cmd)
+			free(cmd->cmd);
+		cmd->cmd = ft_strdup(cmd->args[0]);
+	}
 	return (i + 1);
 }
 
 t_token *process_token(t_shell *shell, t_token *token, t_cmd **cmd, int *i)
 {
+	if (!token || !cmd || !*cmd)
+		return (token);
 	if (token->type == WORD)
 	{
 		*i = parse_word(&token, *cmd, *i);
@@ -83,10 +94,17 @@ t_token *process_token(t_shell *shell, t_token *token, t_cmd **cmd, int *i)
 		add_cmd(shell, *cmd);
 		token = token->next;
 		*cmd = init_cmd(shell, token);
-		*i = 1;
+		if (!*cmd)
+			return (NULL);
+		//*i = 1;
+		*i = 0;
+		return (token); 
 	}
-	token = token->next;
+	if (token)
+		token = token->next;
 	return (token);
+	//token = token->next;
+	//return (token);
 }
 int	parse(t_shell *shell, t_token *token)
 {
@@ -99,10 +117,14 @@ int	parse(t_shell *shell, t_token *token)
 	if (!token || token->type == PIPE)
 		return (-1);
 	cmd = init_cmd(shell, token);
+	if (!cmd)
+		return (-1);
 	i = 0;
 	while (token && token->type != T_EOF)
 	{
 		token = process_token(shell, token, &cmd, &i);
+		if (!token && cmd)
+			break;
 		// if(token->type == WORD)
 		// 	 i = parse_word(&token, cmd, i);
 		// else if (token->type != PIPE)
@@ -123,9 +145,14 @@ int	parse(t_shell *shell, t_token *token)
 		// }
 		// token = token->next;
 	}
-	cmd->args[i] = NULL;
+	if(cmd)
+	{
+		cmd->args[i] = NULL;
+		add_cmd(shell, cmd);
+	}
+	/*cmd->args[i] = NULL;
 	// cmd->spaces[i] = 0;
-	add_cmd(shell, cmd);
+	add_cmd(shell, cmd);*/
 	return (1);
 }
 

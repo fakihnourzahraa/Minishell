@@ -101,8 +101,18 @@ void cleanup_shell(t_shell *shell)
         free(shell->sto);
         shell->sto = NULL;
     }
+    if (shell->env)
+    {
+        free_env_list(shell->env);
+        shell->env = NULL;
+    }
 
-    cleanup_env(shell);
+      if (shell->envp)
+    {
+        free_envp(shell->envp);
+        shell->envp = NULL;
+    }
+    //cleanup_env(shell);
 
     rl_clear_history();
 }
@@ -193,20 +203,27 @@ int nour_parsing(t_shell *shell)
 }*/
 void mira_execution(t_shell *shell)
 {
-    //printf("DEBUG: mira_execution started\n");
+    int cmd_num = 0;
     t_cmd *cmd_chain = shell->cmds;
     
     if (!cmd_chain)
-    {
-        //printf("DEBUG: No commands to execute\n");
         return;
-    }
-    //printf("DEBUG: Command found: '%s'\n", cmd_chain->cmd ? cmd_chain->cmd : "NULL");
+    
     t_cmd *current = cmd_chain;
     while (current)
     {
-        current->builtin = is_builtin(current->cmd);
+        printf("DEBUG: cmd[%d]->cmd = '%s'\n", cmd_num, 
+               current->cmd ? current->cmd : "(null)");
+        if (current->args && current->args[0])
+            printf("DEBUG: cmd[%d]->args[0] = '%s'\n", cmd_num, current->args[0]);
+        
+        if (current->cmd)
+            current->builtin = is_builtin(current->cmd);
+        else
+            current->builtin = NOT_BUILTIN;
+        
         current = current->next;
+        cmd_num++;  // Move this line here
     }
     
     if (cmd_chain->next)
@@ -396,6 +413,7 @@ int main_loop(t_shell *shell)
         
         if (shell->exit)
         {
+            update_shlvl_on_exit(shell);
             free(input);
             break;
         }

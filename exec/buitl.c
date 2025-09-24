@@ -37,7 +37,7 @@ int execute_builtin(t_cmd *cmd, t_shell *shell)
 {
   int status;
 
-  if (!cmd || !cmd->args || !cmd->args[0])
+  if (!cmd || !cmd->args || !cmd->args[0] || !shell)
     return (0);
   if (cmd->builtin == BUILTIN_EXIT)
   {
@@ -69,6 +69,8 @@ int execute_builtin(t_cmd *cmd, t_shell *shell)
     }
     else if (pid == 0)
     {
+      signal(SIGINT, SIG_DFL);
+      signal(SIGQUIT, SIG_DFL);
       if (apply_redirections(cmd, shell) == -1)
       {
         cleanup_child_process(shell);
@@ -85,9 +87,14 @@ int execute_builtin(t_cmd *cmd, t_shell *shell)
     }
     else // Parent
     {
+      signal(SIGINT, SIG_IGN);
+      signal(SIGQUIT, SIG_IGN);
       waitpid(pid, &status, 0);
+      signals_prompt();
       if (WIFEXITED(status))
         shell->exit_status = WEXITSTATUS(status);
+      else if (WIFSIGNALED(status))
+        shell->exit_status = 128 + WTERMSIG(status);
       else
         shell->exit_status = 1;
     }

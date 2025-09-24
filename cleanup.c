@@ -21,8 +21,13 @@ void cleanup_t(t_shell *shell)
     
     while (shell->tkns)
     {
+        /*if (shell->tkns->s)
+            free(shell->tkns->s);*/
         if (shell->tkns->s)
+        {
             free(shell->tkns->s);
+            shell->tkns->s = NULL;
+        }
         t = shell->tkns;
         shell->tkns = shell->tkns->next;
         free(t);
@@ -36,8 +41,13 @@ static void cleanup_redirs(t_redir *redir)
 
     while (redir)
     {
+        /*if (redir->s)
+            free(redir->s);*/
         if (redir->s)
+        {
             free(redir->s);
+            redir->s = NULL;
+        }
         tmp = redir;
         redir = redir->next;
         free(tmp);
@@ -56,22 +66,34 @@ void cleanup_p(t_shell *shell)
     while (current)
     {
         if (current->cmd)
+        {
             free(current->cmd);
+            current->cmd = NULL;
+        }
         if (current->path)
+        {
             free(current->path);
+            current->path = NULL;
+        }
         if (current->args)
         {
             i = 0;
             while (current->args[i])
             {
                 free(current->args[i]);
+                current->args[i] = NULL;
                 i++;
             }
             free(current->args);
             current->args = NULL;
         }
-	    cleanup_redirs(current->rd);
-        current->rd = NULL;
+        /*cleanup_redirs(current->rd);
+        current->rd = NULL;*/
+        if (current->rd)
+        {
+            cleanup_redirs(current->rd);
+            current->rd = NULL;
+        }
         tmp = current;
         current = current->next;
         free(tmp);
@@ -79,20 +101,55 @@ void cleanup_p(t_shell *shell)
     shell->cmds = NULL;
 }
 
-// void cleanup_env(t_shell *shell)
-// {
-//     if (shell->env)
-//      {
-//          free_env_list(shell->env);
-//          shell->env = NULL;
-//      }
+void cleanup_env(t_shell *shell)
+{
+    if (!shell)
+        return;
+    if (shell->env)
+    {
+        free_env_list(shell->env);
+        shell->env = NULL;
+    }
 
-//      if (shell->envp)    
-//     {
-//          free_envp(shell->envp);
-//          shell->envp = NULL;
-//      }
-//  }
+    if (shell->envp)    
+    {
+          free_envp(shell->envp);
+          shell->envp = NULL;
+    }
+}
+
+void cleanup_pipeline_resources(t_shell *shell)
+{
+    if (!shell)
+        return;
+    
+    // Clean up current input string
+    if (shell->in)
+    {
+        free(shell->in);
+        shell->in = NULL;
+    }
+    
+    // Clean up current working directory if allocated
+    if (shell->cwd)
+    {
+        free(shell->cwd);
+        shell->cwd = NULL;
+    }
+    
+    // Clean up standard input/output buffers if allocated
+    if (shell->sti)
+    {
+        free(shell->sti);
+        shell->sti = NULL;
+    }
+    
+    if (shell->sto)
+    {
+        free(shell->sto);
+        shell->sto = NULL;
+    }
+}
 
 /*void cleanup_p(t_shell *shell)
 {

@@ -147,6 +147,7 @@ typedef struct s_shell
 void	cleanup_t(t_shell *shell);
 void 	cleanup_p(t_shell *shell);
 void cleanup_env(t_shell *shell);
+void cleanup_pipeline_resources(t_shell *shell);
 #endif
 
 //nour work on it week 1 

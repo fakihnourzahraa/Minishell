@@ -42,6 +42,8 @@ void update_shlvl_on_exit(t_shell *shell)
     lvl = ft_atoi(shlvl->val);
     if (lvl > 1)
         lvl--;
+    else
+        lvl = 0;
     new_shlvl = ft_itoa(lvl);
     if (!new_shlvl)
         return;

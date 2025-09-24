@@ -12,7 +12,7 @@
 
 #include "exec.h"
 
-void cleanup_child_process(t_shell *shell)
+/*void cleanup_child_process(t_shell *shell)
 {
     //printf("DEBUG: cleanup_child_process called in PID %d\n", getpid()); // ← Add this
     
@@ -31,7 +31,7 @@ void cleanup_child_process(t_shell *shell)
         shell->in = NULL;
     }
     //printf("DEBUG: cleanup_child_process finished\n"); // ← Add this
-}
+}*/
 
 static void wait_child(t_shell *shell, int status)
 {
@@ -147,8 +147,7 @@ static int execute_external_command(t_shell *shell, t_cmd *cmd)
         return (1);
     }
     
-    // Store path in cmd structure and free original
-    cmd->path = path;  // Transfer ownership to cmd
+    cmd->path = path;
     
     pid = fork();
     if (pid < 0)

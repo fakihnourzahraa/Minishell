@@ -17,6 +17,8 @@ int	set_single(int n, int i, char a, t_token *t)
 	char	*b;
 
 	b = malloc (sizeof(char) * 2);
+	if (!b)
+		return (-1);
 	b[0] = a;
 	b[1] = '\0';
 	t->type = n;
@@ -29,6 +31,8 @@ int	set_double(int n, char a, t_token *t, int i)
 	char	*b;
 
 	b = malloc (sizeof(char) * 3);
+	if (!b)
+		return (-1);
 	b[0] = a;
 	b[1] = a;
 	b[2] = '\0';
@@ -73,7 +77,7 @@ void	add_cmd(t_shell *shell, t_cmd *cmd)
 		cur->next = cmd;
 	}
 }
-t_cmd	*init_cmd(t_shell *shell, t_token *t)
+/*t_cmd	*init_cmd(t_shell *shell, t_token *t)
 {
 	int		wc;
 	t_cmd	*cmd;
@@ -83,6 +87,11 @@ t_cmd	*init_cmd(t_shell *shell, t_token *t)
 	wc = word_count(t);
 	cmd = malloc(sizeof(t_cmd));
 	cmd->args = malloc(sizeof(char *) * (wc + 1));
+	if (!cmd->args)
+	{
+		free(cmd);
+		return (NULL);
+	}
 	cmd->path =	NULL;
 	cmd->rd = NULL;
 	cmd->i_fd =	-1;
@@ -96,5 +105,44 @@ t_cmd	*init_cmd(t_shell *shell, t_token *t)
 	// 	cmd->cmd = NULL;
 	// 	return (cmd);
 	// }
+	return (cmd);
+}
+*/
+
+t_cmd	*init_cmd(t_shell *shell, t_token *t)
+{
+	int		wc;
+	t_cmd	*cmd;
+	int		i;
+	
+	(void)shell;
+	wc = word_count(t);
+	cmd = malloc(sizeof(t_cmd));
+	if (!cmd)
+		return (NULL);
+	
+	cmd->cmd = NULL;        
+	cmd->path = NULL;
+	cmd->rd = NULL;
+	cmd->i_fd = STDIN_FILENO;   
+	cmd->o_fd = STDOUT_FILENO;  
+	cmd->pid = -1;
+	cmd->builtin = NOT_BUILTIN; 
+	cmd->next = NULL;
+	
+	cmd->args = malloc(sizeof(char *) * (wc + 1));
+	if (!cmd->args)
+	{
+		free(cmd);
+		return (NULL);
+	}
+
+	i = 0;
+	while (i <= wc)
+	{
+		cmd->args[i] = NULL;
+		i++;
+	}
+	
 	return (cmd);
 }
