@@ -201,8 +201,8 @@ int main(void)
     
   //  Basic command tests
 //     printf("=== BASIC COMMANDS ===\n");
-     test_string(" \"\" \"\" \"\"\"\" ");
-    test_string("'echo''hello''bye'");
+   //  test_string(" \"\" \"\" \"\"\"\" ");
+    test_string("echo h\"\"");
 //     test_string("pwd");
     
 //  // Quote tests

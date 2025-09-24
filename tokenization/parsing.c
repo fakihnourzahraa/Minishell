@@ -6,40 +6,12 @@
 /*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/04 22:53:52 by nour              #+#    #+#             */
-/*   Updated: 2025/09/25 01:14:59 by nour             ###   ########.fr       */
+/*   Updated: 2025/09/25 01:35:36 by nour             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "tokenization.h"
 
-int	word_count(t_token *token)
-{
-	int		i;
-
-	i = 0;
-	while (token && token->type != T_EOF && token->type != PIPE)
-	{
-		if (token->type == WORD)
-		{
-			if (token->type == WORD && token->space == 0)
-			{
-				while (token && token->space == 0)
-					token = token->next;
-			}
-			else
-				token = token->next;
-			i++;
-		}
-		else if (token->type == EMPTY)
-		{
-			i++;
-			token = token->next;
-		}
-		else
-			token = token->next;
-	}
-	return (i);
-}
 int	parse_word(t_token **t, t_cmd *cmd, int i)
 {
 	char	*a;
@@ -128,12 +100,26 @@ int	parse(t_shell *shell, t_token *token)
 		if (!token && cmd)
 			break ;
 	}
-	// cmd->spaces[i] = 0;
-	if(cmd)
+	if(cmd && cmd->args)
 	{
 		cmd->args[i] = NULL;
 		add_cmd(shell, cmd);
 	}
+// 	if(cmd && cmd->args) 
+// {
+//     // Get the actual allocated size
+//     int allocated_size = word_count_p(token) + 1;
+    
+//     // Only set NULL if within bounds
+//     if (i < allocated_size)
+//         cmd->args[i] = NULL;
+//     else
+//     {
+//         printf("ERROR: i=%d exceeds allocated size=%d\n", i, allocated_size);
+//         // Handle the error appropriately
+//     }
+//     add_cmd(shell, cmd);
+// }
 	return (1);
 }
 

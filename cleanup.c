@@ -6,7 +6,7 @@
 /*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/16 16:46:40 by nfakih            #+#    #+#             */
-/*   Updated: 2025/09/25 01:19:34 by nour             ###   ########.fr       */
+/*   Updated: 2025/09/25 01:41:19 by nour             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,22 +101,22 @@ void cleanup_p(t_shell *shell)
     shell->cmds = NULL;
 }
 
-// void cleanup_env(t_shell *shell)
-// {
-//     if (!shell)
-//         return;
-//     if (shell->env)
-//     {
-//         free_env_list(shell->env);
-//         shell->env = NULL;
-//     }
+void cleanup_env(t_shell *shell)
+{
+    if (!shell)
+        return;
+    if (shell->env)
+    {
+        free_env_list(shell->env);
+        shell->env = NULL;
+    }
 
-//     if (shell->envp)    
-//     {
-//           free_envp(shell->envp);
-//           shell->envp = NULL;
-//     }
-// }
+    if (shell->envp)    
+    {
+          free_envp(shell->envp);
+          shell->envp = NULL;
+    }
+}
 
 void cleanup_pipeline_resources(t_shell *shell)
 {

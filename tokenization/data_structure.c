@@ -6,7 +6,7 @@
 /*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/13 12:45:13 by nfakih            #+#    #+#             */
-/*   Updated: 2025/09/25 01:17:52 by nour             ###   ########.fr       */
+/*   Updated: 2025/09/25 01:41:06 by nour             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,13 +120,68 @@ void	add_cmd(t_shell *shell, t_cmd *cmd)
 		cur->next = cmd;
 	}
 }
+// int	word_count_p(t_token *token)
+// {
+// 	int		i;
+
+// 	i = 0;
+// 	while (token && token->type != T_EOF && token->type != PIPE)
+// 	{
+// 		if (token->type == WORD)
+// 		{
+// 			if (token->type == WORD && token->space == 0)
+// 			{
+// 				while (token && token->space == 0)
+// 					token = token->next;
+// 			}
+// 			else
+// 				token = token->next;
+// 			i++;
+// 		}
+// 		else if (token->type == EMPTY)
+// 		{
+// 			i++;
+// 			token = token->next;
+// 		}
+// 		else
+// 			token = token->next;
+// 	}
+// 	return (i);
+// }
+
+int	word_count_p(t_token *token)
+{
+	int		i;
+
+	i = 0;
+	while (token && token->type != T_EOF && token->type != PIPE)
+	{
+		if (token->type == WORD)
+		{
+			i++;
+			token = token->next;
+		}
+		else if (token->type == EMPTY)
+		{
+			i++;
+			token = token->next;
+		}
+		else
+		{
+			token = token->next;
+		}
+	}
+	return (i);
+}
+//i still have an issue here where its taking per tokens not per args
+
 t_cmd	*init_cmd(t_token *t)
 {
 	int		wc;
 	int		i;
 	t_cmd	*cmd;
 	
-	wc = word_count(t);
+	wc = word_count_p(t);
 	cmd = malloc(sizeof(t_cmd));
 	cmd->args = malloc(sizeof(char *) * (wc + 1));
 	cmd->path =	NULL;

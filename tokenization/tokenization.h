@@ -6,7 +6,7 @@
 /*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/28 16:10:17 by nour              #+#    #+#             */
-/*   Updated: 2025/09/25 00:26:00 by nour             ###   ########.fr       */
+/*   Updated: 2025/09/25 01:43:23 by nour             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ void    TT(t_token_type type);
 void    print_toke(t_token *token);
 void	add_cmd(t_shell *shell, t_cmd *cmd);
 t_cmd	*init_cmd(t_token *t);
-int		word_count(t_token *token);
+int		word_count_p(t_token *token);
 int		check_tkns(t_token *tkn);
 void debug_print_redirections(t_cmd *cmd);
 
