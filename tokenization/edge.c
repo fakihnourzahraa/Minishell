@@ -6,7 +6,7 @@
 /*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/16 15:35:17 by nfakih            #+#    #+#             */
-/*   Updated: 2025/09/18 19:14:00 by nour             ###   ########.fr       */
+/*   Updated: 2025/09/25 00:59:33 by nour             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,8 @@ int	is_r(t_token *a)
 
 int	check_tkns(t_token *tkn)
 {
-	if (tkn->type != WORD && tkn->type != T_EOF)
-		return (-1);
+	// if (tkn->type != WORD || tkn->type != T_EOF)
+	// 	return (-1);
 	while (tkn)
 	{
 		if ((is_r(tkn) || tkn->type == PIPE) && tkn->next && (is_r(tkn->next) || tkn->next->type == PIPE))

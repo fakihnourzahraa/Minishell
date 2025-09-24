@@ -6,7 +6,7 @@
 /*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/04 22:53:52 by nour              #+#    #+#             */
-/*   Updated: 2025/09/25 00:26:25 by nour             ###   ########.fr       */
+/*   Updated: 2025/09/25 01:14:59 by nour             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,11 @@ int	word_count(t_token *token)
 			else
 				token = token->next;
 			i++;
+		}
+		else if (token->type == EMPTY)
+		{
+			i++;
+			token = token->next;
 		}
 		else
 			token = token->next;
@@ -65,8 +70,8 @@ int	parse_word(t_token **t, t_cmd *cmd, int i)
 	return (i + 1);*/
 	if (i == 0 && cmd->args[0])
 	{
-		if (cmd->cmd)
-			free(cmd->cmd);
+		// if (cmd->cmd)
+		// 	free(cmd->cmd);
 		cmd->cmd = ft_strdup(cmd->args[0]);
 	}
 	return (i + 1);
@@ -78,13 +83,20 @@ t_token *iterate_token(t_shell *shell, t_token *token, t_cmd **cmd, int *i)
 		return (token);
 	if (token->type == WORD)
 		*i = parse_word(&token, *cmd, *i);
-	else if (token->type != PIPE)
+	else if (token->type == EMPTY)
+	{
+		(*cmd)->args[*i] = ft_strdup("");
+		if (*i == 0)
+			(*cmd)->cmd = ft_strdup("");
+		(*i)++;
+	}
+	else if (token->type != PIPE && token->type != EMPTY)
 	{
 		fill_r(token, *cmd);
 		if (token->next && token->next->type == WORD)
 			token = token->next;
 	}
-	else
+	else if (token->type != EMPTY)
 	{
 		(*cmd)->args[*i] = NULL;
 		add_cmd(shell, *cmd);

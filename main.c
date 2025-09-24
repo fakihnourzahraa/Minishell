@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/16 16:30:14 by nfakih            #+#    #+#             */
-/*   Updated: 2025/09/16 17:51:01 by nfakih           ###   ########.fr       */
+/*   Updated: 2025/09/25 00:48:44 by nour             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -212,10 +212,10 @@ void mira_execution(t_shell *shell)
     t_cmd *current = cmd_chain;
     while (current)
     {
-        printf("DEBUG: cmd[%d]->cmd = '%s'\n", cmd_num, 
-               current->cmd ? current->cmd : "(null)");
-        if (current->args && current->args[0])
-            printf("DEBUG: cmd[%d]->args[0] = '%s'\n", cmd_num, current->args[0]);
+        // printf("DEBUG: cmd[%d]->cmd = '%s'\n", cmd_num, 
+        //        current->cmd ? current->cmd : "(null)");
+        // if (current->args && current->args[0])
+        //     printf("DEBUG: cmd[%d]->args[0] = '%s'\n", cmd_num, current->args[0]);
         
         if (current->cmd)
             current->builtin = is_builtin(current->cmd);

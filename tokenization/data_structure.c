@@ -6,11 +6,42 @@
 /*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/13 12:45:13 by nfakih            #+#    #+#             */
-/*   Updated: 2025/09/24 18:54:30 by nour             ###   ########.fr       */
+/*   Updated: 2025/09/25 01:17:52 by nour             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "tokenization.h"
+
+int	word_len_cmds(char *a, int i)
+{
+	int		j;
+	char	b;
+
+	j = 0;
+	b = '\0';
+	while (a[i] && ((!skipable_space(a[i])) || b != '\0') && 
+		   a[i] != '|' && a[i] != '<' && a[i] != '>')
+	{
+		if (a[i] == '\'' || a[i] == '"')
+		{
+			if (b == '\0')
+				b = a[i];
+			else if (b == a[i])
+				b = '\0';
+		}
+		// if (a[i] == '$')
+		// {
+		// 	i += env_length(a, i);
+		// 	j += env_length(a, i);
+		// }
+		// else
+		// {
+			i++;
+			j++;
+		// }
+	}
+	return (j);
+}
 
 int	set_single(int n, int i, char a, t_token *t)
 {
@@ -63,7 +94,7 @@ int	split_q(char *a, t_shell *shell, int i)
 		if (a[j] == a[i])
 		{
 			if (j == i + 1)
-				return (i + 2);
+				return (empty_token(a, shell, i), i + 2);
 			return (split_quote(a, i, shell, a[i]));
 		}
 		j++;
@@ -106,7 +137,7 @@ t_cmd	*init_cmd(t_token *t)
 	cmd->builtin = NOT_BUILTIN;
 	cmd->next = NULL;
 	i = 0;
-	while (i <= wc)
+	while (i < (wc + 1))
 	{
 		cmd->args[i] = NULL;
 		i++;

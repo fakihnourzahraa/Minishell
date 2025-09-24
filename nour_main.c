@@ -35,6 +35,7 @@ void print_token_type(t_token_type type)
         case APPEND: printf("APPEND"); break;
         case HEREDOC: printf("HEREDOC"); break;
         case T_EOF: printf("T_EOF"); break;
+        case EMPTY: printf("EMPTY"); break;
         default: printf("UNKNOWN"); break;
     }
 }
@@ -200,14 +201,14 @@ int main(void)
     
   //  Basic command tests
 //     printf("=== BASIC COMMANDS ===\n");
-//     test_string(" \"\" \"\" \"\"\"\" ");
-//     test_string("'echo''hello''bye'");
+     test_string(" \"\" \"\" \"\"\"\" ");
+    test_string("'echo''hello''bye'");
 //     test_string("pwd");
     
 //  // Quote tests
 //     printf("=== QUOTE TESTS ===\n");
 //     test_string("echo 'hello world'");
-    test_string("echo\"hello world\"");
+   // test_string("echo \"hello world\"");
     // test_string("echo 'single' \"double\"");
     
 //     // Basic redirection tests
