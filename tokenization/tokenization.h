@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokenization.h                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/28 16:10:17 by nour              #+#    #+#             */
-/*   Updated: 2025/09/23 18:16:58 by nfakih           ###   ########.fr       */
+/*   Updated: 2025/09/25 00:26:00 by nour             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ int		split_q(char *a, t_shell *shell, int i);
 void    TT(t_token_type type);
 void    print_toke(t_token *token);
 void	add_cmd(t_shell *shell, t_cmd *cmd);
-t_cmd	*init_cmd(t_shell *shell, t_token *t);
+t_cmd	*init_cmd(t_token *t);
 int		word_count(t_token *token);
 int		check_tkns(t_token *tkn);
 void debug_print_redirections(t_cmd *cmd);

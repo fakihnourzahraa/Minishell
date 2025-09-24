@@ -199,16 +199,16 @@ int main(void)
     printf("===============================\n\n");
     
   //  Basic command tests
-    printf("=== BASIC COMMANDS ===\n");
-    test_string(" \"\" \"\" \"\"\"\" ");
-    test_string("'echo''hello''bye'");
-    test_string("pwd");
+//     printf("=== BASIC COMMANDS ===\n");
+//     test_string(" \"\" \"\" \"\"\"\" ");
+//     test_string("'echo''hello''bye'");
+//     test_string("pwd");
     
- // Quote tests
-    printf("=== QUOTE TESTS ===\n");
-    test_string("echo 'hello world'");
-    test_string("echo \"hello world\"");
-    test_string("echo 'single' \"double\"");
+//  // Quote tests
+//     printf("=== QUOTE TESTS ===\n");
+//     test_string("echo 'hello world'");
+    test_string("echo\"hello world\"");
+    // test_string("echo 'single' \"double\"");
     
 //     // Basic redirection tests
 //     printf("=== BASIC REDIRECTION TESTS ===\n");

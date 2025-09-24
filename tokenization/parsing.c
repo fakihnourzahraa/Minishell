@@ -6,7 +6,7 @@
 /*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/04 22:53:52 by nour              #+#    #+#             */
-/*   Updated: 2025/09/24 18:56:31 by nour             ###   ########.fr       */
+/*   Updated: 2025/09/25 00:26:25 by nour             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,7 @@ t_token *iterate_token(t_shell *shell, t_token *token, t_cmd **cmd, int *i)
 		(*cmd)->args[*i] = NULL;
 		add_cmd(shell, *cmd);
 		token = token->next;
-		*cmd = init_cmd(shell, token);
+		*cmd = init_cmd(token);
 		*i = 0;
 		return (token);
 	}
@@ -108,7 +108,7 @@ int	parse(t_shell *shell, t_token *token)
 	// 	return ;
 	if (!token || token->type == PIPE)
 		return (-1);
-	cmd = init_cmd(shell, token);
+	cmd = init_cmd(token);
 	i = 0;
 	while (token && token->type != T_EOF)
 	{
@@ -135,7 +135,7 @@ int	parse(t_shell *shell, t_token *token)
 // 	if (!token || token->type != WORD)
 // 		return ;
 		
-// 	cmd = init_cmd(shell, token);
+// 	cmd = init_cmd(token);
 // 	if (!cmd)
 // 		return;
 		

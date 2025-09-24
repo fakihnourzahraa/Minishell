@@ -6,7 +6,7 @@
 /*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/31 13:23:45 by nfakih            #+#    #+#             */
-/*   Updated: 2025/09/22 12:03:33 by nour             ###   ########.fr       */
+/*   Updated: 2025/09/25 00:32:38 by nour             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,12 +44,21 @@ int	skip_spaces(char *a, int i)
 
 int	word_len(char *a, int i)
 {
-	int	j;
+	int		j;
+	char	b;
 
 	j = 0;
-	while (a[i] && !skipable_space(a[i]) && 
+	b = '\0';
+	while (a[i] && ((!skipable_space(a[i])) || b != '\0') && 
 		   a[i] != '|' && a[i] != '<' && a[i] != '>')
 	{
+		if (a[i] == '\'' || a[i] == '"')
+		{
+			if (b == '\0')
+				b = a[i];
+			else if (b == a[i])
+				b = '\0';
+		}
 		// if (a[i] == '$')
 		// {
 		// 	i += env_length(a, i);
@@ -108,6 +117,7 @@ int	split_word(char *a, int i, t_shell *shell, t_token *n)
 	t = n;
 	i = skip_spaces(a, i);
 	len = word_len(a, i);
+	printf("word len is %d", len);
 	if (len == 0)
 		return (i);
 	b = malloc(sizeof(char) * (len + 1));
