@@ -98,41 +98,6 @@ static void exec_external_child(t_shell *shell, t_cmd *cmd)
     exit(127);
 }
 
-/*static int execute_external_command(t_shell *shell, t_cmd *cmd)
-{
-    pid_t pid;
-    int status;
-    char *path;
-
-    path = get_cmd_path(cmd->args[0], shell);
-    if (!path)
-    {
-        printf("minishell: %s: command not found\n", cmd->args[0]);
-        shell->exit_status = 127;
-        return (1);
-    }
-    cmd->path = ft_strdup(path);  // Make a copy for cmd
-    if (!cmd->path)
-    {
-        free(path);
-        return (1);
-    }
-    pid = fork();
-    if (pid < 0)
-    {
-        perror("fork");
-        free(path);
-        return (1);
-    }
-    if (pid == 0)
-        exec_external_child(shell, cmd, path);
-    free(path);
-    free(cmd->path);
-    cmd->path = NULL;
-    waitpid(pid, &status, 0);
-    wait_child(shell, status);
-    return (1);
-}*/
 static int execute_external_command(t_shell *shell, t_cmd *cmd)
 {
     pid_t pid;

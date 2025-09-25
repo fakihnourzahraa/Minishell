@@ -157,65 +157,17 @@ int count_commands(t_cmd *cmds)
   return (i);
 }
 
-/*int **setup_pipes(int cmd_count)
-{
-    int **pipes;
-    int pipe_count;
-    int i;
-
-    if (cmd_count < 2)
-        return (NULL);
-        
-    pipe_count = cmd_count - 1;
-    pipes = malloc(sizeof(int *) * pipe_count);
-    if (!pipes)
-        return (NULL);
- 
-    i = 0;
-    while (i < pipe_count)
-    {
-        pipes[i] = NULL;
-        i++;
-    }
-
-    // Then allocate and create pipes
-    i = 0;
-    while (i < pipe_count)
-    {
-        pipes[i] = malloc(sizeof(int) * 2);
-        if (!pipes[i])
-        {
-            cleanup_pipes(pipes, i);  // This will clean up what was allocated so far
-            return (NULL);
-        }
-        
-        if (pipe(pipes[i]) == -1)
-        {
-            perror("pipe");
-            free(pipes[i]);
-            pipes[i] = NULL;
-            cleanup_pipes(pipes, i);
-            return (NULL);
-        }
-        i++;
-    }
-    return (pipes);
-}*/
-
 int **setup_pipes(int cmd_count)
 {
     int **pipes;
     int pipe_count;
     int i;
 
-    printf("DEBUG: setup_pipes called with cmd_count=%d\n", cmd_count);
-    
     if (cmd_count < 2)
         return (NULL);
         
     pipe_count = cmd_count - 1;
     pipes = malloc(sizeof(int *) * pipe_count);
-    printf("DEBUG: allocated pipes array at %p\n", pipes);
     if (!pipes)
         return (NULL);
         
@@ -224,43 +176,13 @@ int **setup_pipes(int cmd_count)
     {
         if (create_single_pipe(pipes, i) == -1)
         {
-            printf("DEBUG: pipe creation failed, cleaning up\n");
             cleanup_pipes(pipes, i);
             return (NULL);
         }
-        printf("DEBUG: created pipe[%d] at %p\n", i, pipes[i]);
         i++;
     }
-    printf("DEBUG: setup_pipes returning %p\n", pipes);
     return (pipes);
 }
-
-/*int **setup_pipes(int cmd_count)
-{
-    int **pipes;
-    int pipe_count;
-    int i;
-
-    if (cmd_count < 2)
-        return (NULL);
-        
-    pipe_count = cmd_count - 1;
-    pipes = malloc(sizeof(int *) * pipe_count);
-    if (!pipes)
-        return (NULL);
-        
-    i = 0;
-    while (i < pipe_count)
-    {
-        if (create_single_pipe(pipes, i) == -1)
-        {
-            cleanup_pipes(pipes, i);
-            return (NULL);
-        }
-        i++;
-    }
-    return (pipes);
-}*/
 
 void close_all_pipes(int **pipes, int pipe_count)
 {

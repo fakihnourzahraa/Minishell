@@ -114,8 +114,6 @@ void close_and_free_pipes(int **pipes, int pipe_count)
 {
     int i;
 
-		printf("DEBUG: close_and_free_pipes called with pipes=%p, count=%d\n", pipes, pipe_count);
-
     if (!pipes)
         return;
         
@@ -124,16 +122,13 @@ void close_and_free_pipes(int **pipes, int pipe_count)
     {
         if (pipes[i] != NULL)
         {
-						printf("DEBUG: closing and freeing pipe[%d] at %p\n", i, pipes[i]);
-
             close(pipes[i][0]); // close read
             close(pipes[i][1]); // close write
-            free(pipes[i]);     // FREE THE MEMORY TOO!
+            free(pipes[i]);     // free the pipe array
             pipes[i] = NULL;
         }
         i++;
     }
-		printf("DEBUG: freeing pipes array at %p\n", pipes);
     free(pipes); // Free the array of pointers
 }
 
@@ -174,6 +169,7 @@ static void	cleanup_and_wait(t_shell *shell, t_cmd *cmds, t_pipe_info *info)
 {
 	//close_all_pipes(info->pipes, info->cmd_count - 1);
 	close_and_free_pipes(info->pipes, info->cmd_count - 1);
+	info->pipes = NULL;
 	wait_for_children(cmds, shell);
 	/*if (info->pipes)
 	{
@@ -181,7 +177,7 @@ static void	cleanup_and_wait(t_shell *shell, t_cmd *cmds, t_pipe_info *info)
 		cleanup_pipes(info->pipes, info->cmd_count - 1);
 		info->pipes = NULL;  // Prevent double-free
 	}*/
-	info->pipes = NULL;
+	//info->pipes = NULL;
 	signals_prompt();
 }
 
@@ -197,6 +193,7 @@ int	execute_multiple_cmds(t_shell *shell, t_cmd *cmds, int cmd_count)
 	if (execute_all_commands(shell, cmds, &info) == -1)
 	{
 		close_and_free_pipes(info.pipes, cmd_count - 1);
+		info.pipes = NULL;
 		//close_all_pipes(info.pipes, cmd_count - 1);
 		//free_pipes(info.pipes, cmd_count - 1);
 		//cleanup_pipes(info.pipes, cmd_count - 1);

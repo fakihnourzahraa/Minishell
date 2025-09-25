@@ -12,7 +12,7 @@
 
 #include "exec.h"
 
-void close_unused_pipes(int **pipes, int pipe_count, int current_cmd)//5
+/*void close_unused_pipes(int **pipes, int pipe_count, int current_cmd)//5
 {
 	int i;
 
@@ -27,14 +27,32 @@ void close_unused_pipes(int **pipes, int pipe_count, int current_cmd)//5
 			close(pipes[i][1]);//if it is the last cmnd or 
 		i++;
 	}
+}*/
+
+void close_unused_pipes(int **pipes, int pipe_count, int current_cmd)
+{
+    int i;
+
+    i = 0;
+    if (!pipes)
+        return;
+    while (i < pipe_count)
+    {
+        // Fix the logic - these conditions were wrong
+        if (i != current_cmd - 1) // Don't close input pipe for current command
+            close(pipes[i][0]);
+        if (i != current_cmd) // Don't close output pipe for current command  
+            close(pipes[i][1]);
+        i++;
+    }
 }
 
 static void execute_child_process(t_shell *shell, t_cmd *cmd, t_pipe_info *info)
 {
     signals_child();
     setup_cmd_fds(cmd, info, shell);//decide if it will read < << or write >> >
-    if (info)
-        close_unused_pipes(info->pipes, info->cmd_count - 1, info->cmd_index);
+    //if (info)
+    //    close_unused_pipes(info->pipes, info->cmd_count - 1, info->cmd_index);
     //close_unused_pipes(info->pipes, info->cmd_count - 1, info->cmd_index);
     
     if (cmd->builtin != NOT_BUILTIN)

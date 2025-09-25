@@ -28,23 +28,6 @@ void	free_paths(char **paths)
 	free(paths);
 }
 
-/*void free_pipes(int **pipes, int pipe_count)
-{
-	int i;
-
-	if(!pipes)
-		return ;
-	i = 0;
-	while(i<pipe_count)
-	{
-		if(pipes[i] != NULL)
-		
-			free(pipes[i]);
-		i++;
-	}
-	free(pipes);
-}*/
-
 void free_pipes(int **pipes, int pipe_count)
 {
 	int i;
