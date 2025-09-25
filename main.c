@@ -65,14 +65,14 @@ void init_shell(t_shell *shell, char **envp)
 
 void cleanup_shell(t_shell *shell)
 {
-    printf("DEBUG: cleanup_shell called\n"); 
+    //printf("DEBUG: cleanup_shell called\n"); 
     if (!shell)
     {
-        printf("DEBUG: shell is NULL!\n");
+        //printf("DEBUG: shell is NULL!\n");
         return;
     }
   
-    printf("DEBUG: shell->env=%p\n", shell->env);
+    //printf("DEBUG: shell->env=%p\n", shell->env);
     cleanup_t(shell);
     cleanup_p(shell);
 
@@ -109,10 +109,10 @@ void cleanup_shell(t_shell *shell)
 
     if (shell->env)
     {
-        printf("DEBUG: About to free env list\n");
+        //printf("DEBUG: About to free env list\n");
         free_env_list(shell->env);
         shell->env = NULL;
-        printf("DEBUG: Env list freed\n");
+        //printf("DEBUG: Env list freed\n");
     }
 
     if (shell->envp)
@@ -122,7 +122,7 @@ void cleanup_shell(t_shell *shell)
     }
 
     rl_clear_history();
-    printf("DEBUG: cleanup_shell finished\n");
+    //printf("DEBUG: cleanup_shell finished\n");
 }
 
 int nour_parsing(t_shell *shell)
@@ -245,42 +245,6 @@ void mira_execution(t_shell *shell)
     }
 }
 
-/*void mira_execution(t_shell *shell)
-{
-    t_cmd *cmd_chain = shell->cmds;
-    
-    if (!cmd_chain)
-        return;
-    
-    t_cmd *current = cmd_chain;
-    while (current)
-    {
-        current->builtin = is_builtin(current->cmd);
-        current = current->next;
-    }
-    
-    // ADD DEBUG HERE
-    printf("=== DEBUGGING COMMAND STRUCTURE ===\n");
-    current = cmd_chain;
-    int cmd_num = 0;
-    while (current)
-    {
-        printf("--- Command %d ---\n", cmd_num++);
-        debug_cmd_structure(current);
-        current = current->next;
-    }
-    printf("=== END DEBUGGING ===\n");
-    
-    if (cmd_chain->next)
-        execute_pipeline(shell, cmd_chain);
-    else
-    {
-        if (cmd_chain->builtin != NOT_BUILTIN)
-            execute_builtin(cmd_chain, shell);
-        else
-            execute_single(shell, cmd_chain);  // This calls the function from exec/execute_single.c
-    }
-}*/
 
 int process_input(t_shell *shell, char *input)
 {
@@ -319,61 +283,6 @@ int process_input(t_shell *shell, char *input)
     //printf("DEBUG: process_input finished\n");
     return (0);
 }
-
-/*int main_loop(t_shell *shell)
-{
-    char *input;
-    
-    while (!shell->exit)
-    {
-        if (g_signal == SIGINT)
-        {
-            g_signal = 0;
-            shell->exit_status = 130;
-        }
-        input = readline("minishell$ ");
-        
-        if (!input)
-        {
-            update_shlvl_on_exit(shell);
-            printf("exit\n");
-            break;
-        }
-        if (g_signal == SIGINT)
-        {
-            g_signal = 0;
-            shell->exit_status = 130;
-            free(input);
-            continue; 
-        }
-        if (input[0] == '\0')
-        {
-            free(input);
-            continue;
-        }
-        add_history(input);
-        g_signal = 0;
-        if (process_input(shell, input) == -1)
-        {
-            printf("Error processing command\n");
-        }
-        
-        // Handle signal after execution
-        if (g_signal == SIGINT)
-        {
-            g_signal = 0;
-            shell->exit_status = 130;
-        }
-        if (shell->exit)
-        {
-            free(input);
-            break;
-        }
-        free(input);
-    }
-
-    return (shell->exit_status);
-}*/
 
 int main_loop(t_shell *shell)
 {

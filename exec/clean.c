@@ -58,8 +58,6 @@ void cleanup_pipeline_child(t_shell *shell)
 {
     if (!shell)
         return;
-
-    // CRITICAL: Add environment cleanup for child processes
     if (shell->env)
     {
         free_env_list(shell->env);

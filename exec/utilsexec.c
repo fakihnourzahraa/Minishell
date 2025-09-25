@@ -40,7 +40,7 @@ void free_pipes(int **pipes, int pipe_count)
 		if(pipes[i] != NULL)
 		{
 			free(pipes[i]);
-			pipes[i] = NULL; // Prevent double free
+			pipes[i] = NULL;
 		}
 		i++;
 	}

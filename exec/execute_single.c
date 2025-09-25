@@ -12,27 +12,6 @@
 
 #include "exec.h"
 
-/*void cleanup_child_process(t_shell *shell)
-{
-    //printf("DEBUG: cleanup_child_process called in PID %d\n", getpid()); // ← Add this
-    
-    if (shell->env)
-    {
-        //printf("DEBUG: freeing environment variables\n"); // ← Add this
-        free_env_list(shell->env);
-        shell->env = NULL;
-    }
-    cleanup_t(shell);
-    cleanup_p(shell);
-
-    if (shell->in)
-    {
-        free(shell->in);
-        shell->in = NULL;
-    }
-    //printf("DEBUG: cleanup_child_process finished\n"); // ← Add this
-}*/
-
 static void wait_child(t_shell *shell, int status)
 {
     if (WIFEXITED(status))
@@ -43,34 +22,6 @@ static void wait_child(t_shell *shell, int status)
         shell->exit_status = 1;
 }
 
-/*static void exec_external_child(t_shell *shell, t_cmd *cmd, char *path)
-{
-    char **envp_array;
-
-    signal(SIGINT, SIG_DFL);
-    signal(SIGQUIT, SIG_DFL);
-    
-    if (apply_redirections(cmd, shell) == -1)
-    {
-        cleanup_child_process(shell);
-        free(path);
-        exit(1);
-    }
-    envp_array = env_to_envp(shell->env);
-    if (!envp_array)
-    {
-        cleanup_child_process(shell);
-        free(path);
-        exit(1);
-    }
-    execve(cmd->path, cmd->args, envp_array);
-    printf("DEBUG: execve failed\n");
-
-    cleanup_child_process(shell);  
-    free_envp(envp_array);
-    free(path);
-    exit(127);
-}*/
 static void exec_external_child(t_shell *shell, t_cmd *cmd)
 {
     char **envp_array;
@@ -123,9 +74,8 @@ static int execute_external_command(t_shell *shell, t_cmd *cmd)
         return (1);
     }
     if (pid == 0)
-        exec_external_child(shell, cmd);  // Don't pass path parameter
+        exec_external_child(shell, cmd);
     
-    // Parent cleans up
     free(cmd->path);
     cmd->path = NULL;
     

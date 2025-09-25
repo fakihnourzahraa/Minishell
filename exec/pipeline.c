@@ -216,7 +216,7 @@ void wait_for_children(t_cmd *cmds,t_shell *shell)
     current = current->next;
   }
   if(WIFEXITED(last_status))
-    shell->exit_status=WEXITSTATUS(last_status);//normal exit
+    shell->exit_status=WEXITSTATUS(last_status);
   else if(WIFSIGNALED(last_status))
     shell->exit_status=128+WTERMSIG(last_status);
 }

@@ -52,7 +52,7 @@ void	builtin_echo(t_cmd *cmd, t_shell *shell)
 	int		start;
 	bool	newline;
 
-	(void)shell; // to match prototype
+	(void)shell;
 	newline = true;
 	start = 1;
 	i = 1;
