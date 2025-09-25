@@ -43,6 +43,7 @@ SRCS = main.c \
        env/envir.utils.c \
        tokenization/data_structure.c tokenization/debug.c\
        tokenization/edge.c tokenization/parsing.c tokenization/redir.c\
+	   tokenization/splits.c tokenization/chars.c \
        tokenization/token_helpers.c tokenization/token.c\
        cleanup.c expansion/expand_var.c\
        $(LIBFT_SRCS)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cleanup.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/16 16:46:40 by nfakih            #+#    #+#             */
-/*   Updated: 2025/09/25 01:41:19 by nour             ###   ########.fr       */
+/*   Updated: 2025/09/25 17:59:33 by nfakih           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,6 +94,8 @@ void cleanup_p(t_shell *shell)
             cleanup_redirs(current->rd);
             current->rd = NULL;
         }
+		if (current->space)
+            free(current->space);
         tmp = current;
         current = current->next;
         free(tmp);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   edge.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/16 15:35:17 by nfakih            #+#    #+#             */
-/*   Updated: 2025/09/25 00:59:33 by nour             ###   ########.fr       */
+/*   Updated: 2025/09/25 22:16:13 by nfakih           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,32 +33,3 @@ int	check_tkns(t_token *tkn)
 	}
 	return (1);
 }
-
-/*int	check_tkns(t_token *tkn)
-{
-    printf("DEBUG: Checking tokens...\n");
-    
-    if (tkn->type != WORD && tkn->type != T_EOF)
-    {
-        printf("ERROR: First token is not WORD or T_EOF, it's type %d\n", tkn->type);
-        return (-1);
-    }
-    
-    while (tkn)
-    {
-        printf("DEBUG: Checking token type %d, content '%s'\n", tkn->type, tkn->s ? tkn->s : "NULL");
-        
-        if ((is_r(tkn) || tkn->type == PIPE) && tkn->next && (is_r(tkn->next) || tkn->next->type == PIPE))
-        {
-            printf("ERROR: Two consecutive operators\n");
-            return (-1);
-        }
-        if (tkn->next && tkn->next->type == T_EOF && (tkn->type == PIPE || is_r(tkn)))
-        {
-            printf("ERROR: Command ends with operator\n");
-            return (-1);
-        }
-        tkn = tkn->next;
-    }
-    return (1);
-}*/

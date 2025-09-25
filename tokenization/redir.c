@@ -6,7 +6,7 @@
 /*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/10 11:10:26 by nour              #+#    #+#             */
-/*   Updated: 2025/09/16 15:31:47 by nfakih           ###   ########.fr       */
+/*   Updated: 2025/09/25 22:16:31 by nfakih           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,47 +76,3 @@ void	fill_r(t_token *t, t_cmd *cmd)
 	add_redir(cmd, r);
 }
 
-/*void	fill_r(t_token *t, t_cmd *cmd)
-{
-	t_redir *r;
-
-	r = init_redir();
-	if (t->type == IN)
-		r->type = R_IN;
-	else if (t->type == OUT)
-		r->type = R_OUT;
-	else if (t->type == APPEND)
-		r->type = R_APPEND;
-	else if (t->type == HEREDOC)
-	{
-		r->type = R_HEREDOC;
-		printf("DEBUG: Found HEREDOC delimiter='%s'\n", t->next ? t->next->s : "NULL");
-	}
-	
-	if (t->next && t->next->s)
-		r->s = ft_strdup(t->next->s);
-	else
-		r->s = NULL;
-	add_redir(cmd, r);
-}
-
-// Add this debug after parsing to see all redirections
-void debug_print_redirections(t_cmd *cmd)
-{
-	t_redir *redir = cmd->rd;
-	int count = 0;
-	
-	printf("DEBUG: All redirections for command:\n");
-	while (redir)
-	{
-		printf("  Redir[%d]: type=%d", count, redir->type);
-		if (redir->type == R_HEREDOC)
-			printf(" (HEREDOC), delimiter='%s'", redir->s ? redir->s : "NULL");
-		else if (redir->s)
-			printf(", file='%s'", redir->s);
-		printf("\n");
-		redir = redir->next;
-		count++;
-	}
-	printf("DEBUG: Total redirections: %d\n\n",count);
-}*/

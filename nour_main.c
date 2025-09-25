@@ -10,18 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   main_test.c                                        :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: test                                        +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/09/05 21:00:00 by test              #+#    #+#             */
-/*   Updated: 2025/09/05 21:00:00 by test             ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "minishell.h"
 #include "tokenization/tokenization.h"
 
@@ -126,15 +114,17 @@ void print_commands_safe(t_shell *shell)
             printf("  cmd: (null)\n");
         
         // Safe args printing
-        if (c->args)
+    if (c->args)
+    {
+        for (int i = 0; c->args[i]; i++)
         {
-            printf("  Args:\n");
-            for (int i = 0; c->args[i]; i++)
-            {
-                printf("    [%d]: '%s'", i, c->args[i] ? c->args[i] : "(null)");                
-                printf("\n");
-            }
+            printf("  [%d]: '%s' | Space: %s\n",
+                   i, 
+                   c->args[i], 
+                   (c->space && c->space[i]) ? "true" : "false");
         }
+    }
+
         else
         {
             printf("  Args: (null)\n");
@@ -203,8 +193,8 @@ int main(void)
 //     printf("=== BASIC COMMANDS ===\n");
    //  test_string(" \"\" \"\" \"\"\"\" ");
     test_string("echo h\"\"");
-//     test_string("pwd");
-    
+    test_string("echo hi \"\" b");
+    test_string("<< a");
 //  // Quote tests
 //     printf("=== QUOTE TESTS ===\n");
 //     test_string("echo 'hello world'");

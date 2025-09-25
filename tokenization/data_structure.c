@@ -3,45 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   data_structure.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/13 12:45:13 by nfakih            #+#    #+#             */
-/*   Updated: 2025/09/25 01:41:06 by nour             ###   ########.fr       */
+/*   Updated: 2025/09/25 22:20:28 by nfakih           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "tokenization.h"
-
-int	word_len_cmds(char *a, int i)
-{
-	int		j;
-	char	b;
-
-	j = 0;
-	b = '\0';
-	while (a[i] && ((!skipable_space(a[i])) || b != '\0') && 
-		   a[i] != '|' && a[i] != '<' && a[i] != '>')
-	{
-		if (a[i] == '\'' || a[i] == '"')
-		{
-			if (b == '\0')
-				b = a[i];
-			else if (b == a[i])
-				b = '\0';
-		}
-		// if (a[i] == '$')
-		// {
-		// 	i += env_length(a, i);
-		// 	j += env_length(a, i);
-		// }
-		// else
-		// {
-			i++;
-			j++;
-		// }
-	}
-	return (j);
-}
 
 int	set_single(int n, int i, char a, t_token *t)
 {
@@ -52,9 +21,9 @@ int	set_single(int n, int i, char a, t_token *t)
 	b[1] = '\0';
 	t->type = n;
 	t->s = b;
-	//printf("DEBUG: set_single created '%s' at address %p\n", b, b);
 	return (i + 1);
 }
+
 int	set_double(int n, char a, t_token *t, int i)
 {
 	char	*b;
@@ -76,31 +45,17 @@ void	empty_token(char *a, t_shell *shell, int i)
 	b = malloc(sizeof(char));
 	b[0] = '\0';
 	t = init_token();
-	if (!skipable_space(a[1 + i]))
+	if (a[2 + i] && !skipable_space(a[2 + i]))
 		t->space = false;
 	t->s = b;
 	t->type = EMPTY;
-	t->quotes = (a[i] == '\'') ? 1 : 2;
+	if (a[i] == '\'')
+		t->quotes = 1;
+	else
+		t->quotes = 2;
 	add_token(shell, t);
 }
 
-int	split_q(char *a, t_shell *shell, int i)
-{
-	int	j;
-
-	j = i + 1;
-	while (a[j])
-	{
-		if (a[j] == a[i])
-		{
-			if (j == i + 1)
-				return (empty_token(a, shell, i), i + 2);
-			return (split_quote(a, i, shell, a[i]));
-		}
-		j++;
-	}
-	return (-1);
-}
 //this goes off of where the last index is, so either the original one if there are quotes
 //or tokenizes whats between quotes, or -1 on error
 //34 is " 39 is '
@@ -120,88 +75,37 @@ void	add_cmd(t_shell *shell, t_cmd *cmd)
 		cur->next = cmd;
 	}
 }
-// int	word_count_p(t_token *token)
-// {
-// 	int		i;
-
-// 	i = 0;
-// 	while (token && token->type != T_EOF && token->type != PIPE)
-// 	{
-// 		if (token->type == WORD)
-// 		{
-// 			if (token->type == WORD && token->space == 0)
-// 			{
-// 				while (token && token->space == 0)
-// 					token = token->next;
-// 			}
-// 			else
-// 				token = token->next;
-// 			i++;
-// 		}
-// 		else if (token->type == EMPTY)
-// 		{
-// 			i++;
-// 			token = token->next;
-// 		}
-// 		else
-// 			token = token->next;
-// 	}
-// 	return (i);
-// }
-
-int	word_count_p(t_token *token)
-{
-	int		i;
-
-	i = 0;
-	while (token && token->type != T_EOF && token->type != PIPE)
-	{
-		if (token->type == WORD)
-		{
-			i++;
-			token = token->next;
-		}
-		else if (token->type == EMPTY)
-		{
-			i++;
-			token = token->next;
-		}
-		else
-		{
-			token = token->next;
-		}
-	}
-	return (i);
-}
-//i still have an issue here where its taking per tokens not per args
 
 t_cmd	*init_cmd(t_token *t)
 {
 	int		wc;
 	int		i;
 	t_cmd	*cmd;
-	
+
 	wc = word_count_p(t);
 	cmd = malloc(sizeof(t_cmd));
 	cmd->args = malloc(sizeof(char *) * (wc + 1));
-	cmd->path =	NULL;
+	cmd->space = malloc(sizeof(int) * (wc + 1));
+	cmd->path = NULL;
 	cmd->rd = NULL;
-	cmd->i_fd = STDIN_FILENO;   
-	cmd->o_fd = STDOUT_FILENO; 
+	cmd->i_fd = STDIN_FILENO;
+	cmd->o_fd = STDOUT_FILENO;
 	cmd->pid = -1;
 	cmd->builtin = NOT_BUILTIN;
 	cmd->next = NULL;
-	i = 0;
+	cmd->cmd = NULL;
+	i = 1;
 	while (i < (wc + 1))
 	{
 		cmd->args[i] = NULL;
+		cmd->space[i] = 1;
 		i++;
 	}
+	return (cmd);
+}
 	// if (t->s == NULL)
 	// {
 	// 	cmd->args[0] = NULL;
 	// 	cmd->cmd = NULL;
 	// 	return (cmd);
-	// }
-	return (cmd);
-}
+	// } before return cmd
