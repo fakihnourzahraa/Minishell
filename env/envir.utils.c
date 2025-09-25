@@ -28,17 +28,25 @@
 
 void free_env_list(t_env *env)
 {
+  t_env *current = env;
   t_env *next;
 
-  while (env)
+  while (current)
   {
-    next = env->next;
-    if (env->name)
-        free(env->name);
-    if (env->val)
-        free(env->val);
-    free(env);
-    env = next;
+    next = current->next;
+
+    if (current->name)
+    {
+     free(current->name);
+      current->name = NULL;
+    }
+    if (current->val)
+    {
+      free(current->val);
+      current->val = NULL;
+    }
+    free(current);
+    current = next;
   }
 }
 

@@ -171,6 +171,7 @@ int **setup_pipes(int cmd_count)
     if (!pipes)
         return (NULL);
     
+    // Initialize all pointers to NULL first
     i = 0;
     while (i < pipe_count)
     {
@@ -178,46 +179,23 @@ int **setup_pipes(int cmd_count)
         i++;
     }
 
+    // Then allocate and create pipes
     i = 0;
     while (i < pipe_count)
     {
         pipes[i] = malloc(sizeof(int) * 2);
         if (!pipes[i])
         {
-   
-            int j = 0;
-            while (j < i)
-            {
-                if (pipes[j])
-                {
-                    free(pipes[j]);
-                    //pipes[j] = NULL;
-                }
-                j++;
-            }
-            free(pipes);
+            cleanup_pipes(pipes, i);  // This will clean up what was allocated so far
             return (NULL);
         }
         
         if (pipe(pipes[i]) == -1)
         {
             perror("pipe");
-            free(pipes[i]); 
-            //pipes[i] = NULL;
-            int j ;
-            j= 0;
-            while (j < i)
-            {
-                if (pipes[j])
-                {
-                    close(pipes[j][0]);
-                    close(pipes[j][1]);
-                    free(pipes[j]);
-                    //pipes[j] = NULL;
-                }
-                j++;
-            }
-            free(pipes);
+            free(pipes[i]);
+            pipes[i] = NULL;
+            cleanup_pipes(pipes, i);
             return (NULL);
         }
         i++;

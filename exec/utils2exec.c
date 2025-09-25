@@ -102,8 +102,8 @@ void cleanup_pipes(int **pipes, int count)
   {
     if (pipes[j])
     {
-      free(pipes[j]);//free the old pipe
-      pipes[j] = NULL; // Prevent double free
+      free(pipes[j]);
+      pipes[j] = NULL;
     }
     j++;
   }
@@ -147,11 +147,10 @@ static void	cleanup_and_wait(t_shell *shell, t_cmd *cmds, t_pipe_info *info)
 {
 	close_all_pipes(info->pipes, info->cmd_count - 1);
 	wait_for_children(cmds, shell);
-	// Only free if pipes exist and haven't been freed yet
 	if (info->pipes)
 	{
-		free_pipes(info->pipes, info->cmd_count - 1);
-		//cleanup_pipes(info->pipes, info->cmd_count - 1);
+		//free_pipes(info->pipes, info->cmd_count - 1);
+		cleanup_pipes(info->pipes, info->cmd_count - 1);
 		info->pipes = NULL;  // Prevent double-free
 	}
 	signals_prompt();

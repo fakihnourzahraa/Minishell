@@ -65,24 +65,24 @@ void init_shell(t_shell *shell, char **envp)
 
 void cleanup_shell(t_shell *shell)
 {
+    printf("DEBUG: cleanup_shell called\n"); 
     if (!shell)
+    {
+        printf("DEBUG: shell is NULL!\n");
         return;
-
-    //cleanup_t(shell);
-    //cleanup_p(shell);
+    }
+  
+    printf("DEBUG: shell->env=%p\n", shell->env);
+    cleanup_t(shell);
+    cleanup_p(shell);
 
     if (shell->in)
     {
         free(shell->in);
         shell->in = NULL;
     }
-    cleanup_t(shell);
-    cleanup_p(shell);
-    /*if (shell->env)
-    {
-        free_env_list(shell->env);
-        shell->env = NULL;
-    }*/
+    //cleanup_t(shell);
+    //cleanup_p(shell);
 
     if (shell->cwd)
     {
@@ -101,20 +101,28 @@ void cleanup_shell(t_shell *shell)
         free(shell->sto);
         shell->sto = NULL;
     }
-    if (shell->env)
+    /*if (shell->env)
     {
         free_env_list(shell->env);
         shell->env = NULL;
+    }*/
+
+    if (shell->env)
+    {
+        printf("DEBUG: About to free env list\n");
+        free_env_list(shell->env);
+        shell->env = NULL;
+        printf("DEBUG: Env list freed\n");
     }
 
-      if (shell->envp)
+    if (shell->envp)
     {
         free_envp(shell->envp);
         shell->envp = NULL;
     }
-    //cleanup_env(shell);
 
     rl_clear_history();
+    printf("DEBUG: cleanup_shell finished\n");
 }
 
 int nour_parsing(t_shell *shell)
@@ -286,8 +294,13 @@ int process_input(t_shell *shell, char *input)
         //printf("DEBUG: nour_parsing failed, calling cleanup\n");
         cleanup_t(shell);
         cleanup_p(shell);
-        free(shell->in);
-        shell->in = NULL;
+        //free(shell->in);
+        //shell->in = NULL;
+        if (shell->in)
+        {
+            free(shell->in);
+            shell->in = NULL;
+        }
         return (-1);
     }
     
