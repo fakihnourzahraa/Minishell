@@ -33,7 +33,9 @@ static void execute_child_process(t_shell *shell, t_cmd *cmd, t_pipe_info *info)
 {
     signals_child();
     setup_cmd_fds(cmd, info, shell);//decide if it will read < << or write >> >
-    close_unused_pipes(info->pipes, info->cmd_count - 1, info->cmd_index);
+    if (info)
+        close_unused_pipes(info->pipes, info->cmd_count - 1, info->cmd_index);
+    //close_unused_pipes(info->pipes, info->cmd_count - 1, info->cmd_index);
     
     if (cmd->builtin != NOT_BUILTIN)
     {

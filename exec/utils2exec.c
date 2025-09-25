@@ -114,6 +114,8 @@ void close_and_free_pipes(int **pipes, int pipe_count)
 {
     int i;
 
+		printf("DEBUG: close_and_free_pipes called with pipes=%p, count=%d\n", pipes, pipe_count);
+
     if (!pipes)
         return;
         
@@ -122,6 +124,8 @@ void close_and_free_pipes(int **pipes, int pipe_count)
     {
         if (pipes[i] != NULL)
         {
+						printf("DEBUG: closing and freeing pipe[%d] at %p\n", i, pipes[i]);
+
             close(pipes[i][0]); // close read
             close(pipes[i][1]); // close write
             free(pipes[i]);     // FREE THE MEMORY TOO!
@@ -129,6 +133,7 @@ void close_and_free_pipes(int **pipes, int pipe_count)
         }
         i++;
     }
+		printf("DEBUG: freeing pipes array at %p\n", pipes);
     free(pipes); // Free the array of pointers
 }
 

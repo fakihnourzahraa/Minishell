@@ -60,4 +60,5 @@ int		run_multiple_heredocs(char **delimiters, int delimiter_count, t_shell *shel
 void cleanup_child_process(t_shell *shell);
 void cleanup_pipeline_child(t_shell *shell);
 //void cleanup_heredoc_child(t_shell *shell);
+
 #endif
