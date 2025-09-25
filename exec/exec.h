@@ -42,6 +42,7 @@ int		run_heredoc(char *delimiter, t_shell *shell);
 int		execute_pipeline(t_shell *shell, t_cmd *cmds);
 int		**setup_pipes(int cmd_count);
 void	close_all_pipes(int **pipes, int pipe_count);
+void	close_and_free_pipes(int **pipes, int pipe_count);
 int		count_commands(t_cmd *cmds);
 void	wait_for_children(t_cmd *cmds, t_shell *shell);
 void	close_unused_pipes(int **pipes, int pipe_count, int current_cmd);

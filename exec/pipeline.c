@@ -170,8 +170,7 @@ int **setup_pipes(int cmd_count)
     pipes = malloc(sizeof(int *) * pipe_count);
     if (!pipes)
         return (NULL);
-    
-    // Initialize all pointers to NULL first
+ 
     i = 0;
     while (i < pipe_count)
     {
@@ -200,7 +199,6 @@ int **setup_pipes(int cmd_count)
         }
         i++;
     }
-    
     return (pipes);
 }
 

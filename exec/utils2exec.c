@@ -110,6 +110,28 @@ void cleanup_pipes(int **pipes, int count)
   free(pipes);//then the array itself
 }
 
+void close_and_free_pipes(int **pipes, int pipe_count)
+{
+    int i;
+
+    if (!pipes)
+        return;
+        
+    i = 0;
+    while (i < pipe_count)
+    {
+        if (pipes[i] != NULL)
+        {
+            close(pipes[i][0]); // close read
+            close(pipes[i][1]); // close write
+            free(pipes[i]);     // FREE THE MEMORY TOO!
+            pipes[i] = NULL;
+        }
+        i++;
+    }
+    free(pipes); // Free the array of pointers
+}
+
 int create_single_pipe(int **pipes, int index)
 {
   pipes[index] = malloc(sizeof(int) * 2);
@@ -145,14 +167,16 @@ static int	execute_all_commands(t_shell *shell, t_cmd *cmds, t_pipe_info *info)
 
 static void	cleanup_and_wait(t_shell *shell, t_cmd *cmds, t_pipe_info *info)
 {
-	close_all_pipes(info->pipes, info->cmd_count - 1);
+	//close_all_pipes(info->pipes, info->cmd_count - 1);
+	close_and_free_pipes(info->pipes, info->cmd_count - 1);
 	wait_for_children(cmds, shell);
-	if (info->pipes)
+	/*if (info->pipes)
 	{
 		//free_pipes(info->pipes, info->cmd_count - 1);
 		cleanup_pipes(info->pipes, info->cmd_count - 1);
 		info->pipes = NULL;  // Prevent double-free
-	}
+	}*/
+	info->pipes = NULL;
 	signals_prompt();
 }
 
@@ -167,9 +191,10 @@ int	execute_multiple_cmds(t_shell *shell, t_cmd *cmds, int cmd_count)
 	signals_parent();
 	if (execute_all_commands(shell, cmds, &info) == -1)
 	{
-		close_all_pipes(info.pipes, cmd_count - 1);
+		close_and_free_pipes(info.pipes, cmd_count - 1);
+		//close_all_pipes(info.pipes, cmd_count - 1);
 		//free_pipes(info.pipes, cmd_count - 1);
-		cleanup_pipes(info.pipes, cmd_count - 1);
+		//cleanup_pipes(info.pipes, cmd_count - 1);
 		signals_prompt();
 		return (1);
 	}
