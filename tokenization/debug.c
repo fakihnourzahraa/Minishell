@@ -44,3 +44,55 @@ void print_toke(t_token *token)
     }
     printf("--- END TOKENS ---\n\n");
 }
+void debug_print_tokens(t_token *tokens) {
+    t_token *current = tokens;
+    printf("=== TOKEN DEBUG ===\n");
+    
+    while (current) {
+        printf("Token: type=%d, value='%s', quotes=%d, space=%d\n", 
+               current->type, current->s ? current->s : "NULL", 
+               current->quotes, current->space);
+        current = current->next;
+    }
+    printf("=== END TOKENS ===\n");
+}
+
+void debug_print_cmds(t_cmd *cmds) {
+    t_cmd *current = cmds;
+    int cmd_num = 0;
+    
+    printf("=== COMMAND DEBUG ===\n");
+    while (current) {
+        printf("Command %d: cmd='%s'\n", cmd_num, current->cmd ? current->cmd : "NULL");
+        
+        printf("  Args: ");
+        if (current->args) {
+            for (int i = 0; current->args[i]; i++) {
+                printf("'%s' ", current->args[i]);
+            }
+        }
+        printf("\n");
+        
+        t_redir *redir = current->rd;
+        while (redir) {
+            printf("  Redir: type=%d, target='%s'\n", redir->type, 
+                   redir->s ? redir->s : "NULL");
+            redir = redir->next;
+        }
+        
+        current = current->next;
+        cmd_num++;
+    }
+    printf("=== END COMMANDS ===\n");
+}
+
+// Add this to your main parsing function to debug
+void debug_parse_input(char *input, t_shell *shell) {
+    printf("DEBUG: Input = '%s'\n", input);
+    
+    // After tokenization
+    debug_print_tokens(shell->tkns);
+    
+    // After parsing
+    debug_print_cmds(shell->cmds);
+}

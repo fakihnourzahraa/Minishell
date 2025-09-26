@@ -190,3 +190,4 @@ int run_multiple_heredocs(char **delimiters, int count, t_shell *shell)
 {
     return run_heredoc_internal(delimiters, count, shell);
 }
+*/

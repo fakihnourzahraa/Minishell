@@ -60,5 +60,6 @@ int		run_multiple_heredocs(char **delimiters, int delimiter_count, t_shell *shel
 void cleanup_child_process(t_shell *shell);
 void cleanup_pipeline_child(t_shell *shell);
 //void cleanup_heredoc_child(t_shell *shell);
-
+int is_redirect_only_command(t_cmd *cmd);
+int execute_redirect_only(t_cmd *cmd, t_shell *shell);
 #endif

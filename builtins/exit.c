@@ -56,7 +56,7 @@ static void	process_exit_argument(t_cmd *cmd, t_shell *shell, int arg_count)
 	{
 		ft_putendl_fd("minishell: exit: numeric argument required", 2);
 		shell->exit_status = 255;
-		//shell->exit = true;
+		shell->exit = true;
 		return;
 	}
 	if (arg_count > 2)

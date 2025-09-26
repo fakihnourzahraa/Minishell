@@ -23,7 +23,11 @@ void cleanup_child_process(t_shell *shell)
         free_env_list(shell->env);
         shell->env = NULL;
     }
-    
+    if(shell->envp)
+    {
+        free_envp(shell->envp);
+        shell->envp=NULL;
+    }
  
     cleanup_t(shell);
 
@@ -52,6 +56,7 @@ void cleanup_child_process(t_shell *shell)
         free(shell->sto);
         shell->sto = NULL;
     }
+    rl_clear_history();
 }
 
 void cleanup_pipeline_child(t_shell *shell)
@@ -62,6 +67,12 @@ void cleanup_pipeline_child(t_shell *shell)
     {
         free_env_list(shell->env);
         shell->env = NULL;
+    }
+
+    if(shell->envp)
+    {
+        free_envp(shell->envp);
+        shell->envp=NULL;
     }
 
     cleanup_t(shell);
@@ -90,4 +101,5 @@ void cleanup_pipeline_child(t_shell *shell)
         free(shell->sto);
         shell->sto = NULL;
     }
+    rl_clear_history();
 }

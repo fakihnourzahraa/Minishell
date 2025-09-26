@@ -74,4 +74,7 @@ int	split_word(char *a, int i, t_shell *shell, t_token *n);
 int	word_len_cmds(char *a, int i);
 int	word_len(char *a, int i);
 void	empty_token(char *a, t_shell *shell, int i);
+void debug_parse_input(char *input, t_shell *shell);
+void debug_print_cmds(t_cmd *cmds);
+void debug_print_tokens(t_token *tokens);
 #endif

@@ -209,7 +209,7 @@ int nour_parsing(t_shell *shell)
     
     return (0);
 }*/
-void mira_execution(t_shell *shell)
+/*void mira_execution(t_shell *shell)
 {
     int cmd_num = 0;
     t_cmd *cmd_chain = shell->cmds;
@@ -243,8 +243,46 @@ void mira_execution(t_shell *shell)
         else
             execute_single(shell, cmd_chain);
     }
-}
+}*/
+void mira_execution(t_shell *shell)
+{
+    int cmd_num = 0;
+    t_cmd *cmd_chain = shell->cmds;
+    
+    if (!cmd_chain)
+        return;
+    t_cmd *current = cmd_chain;
+    while (current)
+    {
+        if (current->cmd)
+            current->builtin = is_builtin(current->cmd);
+        else
+            current->builtin = NOT_BUILTIN;
+        
+        current = current->next;
+        cmd_num++;
+    }
+    if (cmd_chain->next)
+    {
+        execute_pipeline(shell, cmd_chain);
+    }
 
+    else
+    {
+        if (is_redirect_only_command(cmd_chain))
+        {
+            execute_redirect_only(cmd_chain, shell);
+        }
+        else if (cmd_chain->builtin != NOT_BUILTIN)
+        {
+            execute_builtin(cmd_chain, shell);
+        }
+        else
+        {
+            execute_single(shell, cmd_chain);
+        }
+    }
+}
 
 int process_input(t_shell *shell, char *input)
 {
@@ -252,6 +290,10 @@ int process_input(t_shell *shell, char *input)
     shell->in = ft_strdup(input);
     if (!shell->in)
         return (-1);
+    if (ft_strchr(shell->in, '<') && ft_strchr(shell->in, '|')) {
+        printf("\n=== PARSING DEBUG START ===\n");
+        printf("Input: '%s'\n", input);
+    }
     //printf("DEBUG: About to call nour_parsing\n");
     if (nour_parsing(shell) == -1)
     {
@@ -266,6 +308,14 @@ int process_input(t_shell *shell, char *input)
             shell->in = NULL;
         }
         return (-1);
+    }
+    if (ft_strchr(shell->in, '<') && ft_strchr(shell->in, '|')) {
+        printf("After tokenization:\n");
+        debug_print_tokens(shell->tkns);
+        
+        printf("After parsing:\n");
+        debug_print_cmds(shell->cmds);
+        printf("=== PARSING DEBUG END ===\n\n");
     }
     
     //printf("DEBUG: calling mira_execution\n");
@@ -322,11 +372,7 @@ int main_loop(t_shell *shell)
         g_signal = 0;
         
         // Normal command processing
-        if (process_input(shell, input) == -1)
-        {
-            printf("Error processing command\n");
-        }
-        
+        process_input(shell, input);
         if (g_signal == SIGINT)
         {
             g_signal = 0;
