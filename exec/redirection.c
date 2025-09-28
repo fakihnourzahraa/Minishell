@@ -44,32 +44,32 @@ static int handle_append_redir(t_redir *redir)
   return (redirect_fd(fd, STDOUT_FILENO));
 }
 
-/*int apply_redirections(t_cmd *cmd, t_shell *shell)
+int apply_redirections(t_cmd *cmd, t_shell *shell)
 {
   t_redir *current;
   char *heredoc_delimiters[100];
-  int heredoc_count ;
-  int final_input_fd ;
-  heredoc_count = 0;
-  final_input_fd = -1;
+  int heredoc_count = 0;
+  int final_input_fd = -1;
+  
+    printf("DEBUG: apply_redirections called for cmd='%s'\n", cmd->cmd ? cmd->cmd : "NULL");
   if (!cmd)
     return (0);
 
-  current = cmd->rd;
+  current = cmd->rd;  
+  // First pass: collect all heredoc delimiters
   while (current && heredoc_count < 100)
   {
     if (current->type == R_HEREDOC)
     {
       if (!current->s || ft_strlen(current->s) == 0)
-      {
-        //ft_putstr_fd("minishell: syntax error near unexpected token `<<'\n", 2);
         return (-1);
-      }
       heredoc_delimiters[heredoc_count] = current->s;
       heredoc_count++;
     }
     current = current->next;
   }
+    
+    // Second pass: handle non-heredoc redirections
   current = cmd->rd;
   while (current)
   {
@@ -81,57 +81,22 @@ static int handle_append_redir(t_redir *redir)
       return (-1);
     current = current->next;
   }
+    
+    // Handle all heredocs if any exist
   if (heredoc_count > 0)
   {
     final_input_fd = run_multiple_heredocs(heredoc_delimiters, heredoc_count, shell);
-    return (redirect_fd(final_input_fd, STDIN_FILENO));
-  }
-    
-  return (0);
-}*/
-
-int apply_redirections(t_cmd *cmd, t_shell *shell)
-{
-    t_redir *current;
-    int heredoc_fd = -1;
-    
-    if (!cmd)
-        return (0);
-
-    current = cmd->rd;
-    
-    // Handle non-heredoc redirections first
-    while (current)
+    if (final_input_fd == -1)
+      return (-1);
+    // Redirect the final heredoc to stdin
+    if (redirect_fd(final_input_fd, STDIN_FILENO) == -1)
     {
-        if (current->type == R_IN && handle_in_redir(shell, current) == -1)
-            return (-1);
-        else if (current->type == R_OUT && handle_out_redir(current) == -1)
-            return (-1);
-        else if (current->type == R_APPEND && handle_append_redir(current) == -1)
-            return (-1);
-        else if (current->type == R_HEREDOC)
-        {
-            // Process THIS command's heredoc only
-            if (!current->s || ft_strlen(current->s) == 0)
-                return (-1);
-                
-            // Run single heredoc for this command
-            heredoc_fd = run_heredoc(current->s, shell);
-            if (heredoc_fd == -1)
-                return (-1);
-                
-            // Redirect this heredoc to stdin
-            if (redirect_fd(heredoc_fd, STDIN_FILENO) == -1)
-            {
-                close(heredoc_fd);
-                return (-1);
-            }
-            close(heredoc_fd);
-        }
-        current = current->next;
+      close(final_input_fd);
+      return (-1);
     }
-    
-    return (0);
+    close(final_input_fd);
+  }  
+  return (0);
 }
 
 int is_redirect_only_command(t_cmd *cmd)

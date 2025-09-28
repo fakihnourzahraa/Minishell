@@ -152,10 +152,12 @@ static int	execute_all_commands(t_shell *shell, t_cmd *cmds, t_pipe_info *info)
 	t_cmd	*current;
 	int		index;
 
+	printf("DEBUG: execute_all_commands called\n");
 	current = cmds;
 	index = 0;
 	while (current)
 	{
+		printf("DEBUG: Processing command %d: %s\n", index, current->cmd);
 		info->cmd_index = index;
 		if (execute_cmd_in_pipeline(shell, current, info) == -1)
 			return (-1);
@@ -181,15 +183,17 @@ static void	cleanup_and_wait(t_shell *shell, t_cmd *cmds, t_pipe_info *info)
 	signals_prompt();
 }
 
-int	execute_multiple_cmds(t_shell *shell, t_cmd *cmds, int cmd_count)
+/*int	execute_multiple_cmds(t_shell *shell, t_cmd *cmds, int cmd_count)
 {
 	t_pipe_info	info;
 
+	printf("DEBUG: execute_multiple_cmds called with cmd_count=%d\n", cmd_count);
 	info.pipes = setup_pipes(cmd_count);
 	if (!info.pipes)
 		return (1);
 	info.cmd_count = cmd_count;
 	signals_parent();
+	printf("DEBUG: About to call execute_all_commands\n");
 	if (execute_all_commands(shell, cmds, &info) == -1)
 	{
 		close_and_free_pipes(info.pipes, cmd_count - 1);
@@ -202,4 +206,47 @@ int	execute_multiple_cmds(t_shell *shell, t_cmd *cmds, int cmd_count)
 	}
 	cleanup_and_wait(shell, cmds, &info);
 	return (shell->exit_status);
+}*/
+
+int execute_multiple_cmds(t_shell *shell, t_cmd *cmds, int cmd_count)
+{
+    t_pipe_info info;
+    t_cmd *current;
+    
+    printf("DEBUG: execute_multiple_cmds called with cmd_count=%d\n", cmd_count);
+    
+    // STEP 1: Handle all heredocs FIRST (before any forking)
+    current = cmds;
+    while (current)
+    {
+        if (current->rd && current->rd->type == R_HEREDOC)
+        {
+            printf("DEBUG: Pre-processing heredoc for %s\n", current->cmd);
+            // Handle heredoc and store the fd for later use
+            int heredoc_fd = run_heredoc(current->rd->s, shell);
+            if (heredoc_fd == -1)
+                return (1);
+            current->i_fd = heredoc_fd; // Store the fd in the command
+        }
+        current = current->next;
+    }
+    
+    // STEP 2: Now execute the pipeline normally
+    info.pipes = setup_pipes(cmd_count);
+    if (!info.pipes)
+        return (1);
+    info.cmd_count = cmd_count;
+    signals_parent();
+    
+    printf("DEBUG: About to call execute_all_commands\n");
+    
+    if (execute_all_commands(shell, cmds, &info) == -1)
+    {
+        close_and_free_pipes(info.pipes, cmd_count - 1);
+        info.pipes = NULL;
+        signals_prompt();
+        return (1);
+    }
+    cleanup_and_wait(shell, cmds, &info);
+    return (shell->exit_status);
 }

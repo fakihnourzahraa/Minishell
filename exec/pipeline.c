@@ -225,12 +225,16 @@ int execute_pipeline(t_shell *shell, t_cmd *cmds)
 {
   int cmd_count;
 
+  printf("DEBUG: execute_pipeline called\n");
   cmd_count = count_commands(cmds);
+  printf("DEBUG: command count = %d\n", cmd_count);
   if (cmd_count == 1)
   {
+    printf("DEBUG: Single command in pipeline (shouldn't happen)\n");
     execute_cmd_in_pipeline(shell, cmds, NULL);
     wait_for_children(cmds, shell);
     return (shell->exit_status);
-  }  
+  }
+  printf("DEBUG: Calling execute_multiple_cmds\n"); 
   return (execute_multiple_cmds(shell, cmds, cmd_count));
 }

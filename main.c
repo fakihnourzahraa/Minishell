@@ -262,15 +262,19 @@ void mira_execution(t_shell *shell)
         current = current->next;
         cmd_num++;
     }
+    printf("DEBUG: mira_execution - cmd_chain->next = %p\n", cmd_chain->next);
     if (cmd_chain->next)
     {
+        printf("DEBUG: Going to execute_pipeline\n");
         execute_pipeline(shell, cmd_chain);
     }
 
     else
     {
+        printf("DEBUG: Single command path\n");
         if (is_redirect_only_command(cmd_chain))
         {
+            printf("DEBUG: Calling execute_redirect_only\n");
             execute_redirect_only(cmd_chain, shell);
         }
         else if (cmd_chain->builtin != NOT_BUILTIN)
@@ -286,7 +290,7 @@ void mira_execution(t_shell *shell)
 
 int process_input(t_shell *shell, char *input)
 {
-    //printf("DEBUG: process_input started\n");
+    printf("DEBUG: process_input started\n");
     shell->in = ft_strdup(input);
     if (!shell->in)
         return (-1);
@@ -318,9 +322,9 @@ int process_input(t_shell *shell, char *input)
         printf("=== PARSING DEBUG END ===\n\n");
     }
     
-    //printf("DEBUG: calling mira_execution\n");
+    printf("DEBUG: calling mira_execution\n");
     mira_execution(shell);
-    //printf("DEBUG: mira_execution FINISHED - about to cleanup\n");
+    printf("DEBUG: mira_execution FINISHED - about to cleanup\n");
     cleanup_t(shell);
     cleanup_p(shell);
     if (shell->in)

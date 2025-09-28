@@ -18,16 +18,23 @@ static void handle_file_error(char *filename)
   exit(1);
 }
 
-
-int handle_input_redirections(t_cmd *cmd, t_shell *shell)
+/*int handle_input_redirections(t_cmd *cmd, t_shell *shell)
 {
   t_redir *redir;
   int input_fd;
   int temp_fd;
+
+  printf("DEBUG: handle_input_redirections called for cmd: %s\n", cmd->cmd);
+
+  //printf("DEBUG: R_HEREDOC constant = %d\n", R_HEREDOC);
+  if (!cmd->rd)
+    return STDIN_FILENO;
   input_fd = STDIN_FILENO;
   redir = cmd->rd;
+  //printf("DEBUG: handle_input_redirections called\n");
   while (redir)
   {
+    printf("DEBUG: Processing redir type=%d, target='%s'\n", redir->type, redir->s);
     if (redir->type == R_IN)
     {
       temp_fd = input_fd;  //  Save previous fd
@@ -41,8 +48,10 @@ int handle_input_redirections(t_cmd *cmd, t_shell *shell)
     }
     else if (redir->type == R_HEREDOC)
     {
+      printf("DEBUG: Found heredoc, calling run_heredoc\n");
       temp_fd = input_fd;
       input_fd = run_heredoc(redir->s, shell);
+      printf("DEBUG: heredoc returned fd=%d\n", input_fd);
       if (input_fd < 0)
         exit(130);
       //redir->fd = output_fd;
@@ -51,7 +60,57 @@ int handle_input_redirections(t_cmd *cmd, t_shell *shell)
         close(temp_fd);
     }
     redir = redir->next;
+    //redir = redir->next;
   }
+   printf("DEBUG: handle_input_redirections returning fd=%d\n", input_fd);
+  return (input_fd);
+}*/
+
+int handle_input_redirections(t_cmd *cmd, t_shell *shell)
+{
+  t_redir *redir;
+  int input_fd;
+  int temp_fd;
+  
+  (void)shell;
+  printf("DEBUG: handle_input_redirections called for cmd: %s\n", cmd->cmd);
+  
+  if (cmd->i_fd > 0)
+  {
+        printf("DEBUG: Using pre-processed heredoc fd=%d\n", cmd->i_fd);
+        return cmd->i_fd;
+  }
+
+  input_fd = STDIN_FILENO;
+  redir = cmd->rd;
+  
+  while (redir)
+  {
+    printf("DEBUG: Processing redir type=%d, target='%s'\n", redir->type, redir->s);
+    
+    if (redir->type == R_IN)
+    {
+      temp_fd = input_fd;
+      input_fd = open(redir->s, O_RDONLY);
+      if (input_fd < 0)
+        handle_file_error(redir->s);
+      if (temp_fd != STDIN_FILENO && temp_fd > 2)
+        close(temp_fd);
+    }
+    else if (redir->type == R_HEREDOC)
+    {
+      printf("DEBUG: Found heredoc - SKIPPING in child process\n");
+      temp_fd = input_fd;
+      input_fd = run_heredoc(redir->s, shell);
+      if (input_fd < 0)
+        exit(130);
+      // Close previous fd if it's not stdin
+      if (temp_fd != STDIN_FILENO && temp_fd > 2)
+        close(temp_fd);
+    }
+    redir = redir->next;
+  }
+  printf("DEBUG: handle_input_redirections returning fd=%d\n", input_fd);
   return (input_fd);
 }
 
