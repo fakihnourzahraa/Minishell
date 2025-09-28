@@ -118,10 +118,6 @@ static int run_heredoc_internal(char **delims, int count, t_shell *shell)
     int fd[2];
     pid_t pid;
     int status;
-
-    printf("DEBUG: run_heredoc_internal called from UNKNOWN location\n");
-    printf("DEBUG: delimiter[0] = '%s'\n", delims[0]);
-    //printf("DEBUG: run_heredoc_internal called\n");
     
     if (pipe(fd) == -1)
         return (-1);
@@ -148,8 +144,6 @@ static int run_heredoc_internal(char **delims, int count, t_shell *shell)
     shell->in_h = 0;
     signals_prompt();
 
-    printf("DEBUG: heredoc child exited with status: %d\n", status);
-    
     if (WIFSIGNALED(status))
     {
         if (WTERMSIG(status) == SIGINT)
@@ -157,7 +151,6 @@ static int run_heredoc_internal(char **delims, int count, t_shell *shell)
         else
             shell->exit_status = 128 + WTERMSIG(status);
         close(fd[0]);
-        printf("DEBUG: heredoc was signaled, closing fd\n");
         return (-1);
     }
     else if (WIFEXITED(status))
@@ -167,42 +160,24 @@ static int run_heredoc_internal(char **delims, int count, t_shell *shell)
         if (g_signal == -1)
         {
             close(fd[0]);
-            //printf("DEBUG: g_signal == -1, closing fd\n");
             return (-1);
         }
         if (shell->exit_status == 0)
         {
-            //printf("DEBUG: heredoc successful, returning fd[0]: %d\n", fd[0]);
             return fd[0];
         }
     }
-
-    printf("DEBUG: heredoc failed, closing fd\n");
     close(fd[0]);
     return (-1);
 }
 
-/*int run_heredoc(char *delimiter, t_shell *shell)
-{
-    char *delims[2] = { delimiter, NULL };
-    return run_heredoc_internal(delims, 1, shell);
-}
-
-int run_multiple_heredocs(char **delimiters, int count, t_shell *shell)
-{
-    return run_heredoc_internal(delimiters, count, shell);
-}
-*/
-
 int run_heredoc(char *delimiter, t_shell *shell)
 {
-    printf("DEBUG: run_heredoc called with delimiter='%s'\n", delimiter);
     char *delims[2] = { delimiter, NULL };
     return run_heredoc_internal(delims, 1, shell);
 }
 
 int run_multiple_heredocs(char **delimiters, int count, t_shell *shell)
 {
-    printf("DEBUG: run_multiple_heredocs called with count=%d\n", count);
     return run_heredoc_internal(delimiters, count, shell);
 }

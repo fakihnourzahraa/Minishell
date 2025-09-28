@@ -18,54 +18,6 @@ static void handle_file_error(char *filename)
   exit(1);
 }
 
-/*int handle_input_redirections(t_cmd *cmd, t_shell *shell)
-{
-  t_redir *redir;
-  int input_fd;
-  int temp_fd;
-
-  printf("DEBUG: handle_input_redirections called for cmd: %s\n", cmd->cmd);
-
-  //printf("DEBUG: R_HEREDOC constant = %d\n", R_HEREDOC);
-  if (!cmd->rd)
-    return STDIN_FILENO;
-  input_fd = STDIN_FILENO;
-  redir = cmd->rd;
-  //printf("DEBUG: handle_input_redirections called\n");
-  while (redir)
-  {
-    printf("DEBUG: Processing redir type=%d, target='%s'\n", redir->type, redir->s);
-    if (redir->type == R_IN)
-    {
-      temp_fd = input_fd;  //  Save previous fd
-      input_fd = open(redir->s, O_RDONLY);
-      if (input_fd < 0)
-        handle_file_error(redir->s);
-      redir->fd = input_fd;
-      //  Close previous fd if it's not stdin
-      if (temp_fd != STDIN_FILENO && temp_fd > 2)
-        close(temp_fd);
-    }
-    else if (redir->type == R_HEREDOC)
-    {
-      printf("DEBUG: Found heredoc, calling run_heredoc\n");
-      temp_fd = input_fd;
-      input_fd = run_heredoc(redir->s, shell);
-      printf("DEBUG: heredoc returned fd=%d\n", input_fd);
-      if (input_fd < 0)
-        exit(130);
-      //redir->fd = output_fd;
-      //  Close previous fd if it's not stdin
-      if (temp_fd != STDIN_FILENO && temp_fd > 2)
-        close(temp_fd);
-    }
-    redir = redir->next;
-    //redir = redir->next;
-  }
-   printf("DEBUG: handle_input_redirections returning fd=%d\n", input_fd);
-  return (input_fd);
-}*/
-
 int handle_input_redirections(t_cmd *cmd, t_shell *shell)
 {
   t_redir *redir;
@@ -73,21 +25,13 @@ int handle_input_redirections(t_cmd *cmd, t_shell *shell)
   int temp_fd;
   
   (void)shell;
-  printf("DEBUG: handle_input_redirections called for cmd: %s\n", cmd->cmd);
-  
   if (cmd->i_fd > 0)
-  {
-        printf("DEBUG: Using pre-processed heredoc fd=%d\n", cmd->i_fd);
-        return cmd->i_fd;
-  }
-
+    return cmd->i_fd;
   input_fd = STDIN_FILENO;
   redir = cmd->rd;
   
   while (redir)
-  {
-    printf("DEBUG: Processing redir type=%d, target='%s'\n", redir->type, redir->s);
-    
+  { 
     if (redir->type == R_IN)
     {
       temp_fd = input_fd;
@@ -99,18 +43,15 @@ int handle_input_redirections(t_cmd *cmd, t_shell *shell)
     }
     else if (redir->type == R_HEREDOC)
     {
-      printf("DEBUG: Found heredoc - SKIPPING in child process\n");
       temp_fd = input_fd;
       input_fd = run_heredoc(redir->s, shell);
       if (input_fd < 0)
         exit(130);
-      // Close previous fd if it's not stdin
       if (temp_fd != STDIN_FILENO && temp_fd > 2)
         close(temp_fd);
     }
     redir = redir->next;
   }
-  printf("DEBUG: handle_input_redirections returning fd=%d\n", input_fd);
   return (input_fd);
 }
 
@@ -127,29 +68,25 @@ int handle_output_redirections(t_cmd *cmd)
   {
     if (redir->type == R_OUT)
     {
-      temp_fd = output_fd;  //  Save previous fd
+      temp_fd = output_fd;
       output_fd = open(redir->s, O_WRONLY | O_CREAT | O_TRUNC, 0644);
       if (output_fd < 0)
       {
         perror(redir->s);
         exit(1);
       }
-      //redir->fd = output_fd;
-      //  Close previous fd if it's not stdout
       if (temp_fd != STDOUT_FILENO && temp_fd > 2)
         close(temp_fd);
     }
     else if (redir->type == R_APPEND)
     {
-      temp_fd = output_fd;  //: Save previous fd
+      temp_fd = output_fd;
       output_fd = open(redir->s, O_WRONLY | O_CREAT | O_APPEND, 0644);
       if (output_fd < 0)
       {
         perror(redir->s);
         exit(1);
       }
-      //redir->fd = output_fd;
-      //  Close previous fd if it's not stdout
       if (temp_fd != STDOUT_FILENO && temp_fd > 2)
         close(temp_fd);
     }
@@ -167,10 +104,8 @@ void setup_cmd_fds(t_cmd *cmd, t_pipe_info *info, t_shell *shell)
   input_fd = handle_input_redirections(cmd, shell);
   output_fd = handle_output_redirections(cmd);
   
-  // Connect pipes if we're in a pipeline
   if (info)
     connect_pipes(&input_fd, &output_fd, info);
-    
   if (input_fd != STDIN_FILENO)
   {
     if (dup2(input_fd, STDIN_FILENO) == -1)
@@ -196,8 +131,6 @@ void setup_cmd_fds(t_cmd *cmd, t_pipe_info *info, t_shell *shell)
     if (output_fd > 2)
       close(output_fd);
   }
-  
-  // Close unused pipes only if we're in a pipeline
   if (info)
     close_unused_pipes(info->pipes, info->cmd_count - 1, info->cmd_index);
 }

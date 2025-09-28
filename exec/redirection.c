@@ -30,7 +30,7 @@ static int handle_out_redir(t_redir *redir)
 
   if (!redir || !redir->s)
     return (-1);
-  fd = open_outfile(redir->s, 0);  // 0 = truncate mode
+  fd = open_outfile(redir->s, 0);
   return (redirect_fd(fd, STDOUT_FILENO));
 }
 
@@ -40,7 +40,7 @@ static int handle_append_redir(t_redir *redir)
 
   if (!redir || !redir->s)
     return (-1);
-  fd = open_outfile(redir->s, 1);  // 1 = append mode
+  fd = open_outfile(redir->s, 1);
   return (redirect_fd(fd, STDOUT_FILENO));
 }
 
@@ -51,12 +51,9 @@ int apply_redirections(t_cmd *cmd, t_shell *shell)
   int heredoc_count = 0;
   int final_input_fd = -1;
   
-    printf("DEBUG: apply_redirections called for cmd='%s'\n", cmd->cmd ? cmd->cmd : "NULL");
   if (!cmd)
     return (0);
-
   current = cmd->rd;  
-  // First pass: collect all heredoc delimiters
   while (current && heredoc_count < 100)
   {
     if (current->type == R_HEREDOC)
@@ -68,8 +65,6 @@ int apply_redirections(t_cmd *cmd, t_shell *shell)
     }
     current = current->next;
   }
-    
-    // Second pass: handle non-heredoc redirections
   current = cmd->rd;
   while (current)
   {
@@ -81,14 +76,11 @@ int apply_redirections(t_cmd *cmd, t_shell *shell)
       return (-1);
     current = current->next;
   }
-    
-    // Handle all heredocs if any exist
   if (heredoc_count > 0)
   {
     final_input_fd = run_multiple_heredocs(heredoc_delimiters, heredoc_count, shell);
     if (final_input_fd == -1)
       return (-1);
-    // Redirect the final heredoc to stdin
     if (redirect_fd(final_input_fd, STDIN_FILENO) == -1)
     {
       close(final_input_fd);
@@ -107,7 +99,7 @@ int is_redirect_only_command(t_cmd *cmd)
     return (1);
         
   return (0);
-} // If no command or empty command, but has redirections
+}
 
 int execute_redirect_only(t_cmd *cmd, t_shell *shell)
 {

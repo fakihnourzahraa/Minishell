@@ -14,7 +14,6 @@
 
 extern int g_signal;
 
-//int execute_external_command(t_shell *shell, t_cmd *cmd);
 //void debug_cmd_structure(t_cmd *cmd);
 
 /*void debug_cmd_structure(t_cmd *cmd)
@@ -64,15 +63,9 @@ void init_shell(t_shell *shell, char **envp)
 }
 
 void cleanup_shell(t_shell *shell)
-{
-    //printf("DEBUG: cleanup_shell called\n"); 
+{ 
     if (!shell)
-    {
-        //printf("DEBUG: shell is NULL!\n");
         return;
-    }
-  
-    //printf("DEBUG: shell->env=%p\n", shell->env);
     cleanup_t(shell);
     cleanup_p(shell);
 
@@ -81,8 +74,6 @@ void cleanup_shell(t_shell *shell)
         free(shell->in);
         shell->in = NULL;
     }
-    //cleanup_t(shell);
-    //cleanup_p(shell);
 
     if (shell->cwd)
     {
@@ -101,18 +92,11 @@ void cleanup_shell(t_shell *shell)
         free(shell->sto);
         shell->sto = NULL;
     }
-    /*if (shell->env)
-    {
-        free_env_list(shell->env);
-        shell->env = NULL;
-    }*/
 
     if (shell->env)
     {
-        //printf("DEBUG: About to free env list\n");
         free_env_list(shell->env);
         shell->env = NULL;
-        //printf("DEBUG: Env list freed\n");
     }
 
     if (shell->envp)
@@ -122,7 +106,6 @@ void cleanup_shell(t_shell *shell)
     }
 
     rl_clear_history();
-    //printf("DEBUG: cleanup_shell finished\n");
 }
 
 int nour_parsing(t_shell *shell)
@@ -138,28 +121,6 @@ int nour_parsing(t_shell *shell)
     
     return (0);
 }
-
-/*int nour_parsing(t_shell *shell)
-{
-    printf("DEBUG: nour_parsing started\n");
-    printf("DEBUG: shell->in = '%s'\n", shell->in ? shell->in : "NULL");
-    
-    int tokenize_result = tokenize_line(shell);
-    printf("DEBUG: tokenize_line returned: %d\n", tokenize_result);
-    
-    if (tokenize_result == -1)
-        return (-1);
-    
-    printf("DEBUG: About to check tokens\n");
-    if (check_tkns(shell->tkns) == -1)
-        return (-1);
-    
-    printf("DEBUG: About to call parse\n");
-    parse(shell, shell->tkns);
-    printf("DEBUG: parse finished\n");
-    
-    return (0);
-}*/
 
 /*int nour_parsing(t_shell *shell)
 {
@@ -209,45 +170,14 @@ int nour_parsing(t_shell *shell)
     
     return (0);
 }*/
-/*void mira_execution(t_shell *shell)
-{
-    int cmd_num = 0;
-    t_cmd *cmd_chain = shell->cmds;
-    
-    if (!cmd_chain)
-        return;
-    
-    t_cmd *current = cmd_chain;
-    while (current)
-    {
-        // printf("DEBUG: cmd[%d]->cmd = '%s'\n", cmd_num, 
-        //        current->cmd ? current->cmd : "(null)");
-        // if (current->args && current->args[0])
-        //     printf("DEBUG: cmd[%d]->args[0] = '%s'\n", cmd_num, current->args[0]);
-        
-        if (current->cmd)
-            current->builtin = is_builtin(current->cmd);
-        else
-            current->builtin = NOT_BUILTIN;
-        
-        current = current->next;
-        cmd_num++;  // Move this line here
-    }
-    
-    if (cmd_chain->next)
-        execute_pipeline(shell, cmd_chain);
-    else
-    {
-        if (cmd_chain->builtin != NOT_BUILTIN)
-            execute_builtin(cmd_chain, shell);
-        else
-            execute_single(shell, cmd_chain);
-    }
-}*/
+
 void mira_execution(t_shell *shell)
 {
-    int cmd_num = 0;
-    t_cmd *cmd_chain = shell->cmds;
+    int cmd_num;
+    t_cmd *cmd_chain;
+
+    cmd_num = 0;
+    cmd_chain = shell->cmds;
     
     if (!cmd_chain)
         return;
@@ -262,19 +192,15 @@ void mira_execution(t_shell *shell)
         current = current->next;
         cmd_num++;
     }
-    printf("DEBUG: mira_execution - cmd_chain->next = %p\n", cmd_chain->next);
     if (cmd_chain->next)
     {
-        printf("DEBUG: Going to execute_pipeline\n");
         execute_pipeline(shell, cmd_chain);
     }
 
     else
     {
-        printf("DEBUG: Single command path\n");
         if (is_redirect_only_command(cmd_chain))
         {
-            printf("DEBUG: Calling execute_redirect_only\n");
             execute_redirect_only(cmd_chain, shell);
         }
         else if (cmd_chain->builtin != NOT_BUILTIN)
@@ -290,22 +216,14 @@ void mira_execution(t_shell *shell)
 
 int process_input(t_shell *shell, char *input)
 {
-    printf("DEBUG: process_input started\n");
     shell->in = ft_strdup(input);
     if (!shell->in)
         return (-1);
-    if (ft_strchr(shell->in, '<') && ft_strchr(shell->in, '|')) {
-        printf("\n=== PARSING DEBUG START ===\n");
-        printf("Input: '%s'\n", input);
-    }
-    //printf("DEBUG: About to call nour_parsing\n");
+        
     if (nour_parsing(shell) == -1)
     {
-        //printf("DEBUG: nour_parsing failed, calling cleanup\n");
         cleanup_t(shell);
         cleanup_p(shell);
-        //free(shell->in);
-        //shell->in = NULL;
         if (shell->in)
         {
             free(shell->in);
@@ -313,18 +231,8 @@ int process_input(t_shell *shell, char *input)
         }
         return (-1);
     }
-    if (ft_strchr(shell->in, '<') && ft_strchr(shell->in, '|')) {
-        printf("After tokenization:\n");
-        debug_print_tokens(shell->tkns);
-        
-        printf("After parsing:\n");
-        debug_print_cmds(shell->cmds);
-        printf("=== PARSING DEBUG END ===\n\n");
-    }
     
-    printf("DEBUG: calling mira_execution\n");
     mira_execution(shell);
-    printf("DEBUG: mira_execution FINISHED - about to cleanup\n");
     cleanup_t(shell);
     cleanup_p(shell);
     if (shell->in)
@@ -332,9 +240,6 @@ int process_input(t_shell *shell, char *input)
         free(shell->in);
         shell->in = NULL;
     }
-    //free(shell->in);
-    //shell->in = NULL;
-    //printf("DEBUG: process_input finished\n");
     return (0);
 }
 
