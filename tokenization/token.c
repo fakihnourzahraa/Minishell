@@ -54,6 +54,7 @@ t_token	*init_token(void)
 	n->quotes = 0;
 	n->next = NULL;
 	n->space = 1;
+	n->expand = false;
 	return (n);
 }
 void	add_token(t_shell *shell, t_token *n)
@@ -103,6 +104,7 @@ int	tokenize_line(t_shell *shell)
 	}
 	t = init_token();
 	add_token(shell, t);
+
 	return (1);
 }
 //init token intialized it to eof

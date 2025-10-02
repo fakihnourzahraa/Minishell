@@ -6,7 +6,7 @@
 /*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/31 13:23:45 by nfakih            #+#    #+#             */
-/*   Updated: 2025/09/25 22:22:34 by nfakih           ###   ########.fr       */
+/*   Updated: 2025/10/02 20:31:55 by nfakih           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,13 +30,9 @@ int	split_word(char *a, int i, t_shell *shell, t_token *n)
 	b = malloc(sizeof(char) * (len + 1));
 	while (len > j)
 	{
-		// if (a[i + j] == '$')
-		// {
-		// 	j = concat(a, b, j, i);
-		// 	i = var_length(a, i + j);
-		// }
-		// else
-			b[j] = a[i + j];
+		if (a[i + j] == '$')
+			t->expand = true;
+		b[j] = a[i + j];
 		j++;
 	}
 	if (a[i + j] && a[i + j] != 32)
@@ -79,22 +75,18 @@ int	split_quote(char *a, int i, t_shell *shell, char n)
 		// if (n == '"' && a[i + len] == '$')
 		// 	len = env_length(a, i + len);
 		// else
-			len++;
+		len++;
 	}
 	b = malloc(sizeof(char) * (len + 3));
 	b[0] = n;
 	j = -1;
+	t = init_token();
 	while (++j < len)
 	{
-		// if (a[i + j] == '$')
-		// {
-		// 	j = concat(a, b, j, i);
-		// 	i = var_length(a, i + j);
-		// }
-		// else
-			b[j + 1] = a[i + j];
+		if (n == '"' && a[i + j] == '$')
+			t->expand = true;
+		b[j + 1] = a[i + j];
 	}
-	t = init_token();
 	if (a[j + 1 + i] && !skipable_space(a[j + 1 + i]))
 		t->space = false;
 	b[len + 1] = n;

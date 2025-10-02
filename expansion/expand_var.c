@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand_var.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miwehbe <miwehbe@student.42beirut.com>     +#+  +:+       +#+        */
+/*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/20 18:57:15 by miwehbe           #+#    #+#             */
-/*   Updated: 2025/09/20 18:57:15 by miwehbe          ###   ########.fr       */
+/*   Updated: 2025/10/02 19:52:36 by nfakih           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ char *expand_variable(t_shell *shell, const char *var_name)
   char *env_value;
   char *str_copy;
 
-  if(!shell || ! var_name)
+  if(!shell || !var_name)
     return (NULL);
   if(ft_strcmp(var_name,"?")==0)
     return get_exit_status_string(shell);

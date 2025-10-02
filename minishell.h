@@ -6,7 +6,7 @@
 /*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/28 16:10:17 by nour              #+#    #+#             */
-/*   Updated: 2025/09/25 17:55:29 by nfakih           ###   ########.fr       */
+/*   Updated: 2025/10/02 20:30:55 by nfakih           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,7 @@ typedef	enum	s_token_type
 typedef struct s_token
 {
 	t_token_type	type;
+	bool			expand;
 	char			*s;
 	int				quotes;
 	bool			space;
