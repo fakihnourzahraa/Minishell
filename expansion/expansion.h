@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expansion.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miwehbe <miwehbe@student.42beirut.com>     +#+  +:+       +#+        */
+/*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/20 19:01:33 by miwehbe           #+#    #+#             */
-/*   Updated: 2025/09/20 19:01:33 by miwehbe          ###   ########.fr       */
+/*   Updated: 2025/10/04 22:15:42 by nfakih           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 
 char *get_exit_status_string(t_shell *shell);
 char *expand_variable(t_shell *shell, const char *var_name);
+void	iterate_expansion(t_shell *shell);
 //void update_exit_status(t_shell *shell, int status);
 
 #endif

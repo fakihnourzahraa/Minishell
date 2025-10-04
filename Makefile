@@ -40,7 +40,7 @@ SRCS = main.c \
        env/envir.c \
        env/envir2.c \
        env/envir3.c \
-       env/envir.utils.c \
+       env/envir.utils.c expansion/expansion.c \
        tokenization/data_structure.c tokenization/debug.c\
        tokenization/edge.c tokenization/parsing.c tokenization/redir.c\
 	   tokenization/splits.c tokenization/chars.c \
