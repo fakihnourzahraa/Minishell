@@ -6,7 +6,7 @@
 /*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/02 20:08:42 by nfakih            #+#    #+#             */
-/*   Updated: 2025/10/02 21:30:25 by nfakih           ###   ########.fr       */
+/*   Updated: 2025/10/04 20:51:17 by nfakih           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,38 +14,50 @@
 
 int	var_length(char	*a, int i)
 {
-		while (a[i] && a[i] != '$' && a[i] != '"' && !skipable_space(a[i]))
+	while (a[i] && a[i] != '$' && a[i] != '"' && !skipable_space(a[i]))
 			i++;
 	return (i);
 }
 
-int	expand(t_token *tkn, int i)
+char	*expand(t_shell *shell, char *s)
 {
-	int		j;
-	char	*n;
+	int	i;
 
-	n = malloc(sizeof(char) * (var_length(tkn->s, i) + ft_strlen(tkn->s)));
+	if (!expandable(s))
+		return (s);
+		
 }
 
-void	check_expansion(t_shell *shell, t_token *tkns)
+int	expandable(char *s, int	i, char	*q)
+{
+	while (s[i])
+	{
+		if (s[i] == '\'' || s[i] == '"')
+		{
+			if (q == '\0')
+				q = s[i];
+			else if (q == s[i])
+				q = '\0';
+		}
+		if (s[i] == '$' && (q == '"' || q == '\0'))
+			return (i);
+		i++;
+	}
+	return (-1);
+}
+void	iterate_expansion(t_shell *shell)
 {
 	int	i;
 
 	i = 0;
-	while (tkns->s[i])
+	while (shell->cmds)
 	{
-		if (tkns->s[i] == '$')
-			i = expand(tkns, i);
-		i++;
-	}
-}
-void	iterate_expansion(t_shell *shell)
-{
-	while (shell->tkns)
-	{
-		if (shell->tkns->expand)
-			expand(shell, shell->tkns);
-		shell->tkns = shell->tkns->next;
+		shell->cmds->cmd = expand(shell, shell->cmds->cmd);
+		while (shell->cmds->args[i])
+		{
+			i++;
+			
+		}
 	}
 	
 }

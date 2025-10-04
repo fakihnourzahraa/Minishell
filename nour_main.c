@@ -185,14 +185,30 @@ void test_string(char *input)
     cleanup_p(&shell);
 }
 int main(void)
- {
-    printf("TOKENIZATION & REDIRECTION TEST\n");
-    printf("===============================\n\n");
-    // Test Cases for Quote Concatenation Fix
-	printf("=== QUOTE CONCATENATION IN REDIRECTIONS ===\n");
-	test_string("a'hi'");
-	test_string("<<a'hi'");
-	test_string("<<a'hi'b");
+{
+
+printf("\n=== CONCATENATION ===\n");
+test_string("echo a'hi'b");
+test_string("echo ''a''");
+test_string("echo a'b'\"c\"d");
+
+printf("\n=== REDIRECTIONS ===\n");
+test_string("echo hello > file");
+test_string("cat < file");
+test_string("echo test >> file");
+test_string("cat << EOF");
+
+printf("\n=== REDIRECTIONS WITH QUOTES ===\n");
+test_string(">a'hi'b");
+test_string("<<a'hi'");
+test_string("echo test >a''b");
+
+printf("\n=== PIPES ===\n");
+test_string("echo hi | cat");
+test_string("ls | grep test | wc -l");
+
+printf("\n=== PIPES WITH REDIRECTIONS ===\n");
+test_string("cat < file | grep test > out");
 
     return 0;
 }

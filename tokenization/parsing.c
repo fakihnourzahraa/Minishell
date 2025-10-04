@@ -6,7 +6,7 @@
 /*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/04 22:53:52 by nour              #+#    #+#             */
-/*   Updated: 2025/10/04 18:33:20 by nfakih           ###   ########.fr       */
+/*   Updated: 2025/10/04 20:34:17 by nfakih           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ int	parse_word(t_token **t, t_cmd *cmd, int i)
 	else
 		cmd->args[i] = ft_strdup((*t)->s);
 	final = (*t)->space;
-	while ((*t)->space == 0 && (*t)->type == WORD && (*t)->next && (*t)->next->type == WORD)
+	while ((*t)->space == 0 && (*t)->next && ((*t)->next->type == WORD || (*t)->next->type == EMPTY))
 	{
 		(*t) = (*t)->next;
 		if ((*t)->quotes == 1)
@@ -56,38 +56,10 @@ t_token *iterate_token(t_shell *shell, t_token *token, t_cmd **cmd, int *i)
 
 	if (!token || !cmd || !*cmd)
 		return (token);
-	if (token->type == WORD)
+	
+	if (token->type == WORD || token->type == EMPTY)
 		*i = parse_word(&token, *cmd, *i);
-	else if (token->type == EMPTY)
-	{
-		(*cmd)->args[*i] = ft_strdup("");
-		(*cmd)->space[*i] = token->space;
-		if (*i == 0)
-			(*cmd)->cmd = ft_strdup("");
-		(*i)++;
-	}
-	else if (token->type != PIPE && token->type != EMPTY)
-	{
-		// fill_r(token, *cmd);
-		// if (token->next && token->next->type == WORD)
-		// 	token = token->next;
-		start = token->next;
-		fill_r(token, *cmd);
-		// if (start && start->type == WORD)
-		// {
-		// 	token = start;
-		// 	while (token->space == 0 && token->type == WORD && token->next && token->next->type == WORD)
-		// 		token = token->next;
-		// }
-		if (start && (start->type == WORD || start->type == EMPTY))
-		{
-			token = start;
-			while (token && token->space == 0 && token->next && 
-				(token->next->type == WORD || token->next->type == EMPTY))
-				token = token->next;
-		}
-	}
-	else if (token->type != EMPTY)
+	else if (token->type == PIPE)
 	{
 		(*cmd)->args[*i] = NULL;
 		add_cmd(shell, *cmd);
@@ -96,11 +68,74 @@ t_token *iterate_token(t_shell *shell, t_token *token, t_cmd **cmd, int *i)
 		*i = 0;
 		return (token);
 	}
+	else if (token->type != PIPE && token->type != EMPTY)  // Redirections
+	{
+		start = token->next;
+		fill_r(token, *cmd);
+		if (start && (start->type == WORD || start->type == EMPTY))
+		{
+			token = start;
+			while (token && token->space == 0 && token->next && 
+				(token->next->type == WORD || token->next->type == EMPTY))
+				token = token->next;
+		}
+	}
 	
 	if (token)
 		token = token->next;
 	return (token);
 }
+
+// t_token *iterate_token(t_shell *shell, t_token *token, t_cmd **cmd, int *i)
+// {
+// 	t_token	*start;
+
+// 	if (!token || !cmd || !*cmd)
+// 		return (token);
+// 	if (token->type == WORD || token->type == EMPTY)
+// 		*i = parse_word(&token, *cmd, *i);
+// 	// else if (token->type == EMPTY)
+// 	// {
+// 	// 	(*cmd)->args[*i] = ft_strdup("");
+// 	// 	(*cmd)->space[*i] = token->space;
+// 	// 	if (*i == 0)
+// 	// 		(*cmd)->cmd = ft_strdup("");
+// 	// 	(*i)++;
+// 	// }
+// 	else if (token->type != PIPE && token->type != EMPTY)
+// 	{
+// 		// fill_r(token, *cmd);
+// 		// if (token->next && token->next->type == WORD)
+// 		// 	token = token->next;
+// 		start = token->next;
+// 		fill_r(token, *cmd);
+// 		// if (start && start->type == WORD)
+// 		// {
+// 		// 	token = start;
+// 		// 	while (token->space == 0 && token->type == WORD && token->next && token->next->type == WORD)
+// 		// 		token = token->next;
+// 		// }
+// 		if (start && (start->type == WORD || start->type == EMPTY))
+// 		{
+// 			token = start;
+// 			while (token && token->space == 0 && token->next && 
+// 				(token->next->type == WORD || token->next->type == EMPTY))
+// 				token = token->next;
+// 		}
+// 	}
+// 	// else if (token->type == EMPTY)
+// 	// {
+// 	// 	(*cmd)->args[*i] = NULL;
+// 	// 	add_cmd(shell, *cmd);
+// 	// 	token = token->next;
+// 	// 	*cmd = init_cmd(token);
+// 	// 	*i = 0;
+// 	// 	return (token);
+// 	// }
+// 	if (token)
+// 		token = token->next;
+// 	return (token);
+// }
 
 int	parse(t_shell *shell, t_token *token)
 {
