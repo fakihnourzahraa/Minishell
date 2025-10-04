@@ -6,7 +6,7 @@
 /*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/04 22:53:52 by nour              #+#    #+#             */
-/*   Updated: 2025/09/25 22:22:08 by nfakih           ###   ########.fr       */
+/*   Updated: 2025/10/04 18:33:20 by nfakih           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,8 @@ int	parse_word(t_token **t, t_cmd *cmd, int i)
 
 t_token *iterate_token(t_shell *shell, t_token *token, t_cmd **cmd, int *i)
 {
+	t_token	*start;
+
 	if (!token || !cmd || !*cmd)
 		return (token);
 	if (token->type == WORD)
@@ -66,9 +68,24 @@ t_token *iterate_token(t_shell *shell, t_token *token, t_cmd **cmd, int *i)
 	}
 	else if (token->type != PIPE && token->type != EMPTY)
 	{
+		// fill_r(token, *cmd);
+		// if (token->next && token->next->type == WORD)
+		// 	token = token->next;
+		start = token->next;
 		fill_r(token, *cmd);
-		if (token->next && token->next->type == WORD)
-			token = token->next;
+		// if (start && start->type == WORD)
+		// {
+		// 	token = start;
+		// 	while (token->space == 0 && token->type == WORD && token->next && token->next->type == WORD)
+		// 		token = token->next;
+		// }
+		if (start && (start->type == WORD || start->type == EMPTY))
+		{
+			token = start;
+			while (token && token->space == 0 && token->next && 
+				(token->next->type == WORD || token->next->type == EMPTY))
+				token = token->next;
+		}
 	}
 	else if (token->type != EMPTY)
 	{

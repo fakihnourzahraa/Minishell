@@ -6,7 +6,7 @@
 /*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/10 11:10:26 by nour              #+#    #+#             */
-/*   Updated: 2025/09/25 22:16:31 by nfakih           ###   ########.fr       */
+/*   Updated: 2025/10/04 18:29:35 by nfakih           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,9 +56,61 @@ t_redir	*init_redir(void)
 	return (r);
 }
 
+// void	fill_r(t_token *t, t_cmd *cmd)
+// {
+// 	t_redir *r;
+// 	t_token *current;
+// 	char	*a;
+// 	char	*b;
+
+// 	r = init_redir();
+// 	if (t->type == IN)
+// 		r->type = R_IN;
+// 	else if (t->type == OUT)
+// 		r->type = R_OUT;
+// 	else if (t->type == APPEND)
+// 		r->type = R_APPEND;
+// 	else if (t->type == HEREDOC)
+// 		r->type = R_HEREDOC;
+// 	// if (t->next && t->next->s)
+// 	// 	r->s = ft_strdup(t->next->s);
+// 	// else
+// 	// 	r->s = NULL;
+// 	if (t->next && (t->next->type == WORD || t->next->type == EMPTY))
+// 	{
+// 		current = t->next;
+// 		if (current->quotes == 1)
+// 			r->s = ft_strtrim(current->s, "'");
+// 		else if (current->quotes == 2)
+// 			r->s = ft_strtrim(current->s, "\"");
+// 		else
+// 			r->s = ft_strdup(current->s);
+// 		while (current->space == 0 && current->type == WORD && current->next && current->next->type == WORD)
+// 		{
+// 			current = current->next;
+// 			if (current->quotes == 1)
+// 				a = ft_strtrim(current->s, "'");
+// 			else if (current->quotes == 2)
+// 				a = ft_strtrim(current->s, "\"");
+// 			else
+// 				a = ft_strdup(current->s);
+// 			b = r->s;
+// 			r->s = ft_strjoin(b, a);
+// 			free(a);
+// 			free(b);
+// 		}
+// 	}
+// 	else
+// 		r->s = NULL;
+// 	add_redir(cmd, r);
+// }
+
 void	fill_r(t_token *t, t_cmd *cmd)
 {
 	t_redir *r;
+	t_token *current;
+	char	*a;
+	char	*b;
 
 	r = init_redir();
 	if (t->type == IN)
@@ -69,10 +121,51 @@ void	fill_r(t_token *t, t_cmd *cmd)
 		r->type = R_APPEND;
 	else if (t->type == HEREDOC)
 		r->type = R_HEREDOC;
-	if (t->next && t->next->s)
-		r->s = ft_strdup(t->next->s);
-	else
+	
+	// Handle filename/delimiter
+	if (!t->next || (t->next->type != WORD && t->next->type != EMPTY))
+	{
 		r->s = NULL;
+		add_redir(cmd, r);
+		return;
+	}
+	
+	current = t->next;
+	
+	// Get first token's content
+	if (current->type == EMPTY)
+		r->s = ft_strdup("");
+	else if (current->quotes == 1)
+		r->s = ft_strtrim(current->s, "'");
+	else if (current->quotes == 2)
+		r->s = ft_strtrim(current->s, "\"");
+	else
+		r->s = ft_strdup(current->s);
+	
+	// Concatenate adjacent tokens when space == 0
+	while (current && current->space == 0 && current->next && 
+	       (current->next->type == WORD || current->next->type == EMPTY))
+	{
+		current = current->next;
+		if (!current)
+			break;
+		
+		// Get next token's content
+		if (current->type == EMPTY)
+			a = ft_strdup("");
+		else if (current->quotes == 1)
+			a = ft_strtrim(current->s, "'");
+		else if (current->quotes == 2)
+			a = ft_strtrim(current->s, "\"");
+		else
+			a = ft_strdup(current->s);
+		
+		// Concatenate
+		b = r->s;
+		r->s = ft_strjoin(b, a);
+		free(a);
+		free(b);
+	}
+	
 	add_redir(cmd, r);
 }
-

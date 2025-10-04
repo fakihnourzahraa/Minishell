@@ -6,7 +6,7 @@
 /*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/31 13:23:45 by nfakih            #+#    #+#             */
-/*   Updated: 2025/10/04 17:10:29 by nfakih           ###   ########.fr       */
+/*   Updated: 2025/10/02 20:31:55 by nfakih           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@ int	split_word(char *a, int i, t_shell *shell, t_token *n)
 	int		j;
 	t_token	*t;
 	int		len;
-//	char	c;
 	
 	j = 0;
 	if (a[i] && a[i] == '\0')
@@ -29,24 +28,15 @@ int	split_word(char *a, int i, t_shell *shell, t_token *n)
 	if (len == 0)
 		return (i);
 	b = malloc(sizeof(char) * (len + 1));
-	//c = '\0';
 	while (len > j)
 	{
-		// if (a[i] == '\'' || a[i] == '"')
-		// {
-		// 	if (b == '\0')
-		// 		b = a[i];
-		// 	else if (b == a[i])
-		// 		b = '\0';
-		// }
+		if (a[i + j] == '$')
+			t->expand = true;
 		b[j] = a[i + j];
 		j++;
 	}
-	if (a[i + j] && !skipable_space(a[i + j]))
-	{
-		printf("HIIIIII");
+	if (a[i + j] && a[i + j] != 32)
 		t->space = 0;
-	}
 	b[j] = '\0';
 	t->s = b;
 	t->type = 0;

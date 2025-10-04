@@ -188,50 +188,11 @@ int main(void)
  {
     printf("TOKENIZATION & REDIRECTION TEST\n");
     printf("===============================\n\n");
-    
- // Basic command tests
-    // printf("=== BASIC COMMANDS ===\n");
-    // test_string(" \"\" \"\" \"\"\"\" ");
-	test_string("echo h\"\"");
-    // test_string("echo hi \"\" b");
-    //test_string("<<a\"bye\"a");
-//  // Quote tests
-//    printf("=== QUOTE TESTS ===\n");
-//     test_string("echo'hello world'");
-//    test_string("echo\"hello world\"");
-//     test_string("echo 'single' \"double\"");
-    
-//     // Basic redirection tests
-//     printf("=== BASIC REDIRECTION TESTS ===\n");
-//     test_string("cat < file.txt");
-//     test_string("ls > output.txt");
-    	test_string("echo hello\"log.txt\"");
-//     test_string("cat << EOF");
-    
-//     // // Command with arguments and redirections
-//     printf("=== COMPLEX REDIRECTION TESTS ===\n");
-//     test_string("ls -l > output.txt");
-//     test_string("cat file.txt > output.txt");
-//     test_string("echo hello world >> log.txt");
-//     test_string("grep pattern < input.txt > output.txt");
-    
-//     // Multiple redirections
-//     printf("=== MULTIPLE REDIRECTION TESTS ===\n");
-// 	test_string("cat<input.tx");
-//     test_string("cat < input.txt > output.txt");
-//     test_string("sort < data.txt >> sorted.txt");
-    
-//     // Pipe tests (if you want to test those too)
-//     printf("=== PIPE TESTS ===\n");
-//    test_string("ls | grep .c");
-//     test_string("cat file.txt | grep hello");
-//     test_string("ls -l | wc -l");
-    
-//     // Pipe with redirection
-//     printf("=== PIPE + REDIRECTION TESTS ===\n");
-// test_string("ls | grep .c | wc -l");
-//    test_string("ls | grep .c > result.txt | grep .y > a.txt");
-   // test_string("echo hello | echo bye");
+    // Test Cases for Quote Concatenation Fix
+	printf("=== QUOTE CONCATENATION IN REDIRECTIONS ===\n");
+	test_string("a'hi'");
+	test_string("<<a'hi'");
+	test_string("<<a'hi'b");
 
-     return 0;
+    return 0;
 }
