@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expansion.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/02 20:08:42 by nfakih            #+#    #+#             */
-/*   Updated: 2025/10/04 22:23:06 by nfakih           ###   ########.fr       */
+/*   Updated: 2025/10/05 14:29:59 by nour             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,10 +17,12 @@ int	var_length(char	*a, int i)
 	int	j;
 	
 	j = i;
-	if (a[i] == '?')
+	if (a[i] && a[i] == '?')
 		return (1);
 	while (a[i] && (ft_isalnum(a[i]) || a[i]== '_'))
 			i++;
+	if (i == j)
+		return (-1);
 	return (i - j);
 }
 // skips $ and calculates length of rest
@@ -31,12 +33,12 @@ int	expandable(char *s, int	i, char	*q)
 	{
 		if (s[i] == '\'' || s[i] == '"')
 		{
-			if ((*q) == '\0')
-				(*q) = s[i];
-			else if ((*q) == s[i])
-				(*q) = '\0';
+			if ((q) && (q[0]) == '\0')
+				(q[0]) = s[i];
+			else if ((q) &&  (q[0]) == s[i])
+				(q[0]) = '\0';
 		}
-		if (s[i] == '$' && ((*q) == '"'|| (*q) == '\0'))
+		if (s[i] == '$' && (q) && ((q[0]) == '"'|| (q[0]) == '\0'))
 			return (i);
 		i++;
 	}
@@ -63,6 +65,7 @@ char	*trim_expand(t_shell *shell, int i, int old_len, char *s)
 	free(var);
 	return (new);
 }
+//malloc var name and expand it to new var
 char	*trim_vars(char *s, int *i, int old_len, char *new_var)
 {
 	char	*before;
@@ -82,28 +85,34 @@ char	*trim_vars(char *s, int *i, int old_len, char *new_var)
 char	*expand(t_shell *shell, char *s)
 {
 	int		i;
-	char	q;
+	char	*q;
 	char	*new_var;
 	int		old_len;
 	char	*result;
 	char	*old_result;
 
 	i = 0;
-	q = '\0';
+	q = malloc(1);
+	q[0] = '\0';
 	result = s;
-	i = expandable(s, i, &q);
+	i = expandable(s, i, q);
 	if (i == -1)
 		return (s);
 	while (i != -1)
 	{
 		old_len = var_length(result, i + 1);
-		new_var = trim_expand(shell, i + 1, old_len, result);
-		old_result = result;
-		result = trim_vars(result, &i, old_len, new_var);
-		if (old_result != s)
-			free(old_result);
-		free(new_var);
-		i = expandable(s, i, &q);
+		if (old_len == -1)
+			i = expandable(s, i + 1, q);
+		else
+		{
+			new_var = trim_expand(shell, i + 1, old_len, result);
+			old_result = result;
+			result = trim_vars(result, &i, old_len, new_var);
+			// if (old_result != s)
+				free(old_result);
+			free(new_var);
+			i = expandable(result, i, q);
+		}
 	}
 	return (result);
 }
@@ -111,7 +120,7 @@ char	*expand(t_shell *shell, char *s)
 void	iterate_expansion(t_shell *shell)
 {
 	int		i;
-	t_cmd	 *current;
+	t_cmd	*current;
 	t_redir	*redir;
 
 	current = shell->cmds;
