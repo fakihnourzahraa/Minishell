@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/16 16:30:14 by nfakih            #+#    #+#             */
-/*   Updated: 2025/10/04 22:27:34 by nfakih           ###   ########.fr       */
+/*   Updated: 2025/10/06 15:46:33 by nour             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -283,6 +283,8 @@ int main_loop(t_shell *shell)
         
         // Normal command processing
         process_input(shell, input);
+        // if (process_input(shell, input) == -1)
+        //     printf("Error\n");
         if (g_signal == SIGINT)
         {
             g_signal = 0;

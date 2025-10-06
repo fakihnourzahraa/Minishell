@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   splits.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/31 13:23:45 by nfakih            #+#    #+#             */
-/*   Updated: 2025/10/02 20:31:55 by nfakih           ###   ########.fr       */
+/*   Updated: 2025/10/06 15:49:26 by nour             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,10 @@ int	split_q(char *a, t_shell *shell, int i)
 		}
 		j++;
 	}
+	if (a[i] == '\'')
+		ft_putstr_fd("minishell: syntax error unclosed quote '\n", 2);
+	else if (a[i] == '"')
+		ft_putstr_fd("minishell: syntax error near unclosed quote \"\n", 2);
 	return (-1);
 }
 int	split_quote(char *a, int i, t_shell *shell, char n)
