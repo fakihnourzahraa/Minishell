@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expansion.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/02 20:08:42 by nfakih            #+#    #+#             */
-/*   Updated: 2025/10/05 14:29:59 by nour             ###   ########.fr       */
+/*   Updated: 2025/10/06 16:51:25 by nfakih           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,19 +29,26 @@ int	var_length(char	*a, int i)
 
 int	expandable(char *s, int	i, char	*q)
 {
+	char	a;
+
+	a = *q;
 	while (s[i])
 	{
 		if (s[i] == '\'' || s[i] == '"')
 		{
-			if ((q) && (q[0]) == '\0')
-				(q[0]) = s[i];
-			else if ((q) &&  (q[0]) == s[i])
-				(q[0]) = '\0';
+			if (a == '\0')
+				a = s[i];
+			else if (a == s[i])
+				a = '\0';
 		}
-		if (s[i] == '$' && (q) && ((q[0]) == '"'|| (q[0]) == '\0'))
+		if (s[i] == '$' && (a == '"'|| a == '\0'))
+		{
+			*q = a;
 			return (i);
+		}
 		i++;
 	}
+	*q = a;
 	return (-1);
 }
 char	*trim_expand(t_shell *shell, int i, int old_len, char *s)
@@ -85,24 +92,23 @@ char	*trim_vars(char *s, int *i, int old_len, char *new_var)
 char	*expand(t_shell *shell, char *s)
 {
 	int		i;
-	char	*q;
+	char	q;
 	char	*new_var;
 	int		old_len;
 	char	*result;
 	char	*old_result;
 
 	i = 0;
-	q = malloc(1);
-	q[0] = '\0';
+	q = '\0';
 	result = s;
-	i = expandable(s, i, q);
+	i = expandable(s, i, &q);
 	if (i == -1)
 		return (s);
 	while (i != -1)
 	{
 		old_len = var_length(result, i + 1);
 		if (old_len == -1)
-			i = expandable(s, i + 1, q);
+			i = expandable(s, i + 1, &q);
 		else
 		{
 			new_var = trim_expand(shell, i + 1, old_len, result);
@@ -111,7 +117,7 @@ char	*expand(t_shell *shell, char *s)
 			// if (old_result != s)
 				free(old_result);
 			free(new_var);
-			i = expandable(result, i, q);
+			i = expandable(result, i, &q);
 		}
 	}
 	return (result);
