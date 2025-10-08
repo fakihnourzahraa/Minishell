@@ -23,7 +23,7 @@ void sigint_handler(int signum)
     printf("\n");
     rl_on_new_line();
     rl_replace_line("", 0);
-    //rl_redisplay();
+    rl_redisplay();
 }
 void signals_prompt(void)
 {

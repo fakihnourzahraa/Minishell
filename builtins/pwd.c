@@ -16,19 +16,16 @@ void	builtin_pwd(t_cmd *cmd, t_shell *shell)
 {
 	char	*cwd;
 
-	(void)cmd; // avoid unused parameter warning
+	(void)cmd;
 	cwd = getcwd(NULL, 0);
 	if (!cwd)
 	{
 		perror("pwd");
-		shell->exit_status = 1;//failure
+		shell->exit_status = 1;
 		return ;
 	}
-	ft_putstr_fd(cwd, 1);//write the current direct
+	ft_putstr_fd(cwd, 1);
 	ft_putchar_fd('\n', 1);
 	free(cwd);
 	shell->exit_status = 0;
 }
-
-//we use t_shell to know the state of shell
-//getcwd returns the current working directory as an absolute path string.

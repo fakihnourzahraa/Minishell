@@ -103,8 +103,6 @@ static int execute_builtin_with_redirect(t_shell *shell, t_cmd *cmd)
             cleanup_child_process(shell);
             exit(1);
         }
-            //exit(1);
-    
         execute_builtin(cmd, shell);
         cleanup_child_process(shell); 
         exit(shell->exit_status);

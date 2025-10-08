@@ -38,11 +38,8 @@ static void	print_echo(t_cmd *cmd, char **args, int start, bool newline)
 	while (args[i])
 	{
 		ft_putstr_fd(args[i], 1);
-		if (args[i + 1])
-		{
-			if (cmd->space[i])
-				ft_putchar_fd(' ', 1);
-		}
+		if (args[i + 1] && cmd->space[i])
+			ft_putchar_fd(' ', 1);
 		i++;
 	}
 	if (newline)
@@ -57,7 +54,6 @@ void	builtin_echo(t_cmd *cmd, t_shell *shell)
 
 	(void)shell;
 	newline = true;
-	start = 1;
 	i = 1;
 	while (cmd->args[i] && is_n_flag(cmd->args[i]))
 	{

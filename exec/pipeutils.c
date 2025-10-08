@@ -12,23 +12,6 @@
 
 #include "exec.h"
 
-/*void close_unused_pipes(int **pipes, int pipe_count, int current_cmd)//5
-{
-	int i;
-
-	i = 0;
-	if(!pipes)
-		return ;
-	while(i < pipe_count)
-	{
-		if(current_cmd == 0 || i != current_cmd-1)
-			close(pipes[i][0]);//if it is first cmnd 
-		if(current_cmd == pipe_count || i != current_cmd)
-			close(pipes[i][1]);//if it is the last cmnd or 
-		i++;
-	}
-}*/
-
 void close_unused_pipes(int **pipes, int pipe_count, int current_cmd)
 {
     int i;
@@ -38,7 +21,6 @@ void close_unused_pipes(int **pipes, int pipe_count, int current_cmd)
         return;
     while (i < pipe_count)
     {
-        // Fix the logic - these conditions were wrong
         if (i != current_cmd - 1) // Don't close input pipe for current command
             close(pipes[i][0]);
         if (i != current_cmd) // Don't close output pipe for current command  

@@ -12,117 +12,86 @@
 
 #include "env.h"
 
-/*int set_env_var(t_env **env, const char *name, const char *value, bool available)
+static t_env	*create_env_node(const char *name, const char *value, bool available)
 {
-  t_env *node;
+	t_env	*node;
 
-  if (!env || !name)
-    return 1;
-  node = find_env_var(*env, name);
-  if (node)
-  {
-    free(node->val);
-    node->val = ft_strdup(value);
-    if (!node->val)
-      return 1;
-    node->avail = available;
-    return 0;
-  }
-  node = create_env_node(name, value, available); // create new
-  if (!node)
-    return 1;
-  node->next = *env; // insert at head
-  *env = node;
-  return 0;
-}*/
-
-static t_env *create_env_node(const char *name, const char *value, bool available)
-{
-  t_env *node; 
-  
-  node= malloc(sizeof(t_env));
-  if (!node)
-    return NULL;
-  node->name = ft_strdup(name);
-  node->val = ft_strdup(value);
-  if (!node->name || !node->val)
-  {
-    free(node->name);
-    free(node->val);
-    free(node);
-    return NULL;
-  }
-  node->avail = available;
-  node->next = NULL;
-  return node;
+	node = malloc(sizeof(t_env));
+	if (!node)
+		return (NULL);
+	node->name = ft_strdup(name);
+	node->val = ft_strdup(value);
+	if (!node->name || !node->val)
+	{
+		free(node->name);
+		free(node->val);
+		free(node);
+		return (NULL);
+	}
+	node->avail = available;
+	node->next = NULL;
+	return (node);
 }
 
-int set_env_var(t_env **env, const char *name, const char *value, bool available)
+static int	update_existing_env(t_env *node, const char *value, bool available)
 {
-  t_env *node;
+	char	*val;
 
-  if (!env || !name)
-    return 1;
-  node = find_env_var(*env, name);
-  if (node)
-  {
-    free(node->val);
-    node->val = ft_strdup(value ? value : "");
-    if (!node->val)
-      return 1;
-    node->avail = available;
-    return 0;
-  }
-  node = create_env_node(name, value ? value : "", available);
-  if (!node)
-    return 1;  
-  node->next = *env;
-  *env = node;
-  return 0;
+	free(node->val);
+	if (value)
+		val = ft_strdup(value);
+	else
+		val = ft_strdup("");
+	if (!val)
+		return (1);
+	node->val = val;
+	node->avail = available;
+	return (0);
 }
 
-static void remove_head(t_env **env)
+int	set_env_var(t_env **env, const char *name, const char *value, bool available)
 {
-  t_env *to_remove;
+	t_env	*node;
+	char	*val;
 
-  to_remove = *env;
-  *env = (*env)->next;
-  free(to_remove->name);
-  free(to_remove->val);
-  free(to_remove);
+	if (!env || !name)
+		return (1);
+	node = find_env_var(*env, name);
+	if (node)
+		return (update_existing_env(node, value, available));
+	if (value)
+		val = ft_strdup(value);
+	else
+		val = ft_strdup("");
+	node = create_env_node(name, val, available);
+	free(val);
+	if (!node)
+		return (1);
+	node->next = *env;
+	*env = node;
+	return (0);
 }
 
-static void remove_next_node(t_env *current)
+int	unset_env_var(t_env **env, const char *name)
 {
-  t_env *tmp;
-  
-  tmp = current->next;
-  current->next = tmp->next;
-  free(tmp->name);
-  free(tmp->val);
-  free(tmp);
-}
+	t_env	*current;
 
-int unset_env_var(t_env **env, const char *name)
-{
-  t_env *current;
-
-  if (!env || !name || !*env)
-    return 1;
-  if (ft_strcmp((*env)->name, name) == 0)
-  {
-    remove_head(env);
-    return 0;
-  }
-  current = *env;
-  while (current->next)
-  {
-    if (ft_strcmp(current->next->name, name) == 0)
-    {
-      remove_next_node(current);
-      return 0;
-    }
-    current = current->next;
-  }
-  return (0);
+	if (!env || !name || !*env)
+		return (1);
+	if (ft_strcmp((*env)->name, name) == 0)
+	{
+		remove_head(env);
+		return (0);
+	}
+	current = *env;
+	while (current->next)
+	{
+		if (ft_strcmp(current->next->name, name) == 0)
+		{
+			remove_next_node(current);
+			return (0);
+		}
+		current = current->next;
+	}
+	return (0);
 }
