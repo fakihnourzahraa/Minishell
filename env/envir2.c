@@ -71,27 +71,3 @@ int	set_env_var(t_env **env, const char *name, const char *value, bool available
 	*env = node;
 	return (0);
 }
-
-int	unset_env_var(t_env **env, const char *name)
-{
-	t_env	*current;
-
-	if (!env || !name || !*env)
-		return (1);
-	if (ft_strcmp((*env)->name, name) == 0)
-	{
-		remove_head(env);
-		return (0);
-	}
-	current = *env;
-	while (current->next)
-	{
-		if (ft_strcmp(current->next->name, name) == 0)
-		{
-			remove_next_node(current);
-			return (0);
-		}
-		current = current->next;
-	}
-	return (0);
-}
