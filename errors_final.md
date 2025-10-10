@@ -71,5 +71,9 @@ h /home/nfakih
 nfakih@c1r7s3:~/Desktop/git/Minishell$ 
 
 
+minishell$ echo $123
+z1�
+
+
 -> remove spaces from expansion vars
 ->
