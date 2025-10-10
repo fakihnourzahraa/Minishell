@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expansion.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/02 20:08:42 by nfakih            #+#    #+#             */
-/*   Updated: 2025/10/10 13:23:27 by nour             ###   ########.fr       */
+/*   Updated: 2025/10/10 16:07:15 by nfakih           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,35 +123,71 @@ char	*expand(t_shell *shell, char *s)
 	return (result);
 }
 
+char	*trim_vars_fq(char *s, int i, int j)
+{
+	char	*before;
+	char	*middle;
+	char	*after;
+	char	*temp;
+
+	if (i == 0)
+		before = ft_strdup("");
+	else
+		before = ft_substr(s, 0, i);
+	middle = ft_substr(s, i + 1, j - i - 1);
+	after = ft_substr(s, j + 1, ft_strlen(s) - j);
+	temp = ft_strjoin(before, middle);
+	free(before);
+	free(middle);
+	before = ft_strjoin(temp, after);
+	free(temp);
+	free(after);
+	return (before);
+}
+
 char	*trim(char *a)
 {
 	int		i;
 	int		j;
-	char	quote;
-	char	*result;
+	char	*b;
+	char	n;
 
 	i = 0;
-	// Find first quote
-	while (a[i] && a[i] != '\'' && a[i] != '"')
-		i++;
-	
-	if (!a[i])  // No quotes found
-		return (a);
-	
-	quote = a[i];
-	j = i + 1;
-	
-	// Find matching closing quote
-	while (a[j] && a[j] != quote)
-		j++;
-	
-	if (a[j] != quote)  // No matching closing quote
-		return (a);
-	
-	// Extract the substring without the quotes
-	result = ft_substr(a, i + 1, j - i - 1);
+	n = '\0';
+	b = ft_calloc(sizeof(char), ft_strlen(a));
+	j = 0;
+	while (i >= 0 && a[i])
+	{
+	//	printf("HUH");
+	//	printf("j is %d\n", j);
+		while (a[i] && n == '\0')
+		{
+			if (a[i] == '\'' || a[i] == '"')
+				n = a[i];
+			else
+			{
+				b[j] = a[i];
+				i++;
+				j++;
+			}
+			i++;
+		}
+		if (!a[i])
+			return (free(b), a);
+		while (n != '\0')
+		{
+			if (a[i] != n)
+			{
+				b[j] = a[i];
+				j++;
+			}
+			else
+				n = '\0';
+			i++;
+		}
+	}
 	free(a);
-	return (result);
+	return (b);
 }
 // char	*trim(char *a)
 // {
@@ -228,7 +264,7 @@ void	iterate_expansion(t_shell *shell)
 				redir->s = expand(shell, redir->s);
 			redir = redir->next;
 		}
-		remove_quotes(current);
+			remove_quotes(current);
 		current = current->next;
 	}
 }

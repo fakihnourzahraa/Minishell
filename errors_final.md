@@ -21,5 +21,15 @@ minishell: VAR=a b c: command not found
 nfakih@c2r2s4:~/Desktop/git/Minishell$ VAR="a b c"
 
 
+minishell$ export VAR=$HOME
+minishell$ echo $VAR
+/home/nfakih
+minishell$ export VAR=$VAR
+minishell$ echo $VAR
+/home/nfakih
+
+
+not an error just want to understand y
+
 -> remove spaces from expansion vars
 ->

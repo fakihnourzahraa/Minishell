@@ -6,7 +6,7 @@
 /*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/04 22:53:52 by nour              #+#    #+#             */
-/*   Updated: 2025/10/10 12:20:17 by nfakih           ###   ########.fr       */
+/*   Updated: 2025/10/10 14:27:55 by nfakih           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,11 +42,7 @@ int	parse_word(t_token **t, t_cmd *cmd, int i)
 	}
 	cmd->space[i] = final;
 	if (i == 0 && cmd->args[0])
-	{
-		// if (cmd->cmd)
-		// 	free(cmd->cmd);
 		cmd->cmd = ft_strdup(cmd->args[0]);
-	}
 	return (i + 1);
 }
 
@@ -68,7 +64,7 @@ t_token *iterate_token(t_shell *shell, t_token *token, t_cmd **cmd, int *i)
 		*i = 0;
 		return (token);
 	}
-	else if (token->type != PIPE && token->type != EMPTY)  // Redirections
+	else if (token->type != PIPE && token->type != EMPTY)
 	{
 		start = token->next;
 		fill_r(token, *cmd);
