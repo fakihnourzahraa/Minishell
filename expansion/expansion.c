@@ -6,7 +6,7 @@
 /*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/02 20:08:42 by nfakih            #+#    #+#             */
-/*   Updated: 2025/10/06 16:51:25 by nfakih           ###   ########.fr       */
+/*   Updated: 2025/10/10 12:21:55 by nfakih           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -149,4 +149,5 @@ void	iterate_expansion(t_shell *shell)
 		}
 		current = current->next;
 	}
+	remove_quotes(shell);
 }

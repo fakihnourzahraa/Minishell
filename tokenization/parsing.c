@@ -6,7 +6,7 @@
 /*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/04 22:53:52 by nour              #+#    #+#             */
-/*   Updated: 2025/10/04 20:34:17 by nfakih           ###   ########.fr       */
+/*   Updated: 2025/10/10 12:20:17 by nfakih           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,21 +18,21 @@ int	parse_word(t_token **t, t_cmd *cmd, int i)
 	char	*b;
 	bool	final;
 
-	if ((*t)->quotes == 1)
-		cmd->args[i] =  ft_strtrim((*t)->s, "'");
-	else if ((*t)->quotes == 2)
-		cmd->args[i] = ft_strtrim((*t)->s, "\"");
-	else
+	// if ((*t)->quotes == 1)
+	// 	cmd->args[i] =  ft_strtrim((*t)->s, "'");
+	// else if ((*t)->quotes == 2)
+	// 	cmd->args[i] = ft_strtrim((*t)->s, "\"");
+	// else
 		cmd->args[i] = ft_strdup((*t)->s);
 	final = (*t)->space;
 	while ((*t)->space == 0 && (*t)->next && ((*t)->next->type == WORD || (*t)->next->type == EMPTY))
 	{
 		(*t) = (*t)->next;
-		if ((*t)->quotes == 1)
-			a = ft_strtrim((*t)->s, "'");
-		else if ((*t)->quotes == 2)
-			a = ft_strtrim((*t)->s, "\"");
-		else
+		// if ((*t)->quotes == 1)
+		// 	a = ft_strtrim((*t)->s, "'");
+		// else if ((*t)->quotes == 2)
+		// 	a = ft_strtrim((*t)->s, "\"");
+		// else
 			a = ft_strdup((*t)->s);
 		b = cmd->args[i];
 		cmd->args[i] = ft_strjoin(b, a);

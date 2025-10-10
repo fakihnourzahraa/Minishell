@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   splits.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/31 13:23:45 by nfakih            #+#    #+#             */
-/*   Updated: 2025/10/06 15:49:26 by nour             ###   ########.fr       */
+/*   Updated: 2025/10/10 12:20:58 by nfakih           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,12 +75,7 @@ int	split_quote(char *a, int i, t_shell *shell, char n)
 	i++;
 	len = 0;
 	while (a[i + len] && a[i + len] != n)
-	{
-		// if (n == '"' && a[i + len] == '$')
-		// 	len = env_length(a, i + len);
-		// else
 		len++;
-	}
 	b = malloc(sizeof(char) * (len + 3));
 	b[0] = n;
 	j = -1;
@@ -101,4 +96,3 @@ int	split_quote(char *a, int i, t_shell *shell, char n)
 	add_token(shell, t);
 	return (i + len + 1);
 }
-
