@@ -57,6 +57,18 @@ minishell$ $k
 j
 minishell$ export 'H'=j
 export: not a valid identifier: 'H'=j
+minishell$ VAR=hii
+minishell: VAR=hii: command not found
+
+
+h
+nfakih@c1r7s3:~/Desktop/git/Minishell$ export V="              h        '$HOME'   "
+nfakih@c1r7s3:~/Desktop/git/Minishell$ echo $V
+h '/home/nfakih'
+nfakih@c1r7s3:~/Desktop/git/Minishell$ export V="              h        "$HOME"   "
+nfakih@c1r7s3:~/Desktop/git/Minishell$ echo $V
+h /home/nfakih
+nfakih@c1r7s3:~/Desktop/git/Minishell$ 
 
 
 -> remove spaces from expansion vars
