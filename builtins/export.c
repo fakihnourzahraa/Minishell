@@ -71,8 +71,6 @@ static void	handle_export_without_value(t_shell *shell, char *arg)
 	var = find_env_var(shell->env, arg);
 	if (var)
 		var->avail = true;
-	else
-		set_env_var(&shell->env, arg, "", true);
 }
 
 void	builtin_export(t_cmd *cmd, t_shell *shell)

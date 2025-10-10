@@ -112,7 +112,54 @@ static int execute_builtin_with_redirect(t_shell *shell, t_cmd *cmd)
     return (1);
 }
 
-int execute_single(t_shell *shell, t_cmd *cmd)
+static bool is_valid_var_name(char *str, int len)
+{
+    int i;
+    
+    if (len == 0 || (!ft_isalpha(str[0]) && str[0] != '_'))
+        return (false);
+    
+    i = 1;
+    while (i < len)
+    {
+        if (!ft_isalnum(str[i]) && str[i] != '_')
+            return (false);
+        i++;
+    }
+    return (true);
+}
+
+int	execute_single(t_shell *shell, t_cmd *cmd)
+{
+    char	*equal_sign;
+    char	*var_name;
+    char	*var_value;
+    
+    if (!cmd || !cmd->args || !cmd->args[0] || !shell)
+        return (0);
+    equal_sign = ft_strchr(cmd->args[0], '=');
+    if (equal_sign && is_valid_var_name(cmd->args[0], equal_sign - cmd->args[0]))
+    {
+        var_name = ft_strndup(cmd->args[0], equal_sign - cmd->args[0]);
+        var_value = ft_strdup(equal_sign + 1);
+        set_env_var(&shell->env, var_name, var_value, true);    
+        free(var_name);
+        free(var_value);
+        return (1);
+    }
+    if (cmd->builtin != NOT_BUILTIN)
+    {
+        if (cmd->rd)
+            return (execute_builtin_with_redirect(shell, cmd));
+        execute_builtin(cmd, shell);
+        return (1);
+    }
+    return (execute_external_command(shell, cmd));
+}
+
+
+
+/*int execute_single(t_shell *shell, t_cmd *cmd)
 {
     if (!cmd || !cmd->args || !cmd->args[0] || !shell)
         return (0);
@@ -125,3 +172,4 @@ int execute_single(t_shell *shell, t_cmd *cmd)
     }
     return (execute_external_command(shell, cmd));
 }
+*/
