@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expansion.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/02 20:08:42 by nfakih            #+#    #+#             */
-/*   Updated: 2025/10/10 12:21:55 by nfakih           ###   ########.fr       */
+/*   Updated: 2025/10/10 13:23:27 by nour             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,6 +123,87 @@ char	*expand(t_shell *shell, char *s)
 	return (result);
 }
 
+char	*trim(char *a)
+{
+	int		i;
+	int		j;
+	char	quote;
+	char	*result;
+
+	i = 0;
+	// Find first quote
+	while (a[i] && a[i] != '\'' && a[i] != '"')
+		i++;
+	
+	if (!a[i])  // No quotes found
+		return (a);
+	
+	quote = a[i];
+	j = i + 1;
+	
+	// Find matching closing quote
+	while (a[j] && a[j] != quote)
+		j++;
+	
+	if (a[j] != quote)  // No matching closing quote
+		return (a);
+	
+	// Extract the substring without the quotes
+	result = ft_substr(a, i + 1, j - i - 1);
+	free(a);
+	return (result);
+}
+// char	*trim(char *a)
+// {
+// 	int		i;
+// 	int		j;
+// 	char	*r;
+// 	char	*n;
+
+// 	i = 0;
+// 	while (a[i])
+// 	{
+// 		j = i + 1;
+// 		if (a[i] == '\'' || a[i] == '"')
+// 		{
+// 			n = malloc(2);
+// 			n[0] = a[i];
+// 			n[1] = '\0';
+// 			if (a[j] == a[i])
+// 			{
+// 				r = ft_strtrim(a, n);
+// 				free(a);
+// 				free(n);
+// 				return r;
+// 			}
+// 			j++;
+// 			free(n);
+// 		}
+// 		i++;
+// 	}
+// 	return (a);
+// }
+void	remove_quotes(t_cmd *current)
+{
+	int		i;
+	t_redir *redir;
+	
+	i = 0;
+	if (current->cmd)
+		current->cmd = trim(current->cmd);
+	while (current->args && current->args[i])
+	{
+		current->args[i] = trim(current->args[i]);
+		i++;
+	}
+	redir = current->rd;
+	while (redir)
+	{
+		if (redir->s)
+			redir->s = trim(redir->s);
+		redir = redir->next;
+	}
+}
 void	iterate_expansion(t_shell *shell)
 {
 	int		i;
@@ -147,7 +228,7 @@ void	iterate_expansion(t_shell *shell)
 				redir->s = expand(shell, redir->s);
 			redir = redir->next;
 		}
+		remove_quotes(current);
 		current = current->next;
 	}
-	remove_quotes(shell);
 }
