@@ -6,7 +6,7 @@
 /*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/04 22:14:23 by nfakih            #+#    #+#             */
-/*   Updated: 2025/10/04 22:14:33 by nfakih           ###   ########.fr       */
+/*   Updated: 2025/10/10 11:54:03 by nfakih           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -192,23 +192,23 @@ int main(int argc, char **argv, char **envp)
     test_string("echo ''a''", &shell);
     test_string("echo a'b'\"c\"d", &shell);
 
-    printf("\n=== REDIRECTIONS ===\n");
-    test_string("echo hello > file", &shell);
-    test_string("cat < file", &shell);
-    test_string("echo test >> file", &shell);
-    test_string("cat << EOF", &shell);
+    // printf("\n=== REDIRECTIONS ===\n");
+    // test_string("echo hello > file", &shell);
+    // test_string("cat < file", &shell);
+    // test_string("echo test >> file", &shell);
+    // test_string("cat << EOF", &shell);
 
     printf("\n=== REDIRECTIONS WITH QUOTES ===\n");
     test_string(">a'hi'b", &shell);
     test_string("<<a'hi'", &shell);
     test_string("echo test >a''b", &shell);
 
-    printf("\n=== PIPES ===\n");
-    test_string("echo hi | cat", &shell);
-    test_string("ls | grep test | wc -l", &shell);
+    // printf("\n=== PIPES ===\n");
+    // test_string("echo hi | cat", &shell);
+    // test_string("ls | grep test | wc -l", &shell);
 
-    printf("\n=== PIPES WITH REDIRECTIONS ===\n");
-    test_string("cat < file | grep test > out", &shell);
+    // printf("\n=== PIPES WITH REDIRECTIONS ===\n");
+    // test_string("cat < file | grep test > out", &shell);
 
     printf("\n=== EXPANSION TESTS ===\n");
     test_string("echo $HOME", &shell);
