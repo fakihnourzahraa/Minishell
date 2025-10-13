@@ -58,61 +58,6 @@ static void heredoc_child(int write_fd, char **delims, int count,t_shell *shell)
     }
 }
 
-/*static int run_heredoc_internal(char **delims, int count, t_shell *shell)
-{
-    int fd[2];
-    pid_t pid;
-    int status;
-
-    if (pipe(fd) == -1)
-        return (-1);
-    shell->in_h = 1;
-    pid = fork();
-    if (pid < 0)
-    {
-        close(fd[0]);
-        close(fd[1]);
-        shell->in_h = 0;
-        return (-1);
-    }
-    else if (pid == 0)
-    {
-        close(fd[0]);
-        heredoc_child(fd[1], delims, count);
-        exit(1);
-    }
-    close(fd[1]);
-    signal(SIGINT, SIG_IGN);
-    waitpid(pid, &status, 0);
-    shell->in_h = 0;
-    //signals_prompt();
-
-    if (WIFSIGNALED(status))
-    {
-        if (WTERMSIG(status) == SIGINT)
-            shell->exit_status = 130;
-        else
-            shell->exit_status = 128 + WTERMSIG(status);
-        close(fd[0]);
-        return (-1);
-    }
-    else if (WIFEXITED(status))
-    {
-        shell->exit_status = WEXITSTATUS(status);
-
-        if (g_signal == -1)
-        {
-            close(fd[0]);
-            return (-1);
-        }
-        if (shell->exit_status == 0)
-            return fd[0];
-    }
-
-    close(fd[0]);
-    return (-1);
-}*/
-
 static int run_heredoc_internal(char **delims, int count, t_shell *shell)
 {
     int fd[2];

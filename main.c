@@ -232,7 +232,6 @@ int process_input(t_shell *shell, char *input)
         }
         return (-1);
     }
-    
     mira_execution(shell);
     cleanup_t(shell);
     cleanup_p(shell);
@@ -247,14 +246,9 @@ int process_input(t_shell *shell, char *input)
 int main_loop(t_shell *shell)
 {
     char *input;
+    
     while (!shell->exit)
     {   
-        if (g_signal == SIGINT)
-        {
-            g_signal = 0;
-            shell->exit_status = 130;
-        }
-        
         input = readline("minishell$ ");
         
         if (!input)
@@ -264,13 +258,16 @@ int main_loop(t_shell *shell)
             break;
         }
         
-        if (g_signal == SIGINT)
+        if (g_signal == SIGINT && input[0] == '\0')
         {
             g_signal = 0;
             shell->exit_status = 130;
             free(input);
             continue; 
         }
+        
+        if (g_signal == SIGINT)
+            g_signal = 0;
         
         if (input[0] == '\0')
         {
@@ -279,18 +276,12 @@ int main_loop(t_shell *shell)
         }
         
         add_history(input);
-        g_signal = 0;
-        
-        // Normal command processing
         process_input(shell, input);
-        // if (process_input(shell, input) == -1)
-        //     printf("Error\n");
         if (g_signal == SIGINT)
         {
             g_signal = 0;
             shell->exit_status = 130;
         }
-        
         if (shell->exit)
         {
             update_shlvl_on_exit(shell);
@@ -300,8 +291,10 @@ int main_loop(t_shell *shell)
         
         free(input);
     }
+    
     return (shell->exit_status);
 }
+
 int main(int argc, char **argv, char **envp)
 {
     t_shell shell;

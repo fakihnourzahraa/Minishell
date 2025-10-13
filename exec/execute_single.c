@@ -73,13 +73,21 @@ static int execute_external_command(t_shell *shell, t_cmd *cmd)
         cmd->path = NULL;
         return (1);
     }
-    if (pid == 0)
+	if (pid == 0)
         exec_external_child(shell, cmd);
+    
+    // Parent process: ignore signals while child runs
+    signal(SIGINT, SIG_IGN);
+    signal(SIGQUIT, SIG_IGN);
+    
+    waitpid(pid, &status, 0);
+    
+    // Restore signal handlers for prompt
+    signals_prompt();
     
     free(cmd->path);
     cmd->path = NULL;
     
-    waitpid(pid, &status, 0);
     wait_child(shell, status);
     return (1);
 }
