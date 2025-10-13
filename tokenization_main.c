@@ -166,7 +166,7 @@ void test_string(char *input)
     print_tokens(&shell);
     
     // Add token validation check here
-    if (check_tkns(shell.tkns) == -1)
+    if (check_tkns(shell, shell.tkns) == -1)
     {
         printf("SYNTAX ERROR: Invalid token sequence detected!\n\n");
         cleanup_t(&shell);

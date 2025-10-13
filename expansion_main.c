@@ -6,7 +6,7 @@
 /*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/04 22:14:23 by nfakih            #+#    #+#             */
-/*   Updated: 2025/10/12 20:02:18 by nour             ###   ########.fr       */
+/*   Updated: 2025/10/13 17:05:52 by nour             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -153,7 +153,7 @@ void test_string(char *input, t_shell *shell)
     
     print_tokens(shell);
     
-    if (check_tkns(shell->tkns) == -1)
+    if (check_tkns(shell, shell->tkns) == -1)
     {
         printf("SYNTAX ERROR: Invalid token sequence detected!\n\n");
         cleanup_t(shell);

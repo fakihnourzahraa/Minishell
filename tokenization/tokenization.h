@@ -6,7 +6,7 @@
 /*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/28 16:10:17 by nour              #+#    #+#             */
-/*   Updated: 2025/10/13 11:15:02 by nour             ###   ########.fr       */
+/*   Updated: 2025/10/13 17:05:21 by nour             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ void		print_toke(t_token *token);
 void		add_cmd(t_shell *shell, t_cmd *cmd);
 t_cmd		*init_cmd(t_token *t);
 int			word_count_p(t_token *token);
-int			check_tkns(t_token *tkn);
+int			check_tkns(t_shell *shell, t_token *tkn);
 int			word_count_p(t_token *token);
 int			split_q(char *a, t_shell *shell, int i);
 int			split_word(char *a, int i, t_shell *shell, t_token *n);

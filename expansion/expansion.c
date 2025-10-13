@@ -6,7 +6,7 @@
 /*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/02 20:08:42 by nfakih            #+#    #+#             */
-/*   Updated: 2025/10/13 09:19:21 by nour             ###   ########.fr       */
+/*   Updated: 2025/10/13 17:02:20 by nour             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,7 @@ int	expandable(char *s, int	i, char	*q)
 	*q = a;
 	return (-1);
 }
+//returns s[i] = $
 char	*trim_expand(t_shell *shell, int i, int old_len, char *s)
 {
 	int		z;
@@ -106,25 +107,21 @@ char	*expand(t_shell *shell, char *s)
 	while (i != -1)
 	{
 		old_len = var_length(result, i + 1);
-		// if (old_len == -1)
 		if (old_len == -1)
 		{
 			new_var = ft_strdup("");
 			old_result = result;
 			result = trim_vars(result, &i, 0, new_var);
-			// if (old_result != s)
-				free(old_result);
+			free(old_result);
 			free(new_var);
 			i = expandable(result, i, &q);
 		}
-		//	i = expandable(s, i + 1, &q);
 		else
 		{
 			new_var = trim_expand(shell, i + 1, old_len, result);
 			old_result = result;
 			result = trim_vars(result, &i, old_len, new_var);
-			// if (old_result != s)
-				free(old_result);
+			free(old_result);
 			free(new_var);
 			i = expandable(result, i, &q);
 		}
@@ -167,8 +164,6 @@ char	*trim(char *a)
 	j = 0;
 	while (i >= 0 && a[i])
 	{
-	//	printf("HUH");
-	//	printf("j is %d\n", j);
 		while (a[i] && n == '\0')
 		{
 			if (a[i] == '\'' || a[i] == '"')
@@ -201,36 +196,7 @@ char	*trim(char *a)
 	free(a);
 	return (b);
 }
-// char	*trim(char *a)
-// {
-// 	int		i;
-// 	int		j;
-// 	char	*r;
-// 	char	*n;
 
-// 	i = 0;
-// 	while (a[i])
-// 	{
-// 		j = i + 1;
-// 		if (a[i] == '\'' || a[i] == '"')
-// 		{
-// 			n = malloc(2);
-// 			n[0] = a[i];
-// 			n[1] = '\0';
-// 			if (a[j] == a[i])
-// 			{
-// 				r = ft_strtrim(a, n);
-// 				free(a);
-// 				free(n);
-// 				return r;
-// 			}
-// 			j++;
-// 			free(n);
-// 		}
-// 		i++;
-// 	}
-// 	return (a);
-// }
 void	remove_quotes(t_cmd *current)
 {
 	int		i;
@@ -276,7 +242,7 @@ void	iterate_expansion(t_shell *shell)
 				redir->s = expand(shell, redir->s);
 			redir = redir->next;
 		}
-			remove_quotes(current);
+		remove_quotes(current);
 		current = current->next;
 	}
 }

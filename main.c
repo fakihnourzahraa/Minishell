@@ -6,7 +6,7 @@
 /*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/16 16:30:14 by nfakih            #+#    #+#             */
-/*   Updated: 2025/10/06 15:46:33 by nour             ###   ########.fr       */
+/*   Updated: 2025/10/13 17:06:06 by nour             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,7 +114,7 @@ int nour_parsing(t_shell *shell)
     if (tokenize_result == -1)
         return (-1);
     
-    if (check_tkns(shell->tkns) == -1)
+    if (check_tkns(shell, shell->tkns) == -1)
         return (-1);
     
     parse(shell, shell->tkns);
