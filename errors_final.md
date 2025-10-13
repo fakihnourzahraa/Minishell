@@ -12,15 +12,15 @@ nfakih@c1r7s3:~/Desktop/git/Minishell$
 cat: f.txt: Permission denied
 minishell$ echo $?
 1
-(should be 126)
+(should be 126)  done
 
 ls > a << b > c << d < e > f | cat << a << b > c > d >t>f<<p|cat Makefile>jnde1<jnde2>jnde3|ls>jnde4>jnde5<jnde6>jnde7|ls ls ls > jnde | << a << v | easy | exit
 
 minishell$ ./test.sh
 minishell: ./test.sh: command not found
 minishell$ echo $?
-127
-(remove permission from sh file, should be permission denied not command not found + exit code 126)
+127 
+(remove permission from sh file, should be permission denied not command not found + exit code 126) done
 
 NOUR:
 

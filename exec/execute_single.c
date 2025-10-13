@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "exec.h"
+#include <sys/stat.h>
 
 static void wait_child(t_shell *shell, int status)
 {
@@ -43,13 +44,108 @@ static void exec_external_child(t_shell *shell, t_cmd *cmd)
     }
     
     execve(cmd->path, cmd->args, envp_array);
-    
+    if (errno == EACCES)
+    {
+        printf("minishell: %s: Permission denied\n", cmd->args[0]);
+        cleanup_child_process(shell);
+        free_envp(envp_array);
+        exit(126);
+    }
     cleanup_child_process(shell);
     free_envp(envp_array);
     exit(127);
 }
 
+static int check_command_access(const char *cmd)
+{
+    struct stat st;
+
+    if (stat(cmd, &st) == -1)
+    {
+        if (errno == ENOENT)
+            return (127);
+        return (126);
+    }
+    if (access(cmd, X_OK) == -1)
+    {
+        if (errno == EACCES)
+            return (126);
+        return (127);
+    }
+    return (0);
+}
+
 static int execute_external_command(t_shell *shell, t_cmd *cmd)
+{
+    pid_t pid;
+    int status;
+    char *path;
+    int access_result;
+	
+    if (ft_strchr(cmd->args[0], '/'))
+    {
+        access_result = check_command_access(cmd->args[0]);
+        if (access_result == 126)
+        {
+            printf("minishell: %s: Permission denied\n", cmd->args[0]);
+            shell->exit_status = 126;
+            return (1);
+        }
+        else if (access_result == 127)
+        {
+            printf("minishell: %s: No such file or directory\n", cmd->args[0]);
+            shell->exit_status = 127;
+            return (1);
+        }
+    }
+
+    path = get_cmd_path(cmd->args[0], shell);
+    if (!path)
+    {
+        // Check if it's a permission issue before saying "not found"
+        if (ft_strchr(cmd->args[0], '/'))
+        {
+            access_result = check_command_access(cmd->args[0]);
+            if (access_result == 126)
+            {
+                printf("minishell: %s: Permission denied\n", cmd->args[0]);
+                shell->exit_status = 126;
+                return (1);
+            }
+        }
+        printf("minishell: %s: command not found\n", cmd->args[0]);
+        shell->exit_status = 127;
+        return (1);
+    }
+    
+    cmd->path = path;
+    
+    pid = fork();
+    if (pid < 0)
+    {
+        perror("fork");
+        free(cmd->path);
+        cmd->path = NULL;
+        return (1);
+    }
+    
+    if (pid == 0)
+        exec_external_child(shell, cmd);
+    
+    signal(SIGINT, SIG_IGN);
+    signal(SIGQUIT, SIG_IGN);
+    
+    waitpid(pid, &status, 0);
+    signals_prompt();
+    
+    free(cmd->path);
+    cmd->path = NULL;
+    
+    wait_child(shell, status);
+    return (1);
+}
+
+/*static int execute_external_command(t_shell *shell, t_cmd *cmd)
 {
     pid_t pid;
     int status;
@@ -76,13 +172,10 @@ static int execute_external_command(t_shell *shell, t_cmd *cmd)
 	if (pid == 0)
         exec_external_child(shell, cmd);
     
-    // Parent process: ignore signals while child runs
     signal(SIGINT, SIG_IGN);
     signal(SIGQUIT, SIG_IGN);
     
     waitpid(pid, &status, 0);
-    
-    // Restore signal handlers for prompt
     signals_prompt();
     
     free(cmd->path);
@@ -91,6 +184,7 @@ static int execute_external_command(t_shell *shell, t_cmd *cmd)
     wait_child(shell, status);
     return (1);
 }
+*/
 static int execute_builtin_with_redirect(t_shell *shell, t_cmd *cmd)
 {
     pid_t pid;
@@ -164,20 +258,3 @@ int	execute_single(t_shell *shell, t_cmd *cmd)
     }
     return (execute_external_command(shell, cmd));
 }
-
-
-
-/*int execute_single(t_shell *shell, t_cmd *cmd)
-{
-    if (!cmd || !cmd->args || !cmd->args[0] || !shell)
-        return (0);
-    if (cmd->builtin != NOT_BUILTIN)
-    {
-        if (cmd->rd)
-            return (execute_builtin_with_redirect(shell, cmd));
-        execute_builtin(cmd, shell);
-        return (1);
-    }
-    return (execute_external_command(shell, cmd));
-}
-*/
