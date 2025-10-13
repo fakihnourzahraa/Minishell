@@ -6,7 +6,7 @@
 /*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/02 20:08:42 by nfakih            #+#    #+#             */
-/*   Updated: 2025/10/10 19:25:30 by nour             ###   ########.fr       */
+/*   Updated: 2025/10/13 09:19:21 by nour             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,6 @@ int	var_length(char	*a, int i)
 	return (i - j);
 }
 // skips $ and calculates length of rest
-
 int	expandable(char *s, int	i, char	*q)
 {
 	char	a;
@@ -107,8 +106,18 @@ char	*expand(t_shell *shell, char *s)
 	while (i != -1)
 	{
 		old_len = var_length(result, i + 1);
+		// if (old_len == -1)
 		if (old_len == -1)
-			i = expandable(s, i + 1, &q);
+		{
+			new_var = ft_strdup("");
+			old_result = result;
+			result = trim_vars(result, &i, 0, new_var);
+			// if (old_result != s)
+				free(old_result);
+			free(new_var);
+			i = expandable(result, i, &q);
+		}
+		//	i = expandable(s, i + 1, &q);
 		else
 		{
 			new_var = trim_expand(shell, i + 1, old_len, result);
@@ -154,7 +163,7 @@ char	*trim(char *a)
 
 	i = 0;
 	n = '\0';
-	b = ft_calloc(sizeof(char), ft_strlen(a));
+	b = ft_calloc(sizeof(char), ft_strlen(a) + 1);
 	j = 0;
 	while (i >= 0 && a[i])
 	{
@@ -171,9 +180,13 @@ char	*trim(char *a)
 			}
 			i++;
 		}
-		if (!a[i])
-			return (free(b), a);
-		while (n != '\0')
+	if (!a[i])
+	{
+		b[j] = '\0';
+		free(a);
+		return (b);
+	}
+		while (n != '\0' && a[i])
 		{
 			if (a[i] != n)
 			{

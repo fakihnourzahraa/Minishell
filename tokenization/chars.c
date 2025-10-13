@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   chars.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 22:12:18 by nfakih            #+#    #+#             */
-/*   Updated: 2025/09/25 22:13:42 by nfakih           ###   ########.fr       */
+/*   Updated: 2025/10/13 09:20:33 by nour             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,9 +30,7 @@ int	word_count_p(t_token *token)
 			token = token->next;
 		}
 		else
-		{
 			token = token->next;
-		}
 	}
 	return (i);
 }
@@ -55,16 +53,8 @@ int	word_len_cmds(char *a, int i)
 			else if (b == a[i])
 				b = '\0';
 		}
-		// if (a[i] == '$')
-		// {
-		// 	i += env_length(a, i);
-		// 	j += env_length(a, i);
-		// }
-		// else
-		// {
-			i++;
-			j++;
-		// }
+		i++;
+		j++;
 	}
 	return (j);
 }
@@ -76,16 +66,8 @@ int	word_len(char *a, int i)
 	while (a[i] && (!skipable_space(a[i])) && a[i] != '\'' && a[i] != '"' &&
 		   a[i] != '|' && a[i] != '<' && a[i] != '>')
 	{
-		// if (a[i] == '$')
-		// {
-		// 	i += env_length(a, i);
-		// 	j += env_length(a, i);
-		// }
-		// else
-		// {
-			i++;
-			j++;
-		// }
+		i++;
+		j++;
 	}
 	return (j);
 }

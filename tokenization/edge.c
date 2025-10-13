@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   edge.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/16 15:35:17 by nfakih            #+#    #+#             */
-/*   Updated: 2025/10/06 16:41:36 by nfakih           ###   ########.fr       */
+/*   Updated: 2025/10/13 10:59:31 by nour             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,23 @@ int	is_r(t_token *a)
 }
 */
 
+int	elses(t_token *tkn)
+{
+	if (tkn->type == PIPE)
+		ft_putstr_fd("minishell: syntax error near unexpected token `|'\n", 2);
+	else if (tkn->type == IN)
+		ft_putstr_fd("minishell: syntax error near unexpected token `<'\n", 2);
+	else if (tkn->type == OUT)
+		ft_putstr_fd("minishell: syntax error near unexpected token `>'\n", 2);
+	else if (tkn->type == APPEND)
+		ft_putstr_fd("minishell: syntax error near unexpected token `>>'\n", 2);
+	else if (tkn->type == HEREDOC)
+		ft_putstr_fd("minishell: syntax error near unexpected token `<<'\n", 2);
+	else
+		ft_putstr_fd("minishell: syntax error near unexpected token `newline'\n", 2);
+	return (-1);
+}
+
 int	check_tkns(t_token *tkn)
 {
 	while (tkn)
@@ -54,21 +71,7 @@ int	check_tkns(t_token *tkn)
 			return (-1);
 		}
 		if (tkn->next && tkn->next->type == T_EOF && (tkn->type == PIPE || is_r(tkn)))
-		{
-			if (tkn->type == PIPE)
-				ft_putstr_fd("minishell: syntax error near unexpected token `|'\n", 2);
-			else if (tkn->type == IN)
-				ft_putstr_fd("minishell: syntax error near unexpected token `<'\n", 2);
-			else if (tkn->type == OUT)
-				ft_putstr_fd("minishell: syntax error near unexpected token `>'\n", 2);
-			else if (tkn->type == APPEND)
-				ft_putstr_fd("minishell: syntax error near unexpected token `>>'\n", 2);
-			else if (tkn->type == HEREDOC)
-				ft_putstr_fd("minishell: syntax error near unexpected token `<<'\n", 2);
-			else
-				ft_putstr_fd("minishell: syntax error near unexpected token `newline'\n", 2);
-			return (-1);
-		}
+			return (elses(tkn));
 		tkn = tkn->next;
 	}
 	return (1);

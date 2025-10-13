@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token_helpers.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 22:14:32 by nfakih            #+#    #+#             */
-/*   Updated: 2025/09/25 22:14:57 by nfakih           ###   ########.fr       */
+/*   Updated: 2025/10/13 11:12:39 by nour             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,7 @@
 int		skipforvar(char *a, int i)
 { 
 	while (a[i] && (ft_isalnum(a[i]) || skipable_space(a[i])))
-	{
 		i++;
-	}
 	return (i);
 }
 bool	skipable_space(char a)

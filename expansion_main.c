@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expansion_main.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/04 22:14:23 by nfakih            #+#    #+#             */
-/*   Updated: 2025/10/10 19:36:43 by nfakih           ###   ########.fr       */
+/*   Updated: 2025/10/12 20:02:18 by nour             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -211,7 +211,8 @@ int main(int argc, char **argv, char **envp)
     // test_string("cat < file | grep test > out", &shell);
 
     printf("\n=== EXPANSION TESTS ===\n");
-    test_string("echo 'h'", &shell);
+    test_string("echo 'h'$HOME", &shell);
+        test_string("echo 'h'$HOME'h'", &shell);
     // test_string("echo '$HOME'", &shell);
     // test_string("echo \"$HOME\"", &shell);
     // test_string("echo $HOME/test", &shell);
@@ -223,3 +224,4 @@ int main(int argc, char **argv, char **envp)
     
     return 0;
 }
+// cc -g expansion_main.c tokenization/token.c tokenization/token_helpers.c tokenization/parsing.c tokenization/redir.c tokenization/data_structure.c tokenization/edge.c tokenization/chars.c tokenization/splits.c expansion/expand_var.c expansion/expansion.c expansion/replace_var.c env/envir.utils.c cleanup.c  libft/libft.a -o test_tokenization

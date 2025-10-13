@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   splits.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/31 13:23:45 by nfakih            #+#    #+#             */
-/*   Updated: 2025/10/10 12:20:58 by nfakih           ###   ########.fr       */
+/*   Updated: 2025/10/13 11:10:21 by nour             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,10 @@ int	split_quote(char *a, int i, t_shell *shell, char n)
 	b[len + 2] = '\0';
 	t->s = b;
 	t->type = WORD;
-	t->quotes = (n == '\'') ? 1 : 2;
+	if (n == '\'')
+		t->quotes = 1;
+	else
+		t->quotes = 2;
 	add_token(shell, t);
 	return (i + len + 1);
 }

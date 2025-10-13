@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redir.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/10 11:10:26 by nour              #+#    #+#             */
-/*   Updated: 2025/10/04 18:29:35 by nfakih           ###   ########.fr       */
+/*   Updated: 2025/10/13 11:15:46 by nour             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,13 +105,8 @@ t_redir	*init_redir(void)
 // 	add_redir(cmd, r);
 // }
 
-void	fill_r(t_token *t, t_cmd *cmd)
+t_redir	*init_for_r(t_redir *r, t_token *t)
 {
-	t_redir *r;
-	t_token *current;
-	char	*a;
-	char	*b;
-
 	r = init_redir();
 	if (t->type == IN)
 		r->type = R_IN;
@@ -121,18 +116,24 @@ void	fill_r(t_token *t, t_cmd *cmd)
 		r->type = R_APPEND;
 	else if (t->type == HEREDOC)
 		r->type = R_HEREDOC;
-	
-	// Handle filename/delimiter
+	return (r);
+}
+void	fill_r(t_token *t, t_cmd *cmd)
+{
+	t_redir *r;
+	t_token *current;
+	char	*a;
+	char	*b;
+
+	r = NULL;
+	r = init_for_r(r, t);
 	if (!t->next || (t->next->type != WORD && t->next->type != EMPTY))
 	{
 		r->s = NULL;
 		add_redir(cmd, r);
 		return;
 	}
-	
 	current = t->next;
-	
-	// Get first token's content
 	if (current->type == EMPTY)
 		r->s = ft_strdup("");
 	else if (current->quotes == 1)
@@ -141,16 +142,12 @@ void	fill_r(t_token *t, t_cmd *cmd)
 		r->s = ft_strtrim(current->s, "\"");
 	else
 		r->s = ft_strdup(current->s);
-	
-	// Concatenate adjacent tokens when space == 0
 	while (current && current->space == 0 && current->next && 
 	       (current->next->type == WORD || current->next->type == EMPTY))
 	{
 		current = current->next;
 		if (!current)
 			break;
-		
-		// Get next token's content
 		if (current->type == EMPTY)
 			a = ft_strdup("");
 		else if (current->quotes == 1)
@@ -159,13 +156,10 @@ void	fill_r(t_token *t, t_cmd *cmd)
 			a = ft_strtrim(current->s, "\"");
 		else
 			a = ft_strdup(current->s);
-		
-		// Concatenate
 		b = r->s;
 		r->s = ft_strjoin(b, a);
 		free(a);
 		free(b);
 	}
-	
 	add_redir(cmd, r);
 }
