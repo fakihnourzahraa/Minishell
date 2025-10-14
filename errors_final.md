@@ -1,14 +1,6 @@
 
 MIRA: 
 
-nfakih@c1r7s3:~/Desktop/git/Minishell$ export V="              h        '$HOME'   "
-nfakih@c1r7s3:~/Desktop/git/Minishell$ echo $V
-h '/home/nfakih'
-nfakih@c1r7s3:~/Desktop/git/Minishell$ export V="              h        "$HOME"   "
-nfakih@c1r7s3:~/Desktop/git/Minishell$ echo $V
-h /home/nfakih
-nfakih@c1r7s3:~/Desktop/git/Minishell$ 
-
 cat: f.txt: Permission denied
 minishell$ echo $?
 1
@@ -49,9 +41,6 @@ a: command not found
 nour@nfakih:~$ echo $?
 127
 
-echo $$
-
-
 BOTH:
 The program should not accept unexpected arguments when launching, such as ./minishell 123
 OLDPWD (keep checking)
@@ -84,6 +73,14 @@ DONE!!!!:
 # 127
 # should be 2
 
+# nfakih@c1r7s3:~/Desktop/git/Minishell$ export V="              h        '$HOME'   "
+# nfakih@c1r7s3:~/Desktop/git/Minishell$ echo $V
+# h '/home/nfakih'
+# nfakih@c1r7s3:~/Desktop/git/Minishell$ export V="              h        "$HOME"   "
+# nfakih@c1r7s3:~/Desktop/git/Minishell$ echo $V
+# h /home/nfakih
+# nfakih@c1r7s3:~/Desktop/git/Minishell$ 
+
 minishell$ echo $_
 /usr/bin/valgrind
 but
@@ -93,8 +90,4 @@ not an error just want to understand y
 
 # Great job, ctrl+c in a cat block is returning 2 (syntax error) instead of 130.
 
-minishell$ a <<< b
-minishell: syntax error near unexpected token `<'
-minishell$ echo $?
-2
-minishell$ is supposed to be 2!!!!!!
+echo $$ probably not required

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expansion.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/02 20:08:42 by nfakih            #+#    #+#             */
-/*   Updated: 2025/10/13 17:02:20 by nour             ###   ########.fr       */
+/*   Updated: 2025/10/14 12:08:07 by nfakih           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,39 @@ int	expandable(char *s, int	i, char	*q)
 	return (-1);
 }
 //returns s[i] = $
+
+char	*expand_and_trim(t_shell *shell, char *var)
+{
+	char	*new;
+	char	*result;
+	int		i;
+	int		j;
+
+	i = 0;
+	j = 0;
+	new = expand_variable(shell, var);
+	result = malloc(sizeof(char) * ft_strlen(new) + 1);
+	while (new[i])
+	{
+		if (!isspace(new[i]))
+		{
+			result[j] = new[i];
+			j++;
+			i++;
+		}
+		else
+		{
+			result[j] = new[i];
+			j++;
+			i++;
+			while (isspace(new[i]))
+				i++;
+		}
+	}
+	result[j] = '\0';
+	free(new);
+	return (result);
+}
 char	*trim_expand(t_shell *shell, int i, int old_len, char *s)
 {
 	int		z;
@@ -66,7 +99,7 @@ char	*trim_expand(t_shell *shell, int i, int old_len, char *s)
 		z++;
 	}
 	var[z] = '\0';
-	new = expand_variable(shell, var);
+	new = expand_and_trim(shell, var);
 	if (!new)
 		new = ft_strdup("");
 	free(var);
