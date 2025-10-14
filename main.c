@@ -108,6 +108,20 @@ int nour_parsing(t_shell *shell)
         return (-1);
     
     parse(shell, shell->tkns);
+	//t_cmd *current = shell->cmds;
+    /*while (current)
+    {
+        // If command is empty but has redirections, and there's a next command (pipeline)
+        if ((!current->cmd || current->cmd[0] == '\0') && current->rd && current->next)
+        {
+            ft_putstr_fd("minishell: syntax error near unexpected token `|'\n", 2);
+            shell->exit_status = 2;
+            cleanup_p(shell);
+            return (-1);
+        }
+        current = current->next;
+    }*/
+    
 	iterate_expansion(shell);
     return (0);
 }

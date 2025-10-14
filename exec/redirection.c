@@ -91,6 +91,42 @@ int apply_redirections(t_cmd *cmd, t_shell *shell)
   return (0);
 }
 
+/*int apply_redirections(t_cmd *cmd, t_shell *shell)
+{
+    t_redir *current;
+    
+    if (!cmd)
+        return (0);
+    
+    current = cmd->rd;
+    while (current)
+    {
+        if (current->type == R_OUT && handle_out_redir(current) == -1)
+            return (-1);
+        else if (current->type == R_APPEND && handle_append_redir(current) == -1)
+            return (-1);
+        current = current->next;
+    }
+    current = cmd->rd;
+    while (current)
+    {
+        if (current->type == R_IN && handle_in_redir(shell, current) == -1)
+            return (-1);
+        current = current->next;
+    }
+    if (cmd->i_fd != -1)
+    {
+        if (redirect_fd(cmd->i_fd, STDIN_FILENO) == -1)
+        {
+            close(cmd->i_fd);
+            return (-1);
+        }
+        close(cmd->i_fd);
+    }
+    
+    return (0);
+}
+*/
 int is_redirect_only_command(t_cmd *cmd)
 {
   if (!cmd)
@@ -106,9 +142,11 @@ int execute_redirect_only(t_cmd *cmd, t_shell *shell)
   int saved_stdin;
   int saved_stdout;;
   int result;
-    
+
   if (!cmd || !cmd->rd)
-    return (0);
+    {
+        return (0);
+    }
   saved_stdin = dup(STDIN_FILENO);
   saved_stdout = dup(STDOUT_FILENO);
     

@@ -341,9 +341,10 @@ void execute_commands(t_shell *shell, t_cmd *cmd_chain)
     if (!cmd_chain)
         return;
 
+	if (!cmd_chain->cmd || cmd_chain->cmd[0] == '\0')
+        return;
     if (cmd_chain->next)
     {
-        // Pipeline - use your pipeline execution
         execute_pipeline(shell, cmd_chain);
     }
     else
@@ -351,12 +352,10 @@ void execute_commands(t_shell *shell, t_cmd *cmd_chain)
         // Single command
         if (cmd_chain->builtin != NOT_BUILTIN)
         {
-            // Builtin command
             execute_builtin(cmd_chain, shell);
         }
         else
         {
-            // External command
             execute_single(shell, cmd_chain);
         }
     }

@@ -237,8 +237,17 @@ int	execute_single(t_shell *shell, t_cmd *cmd)
     char	*var_name;
     char	*var_value;
     
-    if (!cmd || !cmd->args || !cmd->args[0] || !shell)
+	if (!cmd || !shell)
         return (0);
+    
+	if (!cmd->cmd || cmd->cmd[0] == '\0')
+    {
+        //shell->exit_status = 0;
+        return (0);
+    }
+    if (!cmd->args || !cmd->args[0])
+        return (0);
+    
     equal_sign = ft_strchr(cmd->args[0], '=');
     if (equal_sign && is_valid_var_name(cmd->args[0], equal_sign - cmd->args[0]))
     {
@@ -248,6 +257,21 @@ int	execute_single(t_shell *shell, t_cmd *cmd)
         free(var_name);
         free(var_value);
         return (1);
+    }
+	if (cmd->rd)
+    {
+        t_redir *redir = cmd->rd;
+        while (redir)
+        {
+            if (redir->type == R_HEREDOC)
+            {
+                int heredoc_fd = run_heredoc(redir->s, shell);
+                if (heredoc_fd == -1)
+                    return (1);
+                cmd->i_fd = heredoc_fd;  // Store for later use
+            }
+            redir = redir->next;
+        }
     }
     if (cmd->builtin != NOT_BUILTIN)
     {

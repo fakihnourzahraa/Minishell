@@ -6,6 +6,8 @@ minishell$ echo $?
 (should be 126)  done
 
 ls > a << b > c << d < e > f | cat << a << b > c > d >t>f<<p|cat Makefile>jnde1<jnde2>jnde3|ls>jnde4>jnde5<jnde6>jnde7|ls ls ls > jnde | << a << v | easy | exit
+(ok lmshkle fiye he <<a <<v | yane lmshkl ben heredoc wl pipe 3am t3tbr awal wehd huwe delm lama ma tshuf pipe ) 
++test cat <<eof>file (3am t3l2)
 
 minishell$ ./test.sh
 minishell: ./test.sh: command not found

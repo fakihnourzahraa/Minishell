@@ -37,9 +37,15 @@ static void execute_child_process(t_shell *shell, t_cmd *cmd, t_pipe_info *info)
     //    close_unused_pipes(info->pipes, info->cmd_count - 1, info->cmd_index);
     //close_unused_pipes(info->pipes, info->cmd_count - 1, info->cmd_index);
     
+	if (is_redirect_only_command(cmd))
+    {
+        cleanup_pipeline_child(shell);
+        exit(0);
+    }
+
     if (cmd->builtin != NOT_BUILTIN)
     {
-        execute_builtin(cmd, shell);//if they are builtin they run directly
+        execute_builtin(cmd, shell);
         cleanup_pipeline_child(shell);
         exit(shell->exit_status);
     }
