@@ -6,7 +6,7 @@
 /*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/02 20:08:42 by nfakih            #+#    #+#             */
-/*   Updated: 2025/10/14 12:08:07 by nfakih           ###   ########.fr       */
+/*   Updated: 2025/10/14 18:12:45 by nfakih           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,10 @@ int	var_length(char	*a, int i)
 	j = i;
 	if (a[i] && a[i] == '?')
 		return (1);
-	while (a[i] && (ft_isalnum(a[i]) || a[i]== '_'))
+	while (a[i] && (ft_isalpha(a[i]) || a[i]== '_'))
 			i++;
 	if (i == j)
-		return (-1);
+		return (i);
 	return (i - j);
 }
 // skips $ and calculates length of rest
@@ -40,7 +40,7 @@ int	expandable(char *s, int	i, char	*q)
 			else if (a == s[i])
 				a = '\0';
 		}
-		if (s[i] == '$' && (a == '"'|| a == '\0'))
+		else if (s[i] == '$' && (a == '"'|| a == '\0') && s[i + 1] != '\'')
 		{
 			*q = a;
 			return (i);
@@ -48,6 +48,7 @@ int	expandable(char *s, int	i, char	*q)
 		i++;
 	}
 	*q = a;
+	// if (s[i] == '\0')
 	return (-1);
 }
 //returns s[i] = $
@@ -140,6 +141,22 @@ char	*expand(t_shell *shell, char *s)
 	while (i != -1)
 	{
 		old_len = var_length(result, i + 1);
+		if (old_len == i + 1)
+		{
+			if (!q)
+			{
+				if (result[i + 2] == '\'' || result[i + 2] == '"')
+					q = result[i + 2];
+			}
+			else if (result[i + 2] == q)
+				q = '\0';
+			old_result = result;
+			new_var = ft_substr(result, i + 2, ft_strlen(result));
+			result = ft_strjoin("$", new_var);
+			free(old_result);
+			free(new_var);
+			i = expandable(result, i, &q);
+		}
 		if (old_len == -1)
 		{
 			new_var = ft_strdup("");

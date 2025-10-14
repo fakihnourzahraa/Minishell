@@ -1,4 +1,3 @@
-
 MIRA: 
 
 cat: f.txt: Permission denied
@@ -14,22 +13,15 @@ minishell$ echo $?
 127 
 (remove permission from sh file, should be permission denied not command not found + exit code 126) done
 
-NOUR:
+minishell$ $NONEXISTENT
+minishell: : Permission denied
 
-minishell$ echo $123
-(empty line)
-nfakih@c2r2s4:~/Desktop/git/Minishell$ echo $123
-23
+NOUR:
 
 minishell$ echo "$"'HOME'
 HOME
 nour@nfakih:~/Desktop/myFiles/42/git/Minishell$ echo "$"'HOME'
 $HOME
-
-minishell$ echo "'$'HOME"
-''HOME
-nour@nfakih:~/Desktop/myFiles/42/git/Minishell$ echo "'$'HOME"
-'$'HOME
 
 minishell$ << $HOME
 > $HOME
@@ -90,4 +82,13 @@ not an error just want to understand y
 
 # Great job, ctrl+c in a cat block is returning 2 (syntax error) instead of 130.
 
-echo $$ probably not required
+
+# minishell$ echo $123
+# (empty line)
+# nfakih@c2r2s4:~/Desktop/git/Minishell$ echo $123
+# 23
+
+# minishell$ echo "'$'HOME"
+# ''HOME
+# nour@nfakih:~/Desktop/myFiles/42/git/Minishell$ echo "'$'HOME"
+# '$'HOME

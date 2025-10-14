@@ -6,7 +6,7 @@
 /*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/16 16:30:14 by nfakih            #+#    #+#             */
-/*   Updated: 2025/10/14 12:21:17 by nfakih           ###   ########.fr       */
+/*   Updated: 2025/10/14 14:36:34 by nfakih           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -281,7 +281,7 @@ int main(int argc, char **argv, char **envp)
     
 	if (argc != 1)
 	{
-		ft_putstr_fd("minishell: unexpected arguements", 2);
+		ft_putstr_fd("minishell: unexpected arguements\n", 2);
 		return (1);
 	}
     (void)argv;
