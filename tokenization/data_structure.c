@@ -6,7 +6,7 @@
 /*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/13 12:45:13 by nfakih            #+#    #+#             */
-/*   Updated: 2025/10/13 10:59:54 by nour             ###   ########.fr       */
+/*   Updated: 2025/10/15 19:09:21 by nour             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,8 +42,10 @@ void	empty_token(char *a, t_shell *shell, int i)
 	char	*b;
 	t_token	*t;
 
-	b = malloc(sizeof(char));
-	b[0] = '\0';
+	b = malloc(sizeof(char) * 3);
+	b[0] = a[i];
+	b[1] = a[i];
+	b[2] = '\0';
 	t = init_token();
 	if (a[2 + i] && !skipable_space(a[2 + i]))
 		t->space = false;

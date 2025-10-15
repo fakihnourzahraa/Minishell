@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expansion.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/02 20:08:42 by nfakih            #+#    #+#             */
-/*   Updated: 2025/10/14 18:12:45 by nfakih           ###   ########.fr       */
+/*   Updated: 2025/10/15 19:26:33 by nour             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,9 @@ int	var_length(char	*a, int i)
 	int	j;
 	
 	j = i;
-	if (a[i] && a[i] == '?')
+	if (a[i] && a[i + 1] && (a[i] == '\'' || a[i] == '"') && a[i] == a[i +  1])
+		return (-2);
+	if (a[i] && (a[i] == '?' || (a[i] >= '0' && a[i] <= '9')))
 		return (1);
 	while (a[i] && (ft_isalpha(a[i]) || a[i]== '_'))
 			i++;
@@ -26,7 +28,7 @@ int	var_length(char	*a, int i)
 	return (i - j);
 }
 // skips $ and calculates length of rest
-int	expandable(char *s, int	i, char	*q)
+int	expand_at(char *s, int	i, char	*q)
 {
 	char	a;
 
@@ -40,15 +42,22 @@ int	expandable(char *s, int	i, char	*q)
 			else if (a == s[i])
 				a = '\0';
 		}
-		else if (s[i] == '$' && (a == '"'|| a == '\0') && s[i + 1] != '\'')
+		else if (s[i] == '$' && a != '\'' && s[i + 1] != '\0' && (isalnum(s[i + 1]) || s[i + 1] == '_' || s[i + 1] == '?'))
 		{
+						//printf("reached 1\n");
 			*q = a;
 			return (i);
 		}
+		else if (s[i] == '$' && a == '\0' && s[i + 1] != '\0' && s[i + 2] != '\0' && (s[i + 1] == '\'' || s[i + 1] == '"') && s[i + 1] == s[i + 2])
+		{
+					//printf("reached 1\n");
+			*q = a;
+			return (i);
+		}
+		// printf("reached 2 and q at %c\n", a);
 		i++;
 	}
 	*q = a;
-	// if (s[i] == '\0')
 	return (-1);
 }
 //returns s[i] = $
@@ -135,46 +144,28 @@ char	*expand(t_shell *shell, char *s)
 	i = 0;
 	q = '\0';
 	result = s;
-	i = expandable(s, i, &q);
+	i = expand_at(s, i, &q);
 	if (i == -1)
 		return (s);
 	while (i != -1)
 	{
 		old_len = var_length(result, i + 1);
-		if (old_len == i + 1)
+		if (old_len == -2)
 		{
-			if (!q)
-			{
-				if (result[i + 2] == '\'' || result[i + 2] == '"')
-					q = result[i + 2];
-			}
-			else if (result[i + 2] == q)
-				q = '\0';
-			old_result = result;
-			new_var = ft_substr(result, i + 2, ft_strlen(result));
-			result = ft_strjoin("$", new_var);
-			free(old_result);
-			free(new_var);
-			i = expandable(result, i, &q);
-		}
-		if (old_len == -1)
-		{
-			new_var = ft_strdup("");
-			old_result = result;
-			result = trim_vars(result, &i, 0, new_var);
-			free(old_result);
-			free(new_var);
-			i = expandable(result, i, &q);
+		new_var = ft_strdup("");
+		char* before = ft_substr(result, 0, i);
+		old_result = result;
+		result = ft_strjoin(before, result + i + 3);
 		}
 		else
 		{
 			new_var = trim_expand(shell, i + 1, old_len, result);
 			old_result = result;
 			result = trim_vars(result, &i, old_len, new_var);
-			free(old_result);
-			free(new_var);
-			i = expandable(result, i, &q);
 		}
+		free(old_result);
+		free(new_var);
+		i = expand_at(result, i, &q);
 	}
 	return (result);
 }

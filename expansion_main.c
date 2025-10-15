@@ -6,7 +6,7 @@
 /*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/04 22:14:23 by nfakih            #+#    #+#             */
-/*   Updated: 2025/10/13 17:05:52 by nour             ###   ########.fr       */
+/*   Updated: 2025/10/15 19:13:59 by nour             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -211,8 +211,7 @@ int main(int argc, char **argv, char **envp)
     // test_string("cat < file | grep test > out", &shell);
 
     printf("\n=== EXPANSION TESTS ===\n");
-    test_string("echo 'h'$HOME", &shell);
-        test_string("echo 'h'$HOME'h'", &shell);
+        test_string("$''", &shell);
     // test_string("echo '$HOME'", &shell);
     // test_string("echo \"$HOME\"", &shell);
     // test_string("echo $HOME/test", &shell);

@@ -20,11 +20,6 @@ minishell: : Permission denied
 
 NOUR:
 
-minishell$ echo "$"'HOME'
-HOME
-nour@nfakih:~/Desktop/myFiles/42/git/Minishell$ echo "$"'HOME'
-$HOME
-
 minishell$ << $HOME
 > $HOME
 > /home/nour
@@ -36,7 +31,6 @@ nour@nfakih:~$ echo $?
 127
 
 BOTH:
-The program should not accept unexpected arguments when launching, such as ./minishell 123
 OLDPWD (keep checking)
 makefile: wildcards and libft
 
@@ -75,6 +69,9 @@ DONE!!!!:
 # h /home/nfakih
 # nfakih@c1r7s3:~/Desktop/git/Minishell$ 
 
+
+# The program should not accept unexpected arguments when launching, such as ./minishell 123
+
 minishell$ echo $_
 /usr/bin/valgrind
 but
@@ -95,6 +92,10 @@ not an error just want to understand y
 # nour@nfakih:~/Desktop/myFiles/42/git/Minishell$ echo "'$'HOME"
 # '$'HOME
 
+minishell$ echo "$"'HOME'
+HOME
+nour@nfakih:~/Desktop/myFiles/42/git/Minishell$ echo "$"'HOME'
+$HOME
 
 # Mixed expansion
 cat << EOF
@@ -134,18 +135,6 @@ cat << "EOF"
 $USER $HOME $PATH
 EOF
 
-# Backslash escaping
-cat << \EOF
-$USER
-EOF
-
-cat << $EOF
-content
-$EOF
-
-cat << 'END$'
-content
-END$
 
 
 < in.txt cat << EOF > out.txt 2> err.txt
