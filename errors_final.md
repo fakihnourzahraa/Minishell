@@ -7,7 +7,7 @@ minishell$ echo $?
 
 ls > a << b > c << d < e > f | cat << a << b > c > d >t>f<<p|cat Makefile>jnde1<jnde2>jnde3|ls>jnde4>jnde5<jnde6>jnde7|ls ls ls > jnde | << a << v | easy | exit
 (ok lmshkle fiye he <<a <<v | yane lmshkl ben heredoc wl pipe 3am t3tbr awal wehd huwe delm lama ma tshuf pipe ) 
-+test cat <<eof>file (3am t3l2)
++test cat <<eof>file (3am t3l2) done
 
 minishell$ ./test.sh
 minishell: ./test.sh: command not found
@@ -94,3 +94,70 @@ not an error just want to understand y
 # ''HOME
 # nour@nfakih:~/Desktop/myFiles/42/git/Minishell$ echo "'$'HOME"
 # '$'HOME
+
+
+# Mixed expansion
+cat << EOF
+Hello $USER, your home is $HOME
+The path is: $PATH
+EOF
+
+# Expansion with quotes inside heredoc
+cat << EOF
+He said "$USER is here"
+'Single quotes' should not prevent expansion
+EOF
+
+# Non-existent variables
+cat << EOF
+This $NONEXISTENT variable is empty
+EOF
+
+# Special parameters (if you implement them)
+cat << EOF
+Exit status: $?
+PID: $$
+EOF
+
+# Nested quotes in expansion
+cat << EOF
+"$USER"'s home is '$HOME'
+EOF
+
+# Single quotes - no expansion
+cat << 'EOF'
+$USER $HOME $PATH
+EOF
+
+# Double quotes - no expansion
+cat << "EOF"
+$USER $HOME $PATH
+EOF
+
+# Backslash escaping
+cat << \EOF
+$USER
+EOF
+
+cat << $EOF
+content
+$EOF
+
+cat << 'END$'
+content
+END$
+
+
+< in.txt cat << EOF > out.txt 2> err.txt
+heredoc
+EOF
+
+cat << EOF
+Current date: $(date)
+Files: $(ls)
+EOF
+
+# Nested command substitution
+cat << EOF
+User $(whoami) in directory $(pwd)
+EOF

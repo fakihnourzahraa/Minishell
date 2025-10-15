@@ -93,7 +93,7 @@ static void	cleanup_and_wait(t_shell *shell, t_cmd *cmds, t_pipe_info *info)
 	signals_prompt();
 }
 
-int execute_multiple_cmds(t_shell *shell, t_cmd *cmds, int cmd_count)
+/*int execute_multiple_cmds(t_shell *shell, t_cmd *cmds, int cmd_count)
 {
   t_pipe_info info;
   t_cmd *current;
@@ -125,4 +125,64 @@ int execute_multiple_cmds(t_shell *shell, t_cmd *cmds, int cmd_count)
     }
     cleanup_and_wait(shell, cmds, &info);
     return (shell->exit_status);
+}*/
+
+
+int execute_multiple_cmds(t_shell *shell, t_cmd *cmds, int cmd_count)
+{
+  t_pipe_info info;
+  t_cmd *current;
+  t_redir *redir;
+  char *heredoc_delimiters[100];
+  int heredoc_count;
+  int heredoc_fd;
+
+  // Pre-process heredocs for ALL commands in the pipeline
+  current = cmds;
+  while (current)
+  {
+    heredoc_count = 0;
+    
+    // Collect ALL heredoc delimiters for this command
+    if (current->rd)
+    {
+      redir = current->rd;
+      while (redir && heredoc_count < 100)
+      {
+        if (redir->type == R_HEREDOC)
+        {
+          if (!redir->s || ft_strlen(redir->s) == 0)
+            return (1);
+          heredoc_delimiters[heredoc_count] = redir->s;
+          heredoc_count++;
+        }
+        redir = redir->next;
+      }
+      
+      // If we found heredocs, run them all
+      if (heredoc_count > 0)
+      {
+        heredoc_fd = run_multiple_heredocs(heredoc_delimiters, heredoc_count, shell);
+        if (heredoc_fd == -1)
+          return (1);
+        current->i_fd = heredoc_fd;
+      }
+    }
+    current = current->next;
+  }
+  
+  info.pipes = setup_pipes(cmd_count);
+  if (!info.pipes)
+    return (1);
+  info.cmd_count = cmd_count;
+  signals_parent();
+  if (execute_all_commands(shell, cmds, &info) == -1)
+  {
+    close_and_free_pipes(info.pipes, cmd_count - 1);
+    info.pipes = NULL;
+    signals_prompt();
+    return (1);
+  }
+  cleanup_and_wait(shell, cmds, &info);
+  return (shell->exit_status);
 }

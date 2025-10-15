@@ -44,7 +44,7 @@ static int handle_append_redir(t_redir *redir)
   return (redirect_fd(fd, STDOUT_FILENO));
 }
 
-int apply_redirections(t_cmd *cmd, t_shell *shell)
+/*int apply_redirections(t_cmd *cmd, t_shell *shell)
 {
   t_redir *current;
   char *heredoc_delimiters[100];
@@ -65,6 +65,7 @@ int apply_redirections(t_cmd *cmd, t_shell *shell)
     }
     current = current->next;
   }
+  
   current = cmd->rd;
   while (current)
   {
@@ -79,7 +80,7 @@ int apply_redirections(t_cmd *cmd, t_shell *shell)
   if (heredoc_count > 0)
   {
     final_input_fd = run_multiple_heredocs(heredoc_delimiters, heredoc_count, shell);
-    if (final_input_fd == -1)
+	if (final_input_fd == -1)
       return (-1);
     if (redirect_fd(final_input_fd, STDIN_FILENO) == -1)
     {
@@ -87,7 +88,48 @@ int apply_redirections(t_cmd *cmd, t_shell *shell)
       return (-1);
     }
     close(final_input_fd);
-  }  
+  }
+  return (0);
+}*/
+
+int apply_redirections(t_cmd *cmd, t_shell *shell)
+{
+  t_redir *current;
+  
+  if (!cmd)
+    return (0);
+  
+  // Process output redirections first
+  current = cmd->rd;
+  while (current)
+  {
+    if (current->type == R_OUT && handle_out_redir(current) == -1)
+      return (-1);
+    else if (current->type == R_APPEND && handle_append_redir(current) == -1)
+      return (-1);
+    current = current->next;
+  }
+  
+  // Process input redirections (files only, NOT heredocs)
+  current = cmd->rd;
+  while (current)
+  {
+    if (current->type == R_IN && handle_in_redir(shell, current) == -1)
+      return (-1);
+    current = current->next;
+  }
+  
+  // Handle pre-processed heredoc (if cmd->i_fd was set by execute_single)
+  if (cmd->i_fd > 0)
+  {
+    if (redirect_fd(cmd->i_fd, STDIN_FILENO) == -1)
+    {
+      close(cmd->i_fd);
+      return (-1);
+    }
+    // redirect_fd already closes the fd, so don't close it again
+  }
+  
   return (0);
 }
 
