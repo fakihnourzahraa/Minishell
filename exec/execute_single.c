@@ -23,6 +23,7 @@ static void	wait_child(t_shell *shell, int status)
 		shell->exit_status = 1;
 }
 
+
 static char	**prepare_child_execution(t_shell *shell, t_cmd *cmd)
 {
 	char	**envp_array;
@@ -233,7 +234,7 @@ int	process_heredocs(t_cmd *cmd, t_shell *shell)
 	return (0);
 }
 
-int	execute_single(t_shell *shell, t_cmd *cmd)
+/*int	execute_single(t_shell *shell, t_cmd *cmd)
 {
 	if (!cmd || !shell)
 		return (0);
@@ -255,4 +256,32 @@ int	execute_single(t_shell *shell, t_cmd *cmd)
 	if (cmd->rd && process_heredocs(cmd, shell) == -1)
         return (1);
 	return (execute_external_command(shell, cmd));
+}
+*/
+
+int execute_single(t_shell *shell, t_cmd *cmd)
+{
+    if (!cmd || !shell)
+        return (0);
+    if (!cmd->cmd || cmd->cmd[0] == '\0')
+        return (0);
+    if (!cmd->args || !cmd->args[0])
+        return (0);
+    if (handle_variable_assignment(shell, cmd))
+        return (1);
+    
+    
+    if (cmd->rd && process_heredocs(cmd, shell) == -1)
+        return (1);
+    
+    if (cmd->builtin != NOT_BUILTIN)
+    {
+        if (cmd->rd)
+            return (execute_builtin_with_redirect(shell, cmd));
+        execute_builtin(cmd, shell);
+        return (1);
+    }
+    
+    // REMOVED: The duplicate process_heredocs call here!
+    return (execute_external_command(shell, cmd));
 }

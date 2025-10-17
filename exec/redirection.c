@@ -99,7 +99,6 @@ int apply_redirections(t_cmd *cmd, t_shell *shell)
   if (!cmd)
     return (0);
   
-  // Process output redirections first
   current = cmd->rd;
   while (current)
   {
@@ -110,7 +109,6 @@ int apply_redirections(t_cmd *cmd, t_shell *shell)
     current = current->next;
   }
   
-  // Process input redirections (files only, NOT heredocs)
   current = cmd->rd;
   while (current)
   {
@@ -119,7 +117,6 @@ int apply_redirections(t_cmd *cmd, t_shell *shell)
     current = current->next;
   }
   
-  // Handle pre-processed heredoc (if cmd->i_fd was set by execute_single)
   if (cmd->i_fd > 0)
   {
     if (redirect_fd(cmd->i_fd, STDIN_FILENO) == -1)
@@ -127,7 +124,6 @@ int apply_redirections(t_cmd *cmd, t_shell *shell)
       close(cmd->i_fd);
       return (-1);
     }
-    // redirect_fd already closes the fd, so don't close it again
   }
   
   return (0);
