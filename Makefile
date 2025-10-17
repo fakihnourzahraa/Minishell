@@ -48,6 +48,7 @@ SRCS = main/main.c \
 	   tokenization/splits.c tokenization/chars.c \
        tokenization/token_helpers.c tokenization/token.c\
        cleanup.c expansion/expand_var.c\
+       expansion/trim.c expansion/replace_var.c\
        $(LIBFT_SRCS)
 
 OBJS = $(SRCS:.c=.o)

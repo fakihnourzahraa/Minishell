@@ -12,42 +12,41 @@
 
 #include "main.h"
 
-int g_signal = 0;
+int	g_signal = 0;
 
-void sigint_handler(int signum)
+void	sigint_handler(int signum)
 {
-    (void)signum;
-    
-    g_signal = SIGINT;
-    
-    //printf("\n");
-    write(1, "\n", 1);
+	(void)signum;
+	g_signal = SIGINT;
+	write(1, "\n", 1);
 	rl_on_new_line();
-    rl_replace_line("", 0);
-    rl_redisplay();
-}
-void signals_prompt(void)
-{
-    signal(SIGINT, sigint_handler);
-    signal(SIGQUIT, SIG_IGN);
-    signal(SIGTSTP, SIG_IGN);
+	rl_replace_line("", 0);
+	rl_redisplay();
 }
 
-void signals_child_heredoc(void)
+void	signals_prompt(void)
 {
-    signal(SIGINT, SIG_DFL);
-    signal(SIGQUIT, SIG_IGN);
-    signal(SIGTSTP, SIG_IGN);
+	signal(SIGINT, sigint_handler);
+	signal(SIGQUIT, SIG_IGN);
+	signal(SIGTSTP, SIG_IGN);
 }
 
-void signals_parent(void)
+void	signals_child_heredoc(void)
 {
-    signal(SIGINT, SIG_IGN);
-    signal(SIGQUIT, SIG_IGN);
-    signal(SIGTSTP, SIG_IGN);
+	signal(SIGINT, SIG_DFL);
+	signal(SIGQUIT, SIG_IGN);
+	signal(SIGTSTP, SIG_IGN);
 }
-void signals_child(void)
+
+void	signals_parent(void)
 {
-    signal(SIGINT, SIG_DFL);   // Default behavior for Ctrl+C
-    signal(SIGQUIT, SIG_DFL);  // Default behavior for Ctrl+
+	signal(SIGINT, SIG_IGN);
+	signal(SIGQUIT, SIG_IGN);
+	signal(SIGTSTP, SIG_IGN);
+}
+
+void	signals_child(void)
+{
+	signal(SIGINT, SIG_DFL);
+	signal(SIGQUIT, SIG_DFL);
 }

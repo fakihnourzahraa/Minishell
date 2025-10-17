@@ -6,17 +6,19 @@
 /*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 22:14:32 by nfakih            #+#    #+#             */
-/*   Updated: 2025/10/13 11:12:39 by nour             ###   ########.fr       */
+/*   Updated: 2025/10/17 13:19:38 by nour             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "tokenization.h"
-int		skipforvar(char *a, int i)
-{ 
+
+int	skipforvar(char *a, int i)
+{
 	while (a[i] && (ft_isalnum(a[i]) || skipable_space(a[i])))
 		i++;
 	return (i);
 }
+
 bool	skipable_space(char a)
 {
 	if (a == 32 || a == 9 || a == 11 || a == 12)
@@ -28,6 +30,7 @@ bool	skipable_space(char a)
 // 	if (shell->tkns)
 // 		free_tokens(shell->tkns);
 // }
+
 int	skip_spaces(char *a, int i)
 {
 	while (i > -1 && a[i] && skipable_space(a[i]))
