@@ -281,7 +281,5 @@ int execute_single(t_shell *shell, t_cmd *cmd)
         execute_builtin(cmd, shell);
         return (1);
     }
-    
-    // REMOVED: The duplicate process_heredocs call here!
     return (execute_external_command(shell, cmd));
 }
