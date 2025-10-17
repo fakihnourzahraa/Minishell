@@ -6,7 +6,7 @@
 /*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/13 12:45:13 by nfakih            #+#    #+#             */
-/*   Updated: 2025/10/15 19:09:21 by nour             ###   ########.fr       */
+/*   Updated: 2025/10/17 14:59:30 by nour             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,10 +58,12 @@ void	empty_token(char *a, t_shell *shell, int i)
 	add_token(shell, t);
 }
 
-//this goes off of where the last index is, so either the original one if there are quotes
+//this goes off of where the last index is, 
+//so either the original one if there are quotes
 //or tokenizes whats between quotes, or -1 on error
 //34 is " 39 is '
-//shell->tkns->quotes = (a[z] % 3) + 1; is its single quote it'll be 0 + 1 else 1 + 1
+//shell->tkns->quotes = (a[z] % 3) + 1;
+// is its single quote it'll be 0 + 1 else 1 + 1
 
 void	add_cmd(t_shell *shell, t_cmd *cmd)
 {

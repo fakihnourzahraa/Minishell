@@ -13,24 +13,25 @@
 #ifndef MAIN_H
 # define MAIN_H
 
-extern int g_signal;
-#include<stdio.h>
-#include<stdlib.h>
-#include<readline/readline.h>
-#include<readline/history.h>
-#include<signal.h>
+# include <stdio.h>
+# include <stdlib.h>
+# include <readline/readline.h>
+# include <readline/history.h>
+# include <signal.h>
 # include "../minishell.h"
 # include "../libft/libft.h"
-#include "../builtins/builtin.h"
-#include "../exec/exec.h"
-#include "../env/env.h"
+# include "../builtins/builtin.h"
+# include "../exec/exec.h"
+# include "../env/env.h"
+
+extern int	g_signal;
 
 void	sigint_handler(int signum);
 void	signals_prompt(void);
 void	signals_child_heredoc(void);
 void	signals_child(void);
 void	signals_parent(void);
-void 	cleanup_shell(t_shell *shell);
-void 	free_cmd_chain_complete(t_cmd *cmd);
-void signals_prompt_with_shell(t_shell *shell);
+void	cleanup_shell(t_shell *shell);
+void	free_cmd_chain_complete(t_cmd *cmd);
+void	signals_prompt_with_shell(t_shell *shell);
 #endif

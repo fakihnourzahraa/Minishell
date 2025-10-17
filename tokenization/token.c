@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "tokenization.h"
+#include "tokenization.h"
 
 // minishell$ echo "hi " "" "" "" p
 // hi     p
@@ -36,7 +36,7 @@ int	set_token(t_shell *shell, char *a, int i)
 	else if (a[i] == '>')
 		i = set_single(3, i, '>', n);
 	else
-		return (split_word(a, i, shell, n));
+		return (split_word(a, i, shell, &n));
 	add_token(shell, n);
 	i = skip_spaces(a, i);
 	return (i);
@@ -57,6 +57,7 @@ t_token	*init_token(void)
 	n->expand = false;
 	return (n);
 }
+
 void	add_token(t_shell *shell, t_token *n)
 {
 	t_token	*cur;
@@ -71,9 +72,10 @@ void	add_token(t_shell *shell, t_token *n)
 		cur->next = n;
 	}
 }
+
 void	cleanup_token(t_shell *shell)
 {
-	t_token *t;
+	t_token	*t;
 
 	while (shell->tkns && shell->tkns->s)
 	{
@@ -83,6 +85,7 @@ void	cleanup_token(t_shell *shell)
 		free(t);
 	}
 }
+
 int	tokenize_line(t_shell *shell)
 {
 	char	*a;
@@ -104,7 +107,6 @@ int	tokenize_line(t_shell *shell)
 	}
 	t = init_token();
 	add_token(shell, t);
-
 	return (1);
 }
 //init token intialized it to eof

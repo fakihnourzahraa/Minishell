@@ -6,23 +6,21 @@
 /*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/31 13:23:45 by nfakih            #+#    #+#             */
-/*   Updated: 2025/10/13 11:10:21 by nour             ###   ########.fr       */
+/*   Updated: 2025/10/17 13:39:01 by nour             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "tokenization.h"
+#include "tokenization.h"
 
-int	split_word(char *a, int i, t_shell *shell, t_token *n)
+int	split_word(char *a, int i, t_shell *shell, t_token **t)
 {
 	char	*b;
 	int		j;
-	t_token	*t;
 	int		len;
-	
+
 	j = 0;
 	if (a[i] && a[i] == '\0')
 		return (i);
-	t = n;
 	i = skip_spaces(a, i);
 	len = word_len(a, i);
 	if (len == 0)
@@ -31,17 +29,16 @@ int	split_word(char *a, int i, t_shell *shell, t_token *n)
 	while (len > j)
 	{
 		if (a[i + j] == '$')
-			t->expand = true;
+			(*t)->expand = true;
 		b[j] = a[i + j];
 		j++;
 	}
 	if (a[i + j] && a[i + j] != 32)
-		t->space = 0;
+		(*t)->space = 0;
 	b[j] = '\0';
-	t->s = b;
-	t->type = 0;
-	add_token(shell, t);
-	return (i + j);
+	(*t)->s = b;
+	(*t)->type = 0;
+	return (add_token(shell, *t), i + j);
 }
 
 int	split_q(char *a, t_shell *shell, int i)
@@ -65,6 +62,17 @@ int	split_q(char *a, t_shell *shell, int i)
 		ft_putstr_fd("minishell: syntax error near unclosed quote \"\n", 2);
 	return (-1);
 }
+
+void	fix_t(t_token **t, char *b, char n)
+{
+	(*t)->s = b;
+	(*t)->type = WORD;
+	if (n == '\'')
+		(*t)->quotes = 1;
+	else
+		(*t)->quotes = 2;
+}
+
 int	split_quote(char *a, int i, t_shell *shell, char n)
 {
 	char	*b;
@@ -90,12 +98,6 @@ int	split_quote(char *a, int i, t_shell *shell, char n)
 		t->space = false;
 	b[len + 1] = n;
 	b[len + 2] = '\0';
-	t->s = b;
-	t->type = WORD;
-	if (n == '\'')
-		t->quotes = 1;
-	else
-		t->quotes = 2;
-	add_token(shell, t);
-	return (i + len + 1);
+	fix_t(&t, b, n);
+	return (add_token(shell, t), i + len + 1);
 }

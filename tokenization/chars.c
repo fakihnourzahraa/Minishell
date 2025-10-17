@@ -6,7 +6,7 @@
 /*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 22:12:18 by nfakih            #+#    #+#             */
-/*   Updated: 2025/10/13 09:20:33 by nour             ###   ########.fr       */
+/*   Updated: 2025/10/17 15:00:34 by nour             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,8 +43,8 @@ int	word_len_cmds(char *a, int i)
 
 	j = 0;
 	b = '\0';
-	while (a[i] && ((!skipable_space(a[i])) || b != '\0') && 
-		   a[i] != '|' && a[i] != '<' && a[i] != '>')
+	while (a[i] && ((!skipable_space(a[i])) || b != '\0')
+		&& a[i] != '|' && a[i] != '<' && a[i] != '>')
 	{
 		if (a[i] == '\'' || a[i] == '"')
 		{
@@ -58,13 +58,14 @@ int	word_len_cmds(char *a, int i)
 	}
 	return (j);
 }
+
 int	word_len(char *a, int i)
 {
 	int		j;
 
 	j = 0;
-	while (a[i] && (!skipable_space(a[i])) && a[i] != '\'' && a[i] != '"' &&
-		   a[i] != '|' && a[i] != '<' && a[i] != '>')
+	while (a[i] && (!skipable_space(a[i])) && a[i] != '\'' && a[i] != '"'
+		&& a[i] != '|' && a[i] != '<' && a[i] != '>')
 	{
 		i++;
 		j++;
