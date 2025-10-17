@@ -28,6 +28,12 @@ typedef struct s_pipe_info
 }	t_pipe_info;
 
 int		is_builtin(char *cmd);
+int		needs_parent_execution(int builtin);
+void	execute_builtin_dispatch(t_cmd *cmd, t_shell *shell);
+int	save_and_redirect(t_cmd *cmd, t_shell *shell
+				, int *stdin_fd, int *stdout_fd);
+int	execute_with_redirect_parent(t_cmd *cmd, t_shell *shell);
+int	execute_with_redirect_child(t_cmd *cmd, t_shell *shell);
 int		execute_builtin(t_cmd *cmd, t_shell *shell);
 int		execute_single(t_shell *shell, t_cmd *cmd);
 char	*execute_path(char *cmd, t_shell *shell);
@@ -61,5 +67,6 @@ void cleanup_child_process(t_shell *shell);
 void cleanup_pipeline_child(t_shell *shell);
 //void cleanup_heredoc_child(t_shell *shell);
 int is_redirect_only_command(t_cmd *cmd);
+int	process_heredocs(t_cmd *cmd, t_shell *shell);
 int execute_redirect_only(t_cmd *cmd, t_shell *shell);
 #endif

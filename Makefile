@@ -15,11 +15,12 @@ LIBFT_SRCS = libft/ft_isalpha.c libft/ft_isdigit.c libft/ft_isalnum.c libft/ft_i
        libft/ft_strcmp.c libft/ft_strndup.c libft/ft_strcat.c libft/ft_strcpy.c\
        libft/ft_is_numeric.c libft/ft_size_of_arg.c libft/ft_atoll.c
 
-SRCS = main.c \
+SRCS = main/main.c \
        main/signal.c \
        builtins/echo.c \
        builtins/pwd.c \
        builtins/exit.c \
+	   exec/exec_built.c\
        builtins/cd.c\
        builtins/env.c\
 	   builtins/envhelp.c\

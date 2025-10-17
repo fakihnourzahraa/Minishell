@@ -12,7 +12,7 @@
 
 #include "builtin.h"
 
-static void print_exported_vars(t_shell *shell)
+static void	print_exported_vars(t_shell *shell)
 {
 	t_env	*vars[1024];
 	int		count;

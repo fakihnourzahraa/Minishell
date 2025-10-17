@@ -12,99 +12,94 @@
 
 #include "exec.h"
 
-int is_builtin(char *cmd)
+int	needs_parent_execution(int builtin)
 {
-  if (cmd ==NULL)
-    return(NOT_BUILTIN);
-  if (ft_strcmp(cmd,"echo") == 0)
-    return (BUILTIN_ECHO);
-  if (ft_strcmp(cmd,"pwd") == 0)
-    return (BUILTIN_PWD);
-  if(ft_strcmp(cmd,"exit") == 0)
-    return (BUILTIN_EXIT);
-  if (ft_strcmp(cmd, "cd") == 0)
-    return (BUILTIN_CD);
-  if (ft_strcmp(cmd, "env") == 0)
-    return (BUILTIN_ENV);
-  if (ft_strcmp(cmd, "export") == 0)
-    return (BUILTIN_EXPORT);
-  if (ft_strcmp(cmd, "unset") == 0)
-    return (BUILTIN_UNSET);
-  return (0);
+	return (builtin == BUILTIN_CD
+		|| builtin == BUILTIN_EXPORT
+		|| builtin == BUILTIN_UNSET
+		|| builtin == BUILTIN_EXIT);
 }
 
-int execute_builtin(t_cmd *cmd, t_shell *shell)
+void	execute_builtin_dispatch(t_cmd *cmd, t_shell *shell)
 {
-  int status;
+	if (cmd->builtin == BUILTIN_ECHO)
+		builtin_echo(cmd, shell);
+	else if (cmd->builtin == BUILTIN_PWD)
+		builtin_pwd(cmd, shell);
+	else if (cmd->builtin == BUILTIN_ENV)
+		builtin_env(cmd, shell);
+	else if (cmd->builtin == BUILTIN_EXIT)
+		builtin_exit(cmd, shell);
+	else if (cmd->builtin == BUILTIN_CD)
+		builtin_cd(cmd, shell);
+	else if (cmd->builtin == BUILTIN_EXPORT)
+		builtin_export(cmd, shell);
+	else if (cmd->builtin == BUILTIN_UNSET)
+		builtin_unset(cmd, shell);
+}
 
-  if (!cmd || !cmd->args || !cmd->args[0] || !shell)
-    return (0);
-  if (cmd->builtin == BUILTIN_EXIT)
-  {
-    builtin_exit(cmd, shell);
-    return (1);
-  }
-  if (cmd->builtin == BUILTIN_CD)
-  {
-    builtin_cd(cmd, shell);
-    return (1);
-  }
-  if (cmd->builtin == BUILTIN_EXPORT)
-  {
-    builtin_export(cmd, shell);
-    return (1);
-  }
-  if (cmd->builtin == BUILTIN_UNSET)
-  {
-    builtin_unset(cmd, shell);
-    return (1);
-  }
-  if (cmd->rd)
-  {
-    pid_t pid = fork();
-    if (pid < 0)
-    {
-      perror("fork");
-      return (1);
-    }
-    else if (pid == 0)
-    {
-      signal(SIGINT, SIG_DFL);
-      signal(SIGQUIT, SIG_DFL);
-      if (apply_redirections(cmd, shell) == -1)
-      {
-        cleanup_child_process(shell);
-        exit(1);
-      }
-      if (cmd->builtin == BUILTIN_ECHO)
-        builtin_echo(cmd, shell);
-      else if (cmd->builtin == BUILTIN_PWD)
-        builtin_pwd(cmd, shell);
-      else if (cmd->builtin == BUILTIN_ENV)
-        builtin_env(cmd, shell);
-      cleanup_child_process(shell);
-      exit(shell->exit_status);
-    }
-    else // Parent
-    {
-      signal(SIGINT, SIG_IGN);
-      signal(SIGQUIT, SIG_IGN);
-      waitpid(pid, &status, 0);
-      signals_prompt();
-      if (WIFEXITED(status))
-        shell->exit_status = WEXITSTATUS(status);
-      else if (WIFSIGNALED(status))
-        shell->exit_status = 128 + WTERMSIG(status);
-      else
-        shell->exit_status = 1;
-    }
-    return (1);
-  }
-  if (cmd->builtin == BUILTIN_ECHO)
-    builtin_echo(cmd, shell);
-  else if (cmd->builtin == BUILTIN_PWD)
-    builtin_pwd(cmd, shell);
-  else if (cmd->builtin == BUILTIN_ENV)
-    builtin_env(cmd, shell);
-  return (1);
+int	save_and_redirect(t_cmd *cmd, t_shell *shell
+				, int *stdin_fd, int *stdout_fd)
+{
+	*stdin_fd = dup(STDIN_FILENO);
+	*stdout_fd = dup(STDOUT_FILENO);
+	if (*stdin_fd == -1 || *stdout_fd == -1)
+	{
+		if (*stdin_fd != -1)
+			close(*stdin_fd);
+		if (*stdout_fd != -1)
+			close(*stdout_fd);
+		return (-1);
+	}
+	if (apply_redirections(cmd, shell) == -1)
+	{
+		dup2(*stdin_fd, STDIN_FILENO);
+		dup2(*stdout_fd, STDOUT_FILENO);
+		close(*stdin_fd);
+		close(*stdout_fd);
+		return (-1);
+	}
+	return (0);
+}
+
+int	execute_with_redirect_parent(t_cmd *cmd, t_shell *shell)
+{
+	int	saved_stdin;
+	int	saved_stdout;
+
+	if (save_and_redirect(cmd, shell, &saved_stdin, &saved_stdout) == -1)
+		return (1);
+	execute_builtin_dispatch(cmd, shell);
+	dup2(saved_stdin, STDIN_FILENO);
+	dup2(saved_stdout, STDOUT_FILENO);
+	close(saved_stdin);
+	close(saved_stdout);
+	return (1);
+}
+
+int	execute_with_redirect_child(t_cmd *cmd, t_shell *shell)
+{
+	pid_t	pid;
+	int		status;
+
+	pid = fork();
+	if (pid < 0)
+	{
+		perror("fork");
+		return (1);
+	}
+	else if (pid == 0)
+	{
+		signal(SIGINT, SIG_DFL);
+		if (apply_redirections(cmd, shell) == -1)
+			exit(1);
+		execute_builtin_dispatch(cmd, shell);
+		exit(shell->exit_status);
+	}
+	waitpid(pid, &status, 0);
+	if (WIFEXITED(status))
+		shell->exit_status = WEXITSTATUS(status);
+	else if (WIFSIGNALED(status))
+		shell->exit_status = 128 + WTERMSIG(status);
+	return (1);
 }

@@ -93,41 +93,6 @@ static void	cleanup_and_wait(t_shell *shell, t_cmd *cmds, t_pipe_info *info)
 	signals_prompt();
 }
 
-/*int execute_multiple_cmds(t_shell *shell, t_cmd *cmds, int cmd_count)
-{
-  t_pipe_info info;
-  t_cmd *current;
-	int heredoc_fd;
-
-  current = cmds;
-  while (current)
-	{
-    if (current->rd && current->rd->type == R_HEREDOC)
-    {
-      heredoc_fd = run_heredoc(current->rd->s, shell);
-      if (heredoc_fd == -1)
-        return (1);
-      current->i_fd = heredoc_fd;
-    }
-    current = current->next;
-  }
-    info.pipes = setup_pipes(cmd_count);
-    if (!info.pipes)
-        return (1);
-    info.cmd_count = cmd_count;
-    signals_parent();
-    if (execute_all_commands(shell, cmds, &info) == -1)
-    {
-        close_and_free_pipes(info.pipes, cmd_count - 1);
-        info.pipes = NULL;
-        signals_prompt();
-        return (1);
-    }
-    cleanup_and_wait(shell, cmds, &info);
-    return (shell->exit_status);
-}*/
-
-
 int execute_multiple_cmds(t_shell *shell, t_cmd *cmds, int cmd_count)
 {
   t_pipe_info info;

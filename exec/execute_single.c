@@ -203,7 +203,7 @@ static int	handle_variable_assignment(t_shell *shell, t_cmd *cmd)
 	return (1);
 }
 
-static int	process_heredocs(t_cmd *cmd, t_shell *shell)
+int	process_heredocs(t_cmd *cmd, t_shell *shell)
 {
 	t_redir	*redir;
 	char	*heredoc_delimiters[100];
@@ -252,5 +252,7 @@ int	execute_single(t_shell *shell, t_cmd *cmd)
 		execute_builtin(cmd, shell);
 		return (1);
 	}
+	if (cmd->rd && process_heredocs(cmd, shell) == -1)
+        return (1);
 	return (execute_external_command(shell, cmd));
 }

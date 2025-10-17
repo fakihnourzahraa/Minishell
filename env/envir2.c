@@ -12,7 +12,8 @@
 
 #include "env.h"
 
-static t_env	*create_env_node(const char *name, const char *value, bool available)
+static t_env	*create_env_node(const char *name,
+		const char *value, bool available)
 {
 	t_env	*node;
 
@@ -49,7 +50,8 @@ static int	update_existing_env(t_env *node, const char *value, bool available)
 	return (0);
 }
 
-int	set_env_var(t_env **env, const char *name, const char *value, bool available)
+int	set_env_var(t_env **env, const char *name,
+		const char *value, bool available)
 {
 	t_env	*node;
 	char	*val;

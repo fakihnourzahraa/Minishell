@@ -12,7 +12,7 @@
 
 #include "builtin.h"
 
-void    swap_env(t_env **a, t_env **b)
+void	swap_env(t_env **a, t_env **b)
 {
 	t_env	*tmp;
 
@@ -39,8 +39,8 @@ int	collect_exported_vars(t_shell *shell, t_env **arr)
 
 void	sort_exported_vars(t_env **arr, int count)
 {
-	int i;
-	int j;
+	int	i;
+	int	j;
 
 	i = 0;
 	while (i < count - 1)
@@ -56,7 +56,7 @@ void	sort_exported_vars(t_env **arr, int count)
 	}
 }
 
-int is_valid_identifier(const char *str)
+int	is_valid_identifier(const char *str)
 {
 	int	i;
 
