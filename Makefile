@@ -35,6 +35,8 @@ SRCS = main/main.c \
        exec/clean.c\
        exec/redir_utils.c\
        exec/heredoc.c\
+	   exec/heredoc_util.c\
+	   exec/heredoc_util2.c\
        exec/pipeline.c\
        exec/pipeline2.c\
        exec/utils2exec.c\

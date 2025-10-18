@@ -69,4 +69,7 @@ void cleanup_pipeline_child(t_shell *shell);
 int is_redirect_only_command(t_cmd *cmd);
 int	process_heredocs(t_cmd *cmd, t_shell *shell);
 int execute_redirect_only(t_cmd *cmd, t_shell *shell);
+int	run_heredoc_internal(char **delims, int count, t_shell *shell);
+void	heredoc_child(int write_fd, char **delims, int count, t_shell *shell);
+
 #endif

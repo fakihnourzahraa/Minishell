@@ -20,7 +20,7 @@ extern int g_signal;
 // 	expand()
 // }
 
-static void heredoc_child(int write_fd, char **delims, int count,t_shell *shell)
+/*static void heredoc_child(int write_fd, char **delims, int count,t_shell *shell)
 {
     char *line;
     int idx;
@@ -121,7 +121,7 @@ static int run_heredoc_internal(char **delims, int count, t_shell *shell)
     close(fd[0]);
     return (-1);
 }
-
+*/
 int run_heredoc(char *delimiter, t_shell *shell)
 {
     char *delims[2] = { delimiter, NULL };
