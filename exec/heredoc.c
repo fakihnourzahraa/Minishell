@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miwehbe <miwehbe@student.42beirut.com>     +#+  +:+       +#+        */
+/*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 14:33:35 by miwehbe           #+#    #+#             */
-/*   Updated: 2025/09/03 14:33:35 by miwehbe          ###   ########.fr       */
+/*   Updated: 2025/10/18 14:14:17 by nfakih           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,16 @@
 
 extern int g_signal;
 
+// char	*expand_variables(char *line, t_shell *shell)
+// {
+// 	expand()
+// }
+
 static void heredoc_child(int write_fd, char **delims, int count,t_shell *shell)
 {
     char *line;
     int idx;
+	char	*expanded;
 
     idx = 0;
     signals_child_heredoc();
@@ -46,8 +52,13 @@ static void heredoc_child(int write_fd, char **delims, int count,t_shell *shell)
         }
         if (idx == count - 1)
         {
-            write(write_fd, line, ft_strlen(line));
-            write(write_fd, "\n", 1);
+			char	*b = ft_strdup(line);
+			expanded = expand(shell, b, true);
+			write(write_fd, expanded, ft_strlen(expanded));
+			write(write_fd, "\n", 1);
+			free(expanded);
+            // write(write_fd, line, ft_strlen(line));
+            // write(write_fd, "\n", 1);
         }
         free(line);
     }

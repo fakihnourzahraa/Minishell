@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expansion.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/02 20:08:42 by nfakih            #+#    #+#             */
-/*   Updated: 2025/10/17 15:42:07 by nour             ###   ########.fr       */
+/*   Updated: 2025/10/18 14:12:14 by nfakih           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ int	var_length(char	*a, int i)
 	return (i - j);
 }
 
-char	*expand(t_shell *shell, char *s)
+char	*expand(t_shell *shell, char *s, bool h)
 {
 	char			q;
 	t_expand_data	data;
@@ -37,7 +37,7 @@ char	*expand(t_shell *shell, char *s)
 	data.i = 0;
 	q = '\0';
 	data.result = s;
-	data.i = expand_at(s, data.i, &q);
+	data.i = expand_at(s, data.i, &q, h);
 	if (data.i == -1)
 		return (s);
 	while (data.i != -1)
@@ -47,7 +47,7 @@ char	*expand(t_shell *shell, char *s)
 		handle_expansion(shell, &data);
 		free(old_result);
 		free(data.new_var);
-		data.i = expand_at(data.result, data.i, &q);
+		data.i = expand_at(data.result, data.i, &q, h);
 	}
 	return (data.result);
 }
@@ -85,17 +85,17 @@ void	iterate_expansion(t_shell *shell)
 	{
 		i = 0;
 		if (current->cmd)
-			current->cmd = expand(shell, current->cmd);
+			current->cmd = expand(shell, current->cmd, false);
 		while (current->args && current->args[i])
 		{
-			current->args[i] = expand(shell, current->args[i]);
+			current->args[i] = expand(shell, current->args[i], false );
 			i++;
 		}
 		redir = current->rd;
 		while (redir)
 		{
 			if (redir->s)
-				redir->s = expand(shell, redir->s);
+				redir->s = expand(shell, redir->s, false);
 			redir = redir->next;
 		}
 		remove_quotes(current);

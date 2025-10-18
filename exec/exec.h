@@ -19,7 +19,7 @@
 #include "../env/env.h"
 #include "../main/main.h"
 #include <fcntl.h>
-
+#include "../expansion/expansion.h"
 typedef struct s_pipe_info
 {
 	int	**pipes;

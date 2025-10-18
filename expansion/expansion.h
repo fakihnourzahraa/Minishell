@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expansion.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/20 19:01:33 by miwehbe           #+#    #+#             */
-/*   Updated: 2025/10/17 16:00:11 by nour             ###   ########.fr       */
+/*   Updated: 2025/10/18 14:11:32 by nfakih           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ typedef struct s_expand_data
 char	*get_exit_status_string(t_shell *shell);
 char	*expand_variable(t_shell *shell, const char *var_name);
 void	iterate_expansion(t_shell *shell);
-int		expand_at(char *s, int i, char *q);
+int		expand_at(char *s, int i, char *q, bool h);
 char	*expand_and_trim(t_shell *shell, char *var);
 char	*trim_expand(t_shell *shell, int i, int old_len, char *s);
 char	*trim_vars(char *s, int *i, int old_len, char *new_var);
@@ -39,5 +39,5 @@ char	set_a(char a, char s);
 void	handle_expansion(t_shell *shell, t_expand_data *data);
 char	set_a(char a, char s);
 char	*trim_expand(t_shell *shell, int i, int old_len, char *s);
-
+char	*expand(t_shell *shell, char *s, bool h);
 #endif
