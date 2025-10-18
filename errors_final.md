@@ -1,38 +1,8 @@
  cc  expansion_main.c tokenization/token.c tokenization/token_helpers.c tokenization/parsing.c tokenization/redir.c tokenization/data_structure.c tokenization/edge.c  cleanup.c tokenization/splits.c tokenization/chars.c env/envir.utils.c expansion/expansion.c env/envir.c expansion/expand_var.c expansion/replace_var.c expansion/trim.c libft/libft.a -o test_tokenization 
+
 MIRA: 
 
-cat: f.txt: Permission denied
-minishell$ echo $?
-1
-(should be 126)  done
-
-ls > a << b > c << d < e > f | cat << a << b > c > d >t>f<<p|cat Makefile>jnde1<jnde2>jnde3|ls>jnde4>jnde5<jnde6>jnde7|ls ls ls > jnde | << a << v | easy | exit
-(ok lmshkle fiye he <<a <<v | yane lmshkl ben heredoc wl pipe 3am t3tbr awal wehd huwe delm lama ma tshuf pipe ) 
-+test cat <<eof>file (3am t3l2) done
-
-minishell$ ./test.sh
-minishell: ./test.sh: command not found
-minishell$ echo $?
-127 
-(remove permission from sh file, should be permission denied not command not found + exit code 126) done
-
-minishell$ $NONEXISTENT
-minishell: : Permission denied
-
 NOUR:
-NOUR:
-minishell$ cat << $HOME
-> /home/nfakih
-
-minishell$ << $HOME
-> $HOME
-> /home/nour
-should exit at $HOME
-
-nour@nfakih:~$ a <<< b
-a: command not found
-nour@nfakih:~$ echo $?
-127
 
 BOTH:
 OLDPWD (keep checking)
@@ -73,18 +43,22 @@ DONE!!!!:
 # h /home/nfakih
 # nfakih@c1r7s3:~/Desktop/git/Minishell$ 
 
+minishell$ $NONEXISTENT
+minishell: : Permission denied
 
 # The program should not accept unexpected arguments when launching, such as ./minishell 123
 
-minishell$ echo $_
-/usr/bin/valgrind
-but
-nfakih@c2r2s4:~/Desktop/git/Minishell$ echo $_
-echo
-not an error just want to understand y
+minishell$ ./test.sh
+minishell: ./test.sh: command not found
+minishell$ echo $?
+127 
+(remove permission from sh file, should be permission denied not command not found + exit code 126) done
+
+ls > a << b > c << d < e > f | cat << a << b > c > d >t>f<<p|cat Makefile>jnde1<jnde2>jnde3|ls>jnde4>jnde5<jnde6>jnde7|ls ls ls > jnde | << a << v | easy | exit
+(ok lmshkle fiye he <<a <<v | yane lmshkl ben heredoc wl pipe 3am t3tbr awal wehd huwe delm lama ma tshuf pipe ) 
++test cat <<eof>file (3am t3l2)
 
 # Great job, ctrl+c in a cat block is returning 2 (syntax error) instead of 130.
-
 
 # minishell$ echo $123
 # (empty line)
@@ -95,6 +69,10 @@ not an error just want to understand y
 # ''HOME
 # nour@nfakih:~/Desktop/myFiles/42/git/Minishell$ echo "'$'HOME"
 # '$'HOME
+
+cat: f.txt: Permission denied
+minishell$ echo $?
+1
 
 minishell$ echo "$"'HOME'
 HOME
@@ -138,8 +116,6 @@ EOF
 cat << "EOF"
 $USER $HOME $PATH
 EOF
-
-
 
 < in.txt cat << EOF > out.txt 2> err.txt
 heredoc

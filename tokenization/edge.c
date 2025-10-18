@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   edge.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/16 15:35:17 by nfakih            #+#    #+#             */
-/*   Updated: 2025/10/17 15:14:10 by nour             ###   ########.fr       */
+/*   Updated: 2025/10/18 16:59:35 by nfakih           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,12 @@ void	exiting_check(t_token *tkn, t_shell **shell)
 
 int	check_tkns(t_shell *shell, t_token *tkn)
 {
+	if (tkn->type == PIPE)
+	{
+		ft_putstr_fd("minishell: syntax error near unexpected token `|'\n", 2);
+		(shell)->exit_status = 2;
+		return (-1);
+	}
 	while (tkn)
 	{
 		if ((is_r(tkn) || tkn->type == PIPE) && tkn->next && (is_r(tkn->next)
