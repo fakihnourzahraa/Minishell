@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_single.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miwehbe <miwehbe@student.42beirut.com>     +#+  +:+       +#+        */
+/*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/01 09:02:13 by miwehbe           #+#    #+#             */
-/*   Updated: 2025/09/01 09:02:13 by miwehbe          ###   ########.fr       */
+/*   Updated: 2025/10/18 15:27:33 by nfakih           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,6 @@ static void	wait_child(t_shell *shell, int status)
 	else
 		shell->exit_status = 1;
 }
-
 
 static char	**prepare_child_execution(t_shell *shell, t_cmd *cmd)
 {
@@ -83,7 +82,7 @@ static int	check_command_access(const char *cmd)
 
 static int	handle_command_path(t_shell *shell, t_cmd *cmd, char **path)
 {
-	int		access_result;
+	int	access_result;
 
 	if (ft_strchr(cmd->args[0], '/'))
 	{
@@ -140,28 +139,23 @@ static int	execute_external_command(t_shell *shell, t_cmd *cmd)
 	return (1);
 }
 
-static int execute_builtin_with_redirect(t_shell *shell, t_cmd *cmd)
+static int	execute_builtin_with_redirect(t_shell *shell, t_cmd *cmd)
 {
-	pid_t pid;
-	int status;
+	pid_t	pid;
+	int		status;
 
 	pid = fork();
 	if (pid < 0)
-	{
-		perror("fork");
-		return (1);
-	}
+		return (perror("fork"), 1);
 	if (pid == 0)
 	{
 		signal(SIGINT, SIG_DFL);
 		signal(SIGQUIT, SIG_DFL);
-		
 		if (process_heredocs(cmd, shell) == -1)
 		{
 			cleanup_child_process(shell);
 			exit(1);
 		}
-		
 		if (apply_redirections(cmd, shell) == -1)
 		{
 			cleanup_child_process(shell);
@@ -171,7 +165,6 @@ static int execute_builtin_with_redirect(t_shell *shell, t_cmd *cmd)
 		cleanup_child_process(shell);
 		exit(shell->exit_status);
 	}
-	
 	waitpid(pid, &status, 0);
 	wait_child(shell, status);
 	return (1);
@@ -212,7 +205,6 @@ static int	handle_variable_assignment(t_shell *shell, t_cmd *cmd)
 	return (1);
 }
 
-
 int	process_heredocs(t_cmd *cmd, t_shell *shell)
 {
 	t_redir	*redir;
@@ -243,7 +235,7 @@ int	process_heredocs(t_cmd *cmd, t_shell *shell)
 	return (0);
 }
 
-int execute_single(t_shell *shell, t_cmd *cmd)
+int	execute_single(t_shell *shell, t_cmd *cmd)
 {
 	if (!cmd || !shell)
 		return (0);
@@ -251,10 +243,8 @@ int execute_single(t_shell *shell, t_cmd *cmd)
 		return (0);
 	if (!cmd->args || !cmd->args[0])
 		return (0);
-	
 	if (handle_variable_assignment(shell, cmd))
 		return (1);
-	
 	if (cmd->builtin != NOT_BUILTIN)
 	{
 		if (cmd->rd)
@@ -262,9 +252,7 @@ int execute_single(t_shell *shell, t_cmd *cmd)
 		execute_builtin(cmd, shell);
 		return (1);
 	}
-	
 	if (cmd->rd && process_heredocs(cmd, shell) == -1)
 		return (1);
-		
 	return (execute_external_command(shell, cmd));
 }

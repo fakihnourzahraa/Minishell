@@ -1,3 +1,4 @@
+ cc  expansion_main.c tokenization/token.c tokenization/token_helpers.c tokenization/parsing.c tokenization/redir.c tokenization/data_structure.c tokenization/edge.c  cleanup.c tokenization/splits.c tokenization/chars.c env/envir.utils.c expansion/expansion.c env/envir.c expansion/expand_var.c expansion/replace_var.c expansion/trim.c libft/libft.a -o test_tokenization 
 MIRA: 
 
 cat: f.txt: Permission denied
@@ -19,6 +20,9 @@ minishell$ $NONEXISTENT
 minishell: : Permission denied
 
 NOUR:
+NOUR:
+minishell$ cat << $HOME
+> /home/nfakih
 
 minishell$ << $HOME
 > $HOME

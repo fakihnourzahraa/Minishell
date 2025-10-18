@@ -6,7 +6,7 @@
 /*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/20 17:51:32 by miwehbe           #+#    #+#             */
-/*   Updated: 2025/10/18 14:10:51 by nfakih           ###   ########.fr       */
+/*   Updated: 2025/10/18 15:57:40 by nfakih           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ void	unquoted(char *a, char *b, int *i, int *j)
 		(*i)++;
 	}
 }
+
 int	h_false(char *s, int i, char *q)
 {
 	char	a;
@@ -62,6 +63,7 @@ int	h_false(char *s, int i, char *q)
 	*q = a;
 	return (-1);
 }
+
 int	h_true(char *s, int i)
 {
 	while (s[i])
@@ -76,6 +78,7 @@ int	h_true(char *s, int i)
 	}
 	return (-1);
 }
+
 int	expand_at(char *s, int i, char *q, bool h)
 {
 	if (h)

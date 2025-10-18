@@ -6,7 +6,7 @@
 /*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/02 20:08:42 by nfakih            #+#    #+#             */
-/*   Updated: 2025/10/18 14:12:14 by nfakih           ###   ########.fr       */
+/*   Updated: 2025/10/18 15:58:09 by nfakih           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,13 +88,13 @@ void	iterate_expansion(t_shell *shell)
 			current->cmd = expand(shell, current->cmd, false);
 		while (current->args && current->args[i])
 		{
-			current->args[i] = expand(shell, current->args[i], false );
+			current->args[i] = expand(shell, current->args[i], false);
 			i++;
 		}
 		redir = current->rd;
 		while (redir)
 		{
-			if (redir->s)
+			if (redir->s && redir->type != R_HEREDOC)
 				redir->s = expand(shell, redir->s, false);
 			redir = redir->next;
 		}

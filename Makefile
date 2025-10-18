@@ -45,12 +45,13 @@ SRCS = main/main.c \
        env/envir2.c \
        env/envir3.c \
        env/envir.utils.c expansion/expansion.c \
-       tokenization/data_structure.c tokenization/debug.c\
+       tokenization/data_structure.c\
        tokenization/edge.c tokenization/parsing.c tokenization/redir.c\
 	   tokenization/splits.c tokenization/chars.c \
        tokenization/token_helpers.c tokenization/token.c\
        cleanup.c expansion/expand_var.c\
        expansion/trim.c expansion/replace_var.c\
+	   cleanup_two.c main/processing.c\
        $(LIBFT_SRCS)
 
 OBJS = $(SRCS:.c=.o)

@@ -3,25 +3,25 @@
 /*                                                        :::      ::::::::   */
 /*   execute_path.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miwehbe <miwehbe@student.42beirut.com>     +#+  +:+       +#+        */
+/*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/01 09:31:56 by miwehbe           #+#    #+#             */
-/*   Updated: 2025/09/01 09:31:56 by miwehbe          ###   ########.fr       */
+/*   Updated: 2025/10/18 15:19:02 by nfakih           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "exec.h"
 
-static char *get_path_from_env(t_shell *shell)
+static char	*get_path_from_env(t_shell *shell)
 {
-  char *path_value;
+	char	*path_value;
 
-  if (!shell || !shell->env)
-    return (NULL);
-  path_value = get_env_value(shell->env, "PATH");
-  if (!path_value)
-    return (NULL);
-  return (ft_strdup(path_value));
+	if (!shell || !shell->env)
+		return (NULL);
+	path_value = get_env_value(shell->env, "PATH");
+	if (!path_value)
+		return (NULL);
+	return (ft_strdup(path_value));
 }
 
 static char	*join_path_cmd(const char *path, const char *cmd)
@@ -50,7 +50,8 @@ static char	*check_cmd_with_slash(const char *cmd)
 		return (NULL);
 	}
 	return (NULL);
-}//we check if it has / than it maybe the full path
+}
+// we check if it has / than it maybe the full path
 
 static char	*search_in_paths(char **paths, const char *cmd)
 {
@@ -71,7 +72,8 @@ static char	*search_in_paths(char **paths, const char *cmd)
 		i++;
 	}
 	return (NULL);
-}//check for all executable paths
+}
+// check for all executable paths
 
 char	*get_cmd_path(const char *cmd, t_shell *shell)
 {

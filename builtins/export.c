@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miwehbe <miwehbe@student.42beirut.com>     +#+  +:+       +#+        */
+/*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/13 12:32:43 by miwehbe           #+#    #+#             */
-/*   Updated: 2025/09/13 12:32:43 by miwehbe          ###   ########.fr       */
+/*   Updated: 2025/10/18 16:07:18 by nfakih           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ static void	print_exported_vars(t_shell *shell)
 	{
 		ft_putstr_fd("declare -x ", 1);
 		ft_putstr_fd(vars[i]->name, 1);
-		if (vars[i]->val )
+		if (vars[i]->val)
 		{
 			ft_putstr_fd("=\"", 1);
 			ft_putstr_fd(vars[i]->val, 1);
@@ -37,7 +37,7 @@ static void	print_exported_vars(t_shell *shell)
 }
 
 static void	handle_export_with_value(
-				t_shell *shell, char *arg, char *equal_pos)
+	t_shell *shell, char *arg, char *equal_pos)
 {
 	char	*name;
 	char	*value;
