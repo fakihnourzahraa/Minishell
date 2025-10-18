@@ -142,31 +142,39 @@ static int	execute_external_command(t_shell *shell, t_cmd *cmd)
 
 static int execute_builtin_with_redirect(t_shell *shell, t_cmd *cmd)
 {
-    pid_t pid;
-    int status;
+	pid_t pid;
+	int status;
 
-    pid = fork();
-    if (pid < 0)
-    {
-        perror("fork");
-        return (1);
-    }
-    if (pid == 0)
-    {
-        signal(SIGINT, SIG_DFL);
-        signal(SIGQUIT, SIG_DFL);
-        if (apply_redirections(cmd, shell) == -1)
-        {
-            cleanup_child_process(shell);
-            exit(1);
-        }
-        execute_builtin(cmd, shell);
-        cleanup_child_process(shell); 
-        exit(shell->exit_status);
-    }
-    waitpid(pid, &status, 0);
-    wait_child(shell, status);
-    return (1);
+	pid = fork();
+	if (pid < 0)
+	{
+		perror("fork");
+		return (1);
+	}
+	if (pid == 0)
+	{
+		signal(SIGINT, SIG_DFL);
+		signal(SIGQUIT, SIG_DFL);
+		
+		if (process_heredocs(cmd, shell) == -1)
+		{
+			cleanup_child_process(shell);
+			exit(1);
+		}
+		
+		if (apply_redirections(cmd, shell) == -1)
+		{
+			cleanup_child_process(shell);
+			exit(1);
+		}
+		execute_builtin_dispatch(cmd, shell);
+		cleanup_child_process(shell);
+		exit(shell->exit_status);
+	}
+	
+	waitpid(pid, &status, 0);
+	wait_child(shell, status);
+	return (1);
 }
 
 static bool	is_valid_var_name(char *str, int len)
@@ -204,6 +212,7 @@ static int	handle_variable_assignment(t_shell *shell, t_cmd *cmd)
 	return (1);
 }
 
+
 int	process_heredocs(t_cmd *cmd, t_shell *shell)
 {
 	t_redir	*redir;
@@ -234,7 +243,7 @@ int	process_heredocs(t_cmd *cmd, t_shell *shell)
 	return (0);
 }
 
-/*int	execute_single(t_shell *shell, t_cmd *cmd)
+int execute_single(t_shell *shell, t_cmd *cmd)
 {
 	if (!cmd || !shell)
 		return (0);
@@ -242,10 +251,10 @@ int	process_heredocs(t_cmd *cmd, t_shell *shell)
 		return (0);
 	if (!cmd->args || !cmd->args[0])
 		return (0);
+	
 	if (handle_variable_assignment(shell, cmd))
 		return (1);
-	if (cmd->rd && process_heredocs(cmd, shell) == -1)
-		return (1);
+	
 	if (cmd->builtin != NOT_BUILTIN)
 	{
 		if (cmd->rd)
@@ -253,33 +262,9 @@ int	process_heredocs(t_cmd *cmd, t_shell *shell)
 		execute_builtin(cmd, shell);
 		return (1);
 	}
+	
 	if (cmd->rd && process_heredocs(cmd, shell) == -1)
-        return (1);
+		return (1);
+		
 	return (execute_external_command(shell, cmd));
-}
-*/
-
-int execute_single(t_shell *shell, t_cmd *cmd)
-{
-    if (!cmd || !shell)
-        return (0);
-    if (!cmd->cmd || cmd->cmd[0] == '\0')
-        return (0);
-    if (!cmd->args || !cmd->args[0])
-        return (0);
-    if (handle_variable_assignment(shell, cmd))
-        return (1);
-    
-    
-    if (cmd->rd && process_heredocs(cmd, shell) == -1)
-        return (1);
-    
-    if (cmd->builtin != NOT_BUILTIN)
-    {
-        if (cmd->rd)
-            return (execute_builtin_with_redirect(shell, cmd));
-        execute_builtin(cmd, shell);
-        return (1);
-    }
-    return (execute_external_command(shell, cmd));
 }

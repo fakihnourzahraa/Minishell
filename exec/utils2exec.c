@@ -42,14 +42,14 @@ void close_and_free_pipes(int **pipes, int pipe_count)
   {
     if (pipes[i] != NULL)
     {
-      close(pipes[i][0]); // close read
-      close(pipes[i][1]); // close write
-      free(pipes[i]);     // free the pipe array
+      close(pipes[i][0]);
+      close(pipes[i][1]);
+      free(pipes[i]);
       pipes[i] = NULL;
     }
     i++;
   }
-  free(pipes); // Free the array of pointers
+  free(pipes);
 }
 
 int create_single_pipe(int **pipes, int index)
@@ -102,13 +102,11 @@ int execute_multiple_cmds(t_shell *shell, t_cmd *cmds, int cmd_count)
   int heredoc_count;
   int heredoc_fd;
 
-  // Pre-process heredocs for ALL commands in the pipeline
   current = cmds;
   while (current)
   {
     heredoc_count = 0;
     
-    // Collect ALL heredoc delimiters for this command
     if (current->rd)
     {
       redir = current->rd;
@@ -124,7 +122,6 @@ int execute_multiple_cmds(t_shell *shell, t_cmd *cmds, int cmd_count)
         redir = redir->next;
       }
       
-      // If we found heredocs, run them all
       if (heredoc_count > 0)
       {
         heredoc_fd = run_multiple_heredocs(heredoc_delimiters, heredoc_count, shell);

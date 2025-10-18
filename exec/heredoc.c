@@ -20,28 +20,24 @@ static void heredoc_child(int write_fd, char **delims, int count,t_shell *shell)
     char *line;
     int idx;
 
-    //printf("DEBUG: heredoc_child started\n");
     idx = 0;
     signals_child_heredoc();
     while (1)
     {
         line = readline("> ");
-        //printf("DEBUG: heredoc_child read line: '%s'\n", line ? line : "(null)");
         if (!line)
         {
-            //printf("DEBUG: heredoc_child got EOF\n");
             g_signal = -1;
             close(write_fd);
             exit(0);
         }
         if (ft_strcmp(line, delims[idx]) == 0)
         {
-            //printf("DEBUG: heredoc_child found delimiter: '%s'\n", delims[idx]);
+           
             idx++;
             free(line);
             if (idx >= count)
             {
-                //printf("DEBUG: heredoc_child all delimiters found\n");
                 cleanup_child_process(shell);
                 close(write_fd);
                 exit(0);
@@ -50,7 +46,6 @@ static void heredoc_child(int write_fd, char **delims, int count,t_shell *shell)
         }
         if (idx == count - 1)
         {
-            //printf("DEBUG: heredoc_child writing line to pipe\n");
             write(write_fd, line, ft_strlen(line));
             write(write_fd, "\n", 1);
         }

@@ -21,9 +21,9 @@ void close_unused_pipes(int **pipes, int pipe_count, int current_cmd)
         return;
     while (i < pipe_count)
     {
-        if (i != current_cmd - 1) // Don't close input pipe for current command
+        if (i != current_cmd - 1)
             close(pipes[i][0]);
-        if (i != current_cmd) // Don't close output pipe for current command  
+        if (i != current_cmd)
             close(pipes[i][1]);
         i++;
     }
@@ -32,11 +32,8 @@ void close_unused_pipes(int **pipes, int pipe_count, int current_cmd)
 static void execute_child_process(t_shell *shell, t_cmd *cmd, t_pipe_info *info)
 {
     signals_child();
-    setup_cmd_fds(cmd, info, shell);//decide if it will read < << or write >> >
-    //if (info)
-    //    close_unused_pipes(info->pipes, info->cmd_count - 1, info->cmd_index);
-    //close_unused_pipes(info->pipes, info->cmd_count - 1, info->cmd_index);
-    
+    setup_cmd_fds(cmd, info, shell);
+   
 	if (is_redirect_only_command(cmd))
     {
         cleanup_pipeline_child(shell);
@@ -79,7 +76,7 @@ int execute_cmd_in_pipeline(t_shell *shell, t_cmd *cmd, t_pipe_info *info)
     else if (pid == 0)
     {
         execute_child_process(shell, cmd, info);
-        exit(1); // This line will never be reached, but satisfies compiler
+        exit(1);
     }
     else
     {

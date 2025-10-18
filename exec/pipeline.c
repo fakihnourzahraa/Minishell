@@ -63,8 +63,8 @@ void close_all_pipes(int **pipes, int pipe_count)
   {
     if(pipes[i] != NULL)
     {
-      close(pipes[i][0]);//close read
-      close(pipes[i][1]);//close write
+      close(pipes[i][0]);
+      close(pipes[i][1]);
     }
     i++;
   }
