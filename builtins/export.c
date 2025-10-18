@@ -25,7 +25,7 @@ static void	print_exported_vars(t_shell *shell)
 	{
 		ft_putstr_fd("declare -x ", 1);
 		ft_putstr_fd(vars[i]->name, 1);
-		if (vars[i]->val)
+		if (vars[i]->val )
 		{
 			ft_putstr_fd("=\"", 1);
 			ft_putstr_fd(vars[i]->val, 1);
@@ -71,6 +71,8 @@ static void	handle_export_without_value(t_shell *shell, char *arg)
 	var = find_env_var(shell->env, arg);
 	if (var)
 		var->avail = true;
+	else
+		set_env_var(&shell->env, arg, NULL, true);
 }
 
 void	builtin_export(t_cmd *cmd, t_shell *shell)

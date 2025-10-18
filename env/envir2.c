@@ -21,8 +21,11 @@ static t_env	*create_env_node(const char *name,
 	if (!node)
 		return (NULL);
 	node->name = ft_strdup(name);
-	node->val = ft_strdup(value);
-	if (!node->name || !node->val)
+	if (value)
+		node->val = ft_strdup(value);
+	else
+		node->val = NULL; 
+	if (!node->name )
 	{
 		free(node->name);
 		free(node->val);
@@ -42,9 +45,7 @@ static int	update_existing_env(t_env *node, const char *value, bool available)
 	if (value)
 		val = ft_strdup(value);
 	else
-		val = ft_strdup("");
-	if (!val)
-		return (1);
+		val = NULL;
 	node->val = val;
 	node->avail = available;
 	return (0);
@@ -54,19 +55,13 @@ int	set_env_var(t_env **env, const char *name,
 		const char *value, bool available)
 {
 	t_env	*node;
-	char	*val;
 
 	if (!env || !name)
 		return (1);
 	node = find_env_var(*env, name);
 	if (node)
 		return (update_existing_env(node, value, available));
-	if (value)
-		val = ft_strdup(value);
-	else
-		val = ft_strdup("");
-	node = create_env_node(name, val, available);
-	free(val);
+	node = create_env_node(name, value, available);
 	if (!node)
 		return (1);
 	node->next = *env;

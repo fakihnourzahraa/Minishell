@@ -31,6 +31,8 @@ static char	*create_env_string(t_env *node)
 	char	*str;
 	int		total_len;
 
+	if (!node->val)
+		return (NULL);
 	total_len = ft_strlen(node->name) + ft_strlen(node->val) + 2;
 	str = malloc(total_len);
 	if (!str)
@@ -50,7 +52,7 @@ static int	fill_envp_array(char **envp, t_env *env)
 	i = 0;
 	while (current)
 	{
-		if (current->avail)
+		if (current->avail && current->val)
 		{
 			envp[i] = create_env_string(current);
 			if (!envp[i])

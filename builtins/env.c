@@ -19,7 +19,7 @@ static void	print_env_list(t_env *env)
 	current = env;
 	while (current)
 	{
-		if (current->avail)
+		if (current->avail && current->val)
 		{
 			ft_putstr_fd(current->name, 1);
 			ft_putchar_fd('=', 1);
