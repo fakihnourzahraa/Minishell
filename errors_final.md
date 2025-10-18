@@ -1,6 +1,24 @@
  cc  expansion_main.c tokenization/token.c tokenization/token_helpers.c tokenization/parsing.c tokenization/redir.c tokenization/data_structure.c tokenization/edge.c  cleanup.c tokenization/splits.c tokenization/chars.c env/envir.utils.c expansion/expansion.c env/envir.c expansion/expand_var.c expansion/replace_var.c expansion/trim.c libft/libft.a -o test_tokenization 
 
 MIRA: 
+minishell$ << a
+minishell$ 
+
+minishell$ minishell$ echo hi << a << b
+> 
+hi
+ctrl d it should just leave one heredoc
+export? should be alphanatical
+
+minishell$ q | a | pwd
+minishell: q: command not found
+minishell: a: command not found
+/home/nfakih/Desktop/git/Minishell
+
+minishell$ echo "hi" | echo  "bye"  << a | pwd
+> a
+/home/nfakih/Desktop/git/Minishell
+minishell: Bad file descriptor
 
 NOUR:
 
