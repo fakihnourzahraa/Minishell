@@ -1,27 +1,39 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strcpy.c                                        :+:      :+:    :+:   */
+/*   cleanup_two.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/09/12 00:51:05 by miwehbe           #+#    #+#             */
-/*   Updated: 2025/10/18 15:54:02 by nfakih           ###   ########.fr       */
+/*   Created: 2025/10/18 16:04:29 by nfakih            #+#    #+#             */
+/*   Updated: 2025/10/18 16:05:48 by nfakih           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "minishell.h"
 
-char	*ft_strcpy(char *dest, const char *src)
+void	cleanup_pipeline_resources(t_shell *shell)
 {
-	int	i;
-
-	i = 0;
-	while (src[i])
+	if (!shell)
+		return ;
+	if (shell->in)
 	{
-		dest[i] = src[i];
-		i++;
+		free(shell->in);
+		shell->in = NULL;
 	}
-	dest[i] = '\0';
-	return (dest);
+	if (shell->cwd)
+	{
+		free(shell->cwd);
+		shell->cwd = NULL;
+	}
+	if (shell->sti)
+	{
+		free(shell->sti);
+		shell->sti = NULL;
+	}
+	if (shell->sto)
+	{
+		free(shell->sto);
+		shell->sto = NULL;
+	}
 }

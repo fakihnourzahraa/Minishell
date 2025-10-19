@@ -6,14 +6,13 @@
 /*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 14:33:35 by miwehbe           #+#    #+#             */
-/*   Updated: 2025/10/18 14:14:17 by nfakih           ###   ########.fr       */
+/*   Updated: 2025/10/18 16:10:16 by nfakih           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-
 #include "exec.h"
 
-extern int g_signal;
+extern int	g_signal;
 
 // char	*expand_variables(char *line, t_shell *shell)
 // {
@@ -122,13 +121,14 @@ static int run_heredoc_internal(char **delims, int count, t_shell *shell)
     return (-1);
 }
 */
-int run_heredoc(char *delimiter, t_shell *shell)
+int	run_heredoc(char *delimiter, t_shell *shell)
 {
     char *delims[2] = { delimiter, NULL };
-    return run_heredoc_internal(delims, 1, shell);
+
+    return (run_heredoc_internal(delims, 1, shell));
 }
 
-int run_multiple_heredocs(char **delimiters, int count, t_shell *shell)
+int	run_multiple_heredocs(char **delimiters, int count, t_shell *shell)
 {
-    return run_heredoc_internal(delimiters, count, shell);
+    return (run_heredoc_internal(delimiters, count, shell));
 }

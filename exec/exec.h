@@ -11,15 +11,16 @@
 /* ************************************************************************** */
 
 #ifndef EXEC_H
-#define EXEC_H
+# define EXEC_H
 
-#include "../minishell.h"
-#include "../libft/libft.h"
-#include "../builtins/builtin.h"
-#include "../env/env.h"
-#include "../main/main.h"
-#include <fcntl.h>
-#include "../expansion/expansion.h"
+# include "../minishell.h"
+# include "../libft/libft.h"
+# include "../builtins/builtin.h"
+# include "../env/env.h"
+# include "../main/main.h"
+# include <fcntl.h>
+# include "../expansion/expansion.h"
+
 typedef struct s_pipe_info
 {
 	int	**pipes;
@@ -30,13 +31,12 @@ typedef struct s_pipe_info
 int		is_builtin(char *cmd);
 int		needs_parent_execution(int builtin);
 void	execute_builtin_dispatch(t_cmd *cmd, t_shell *shell);
-int		save_and_redirect(t_cmd *cmd, t_shell *shell
-				, int *stdin_fd, int *stdout_fd);
+int		save_and_redirect(t_cmd *cmd, t_shell *shell, int *stdin_fd,
+			int *stdout_fd);
 int		execute_with_redirect_parent(t_cmd *cmd, t_shell *shell);
 int		execute_with_redirect_child(t_cmd *cmd, t_shell *shell);
 int		execute_builtin(t_cmd *cmd, t_shell *shell);
 int		execute_single(t_shell *shell, t_cmd *cmd);
-char	*execute_path(char *cmd, t_shell *shell);
 char	*get_cmd_path(const char *cmd, t_shell *shell);
 void	free_paths(char **paths);
 void	exec_external_with_env(t_shell *shell, t_cmd *cmd, char *path);
@@ -62,14 +62,14 @@ int		handle_input_redirections(t_cmd *cmd, t_shell *shell);
 int		handle_output_redirections(t_cmd *cmd);
 int		execute_multiple_cmds(t_shell *shell, t_cmd *cmds, int cmd_count);
 void	connect_pipes(int *input_fd, int *output_fd, t_pipe_info *info);
-int		run_multiple_heredocs(char **delimiters, int delimiter_count, t_shell *shell);
-void cleanup_child_process(t_shell *shell);
-void cleanup_pipeline_child(t_shell *shell);
-//void cleanup_heredoc_child(t_shell *shell);
-int is_redirect_only_command(t_cmd *cmd);
-int	process_heredocs(t_cmd *cmd, t_shell *shell);
-int execute_redirect_only(t_cmd *cmd, t_shell *shell);
-int	run_heredoc_internal(char **delims, int count, t_shell *shell);
+int		run_multiple_heredocs(char **delimiters, int delimiter_count,
+			t_shell *shell);
+void	cleanup_child_process(t_shell *shell);
+void	cleanup_pipeline_child(t_shell *shell);
+int		is_redirect_only_command(t_cmd *cmd);
+int		process_heredocs(t_cmd *cmd, t_shell *shell);
+int		execute_redirect_only(t_cmd *cmd, t_shell *shell);
+int		run_heredoc_internal(char **delims, int count, t_shell *shell);
 void	heredoc_child(int write_fd, char **delims, int count, t_shell *shell);
 
 #endif

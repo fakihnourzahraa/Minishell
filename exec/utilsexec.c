@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utilsexec.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miwehbe <miwehbe@student.42beirut.com>     +#+  +:+       +#+        */
+/*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/01 13:59:33 by miwehbe           #+#    #+#             */
-/*   Updated: 2025/09/01 13:59:33 by miwehbe          ###   ########.fr       */
+/*   Updated: 2025/10/18 15:41:11 by nfakih           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,16 +28,16 @@ void	free_paths(char **paths)
 	free(paths);
 }
 
-void free_pipes(int **pipes, int pipe_count)
+void	free_pipes(int **pipes, int pipe_count)
 {
-	int i;
+	int	i;
 
-	if(!pipes)
+	if (!pipes)
 		return ;
 	i = 0;
-	while(i < pipe_count)
+	while (i < pipe_count)
 	{
-		if(pipes[i] != NULL)
+		if (pipes[i] != NULL)
 		{
 			free(pipes[i]);
 			pipes[i] = NULL;
@@ -47,19 +47,18 @@ void free_pipes(int **pipes, int pipe_count)
 	free(pipes);
 }
 
-void free_split(char **split)
+void	free_split(char **split)
 {
-  int i ;
+	int	i;
 
-  i = 0;
-  if (!split)
-    return ;
-  while (split[i])
-  {
-    free(split[i]);
+	i = 0;
+	if (!split)
+		return ;
+	while (split[i])
+	{
+		free(split[i]);
 		split[i] = NULL;
-    i++;
-  }
-  free(split);
+		i++;
+	}
+	free(split);
 }
-

@@ -3,121 +3,110 @@
 /*                                                        :::      ::::::::   */
 /*   redirection.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miwehbe <miwehbe@student.42beirut.com>     +#+  +:+       +#+        */
+/*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 14:32:56 by miwehbe           #+#    #+#             */
-/*   Updated: 2025/09/03 14:32:56 by miwehbe          ###   ########.fr       */
+/*   Updated: 2025/10/18 15:38:21 by nfakih           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "exec.h"
 
-
-static int handle_in_redir(t_shell *shell, t_redir *redir)
+static int	handle_in_redir(t_shell *shell, t_redir *redir)
 {
-  int fd;
+	int	fd;
 
-  (void)shell;
-  if (!redir || !redir->s)
-    return (-1);
-  fd = open_infile(redir->s);
-  return (redirect_fd(fd, STDIN_FILENO));
+	(void)shell;
+	if (!redir || !redir->s)
+		return (-1);
+	fd = open_infile(redir->s);
+	return (redirect_fd(fd, STDIN_FILENO));
 }
 
-static int handle_out_redir(t_redir *redir)
+static int	handle_out_redir(t_redir *redir)
 {
-  int fd;
+	int	fd;
 
-  if (!redir || !redir->s)
-    return (-1);
-  fd = open_outfile(redir->s, 0);
-  return (redirect_fd(fd, STDOUT_FILENO));
+	if (!redir || !redir->s)
+		return (-1);
+	fd = open_outfile(redir->s, 0);
+	return (redirect_fd(fd, STDOUT_FILENO));
 }
 
-static int handle_append_redir(t_redir *redir)
+static int	handle_append_redir(t_redir *redir)
 {
-  int fd;
+	int	fd;
 
-  if (!redir || !redir->s)
-    return (-1);
-  fd = open_outfile(redir->s, 1);
-  return (redirect_fd(fd, STDOUT_FILENO));
+	if (!redir || !redir->s)
+		return (-1);
+	fd = open_outfile(redir->s, 1);
+	return (redirect_fd(fd, STDOUT_FILENO));
 }
 
-
-int apply_redirections(t_cmd *cmd, t_shell *shell)
+int	apply_redirections(t_cmd *cmd, t_shell *shell)
 {
-  t_redir *current;
-  
-  if (!cmd)
-    return (0);
-  
-  current = cmd->rd;
-  while (current)
-  {
-    if (current->type == R_OUT && handle_out_redir(current) == -1)
-      return (-1);
-    else if (current->type == R_APPEND && handle_append_redir(current) == -1)
-      return (-1);
-    current = current->next;
-  }
-  
-  current = cmd->rd;
-  while (current)
-  {
-    if (current->type == R_IN && handle_in_redir(shell, current) == -1)
-      return (-1);
-    current = current->next;
-  }
-  
-  if (cmd->i_fd > 0)
-  {
-    if (redirect_fd(cmd->i_fd, STDIN_FILENO) == -1)
-    {
-      return (-1);
-    }
-  }
-  
-  return (0);
+	t_redir	*current;
+
+	if (!cmd)
+		return (0);
+	current = cmd->rd;
+	while (current)
+	{
+		if (current->type == R_OUT && handle_out_redir(current) == -1)
+			return (-1);
+		else if (current->type == R_APPEND
+			&& handle_append_redir(current) == -1)
+			return (-1);
+		current = current->next;
+	}
+	current = cmd->rd;
+	while (current)
+	{
+		if (current->type == R_IN && handle_in_redir(shell, current) == -1)
+			return (-1);
+		current = current->next;
+	}
+	if (cmd->i_fd > 0)
+	{
+		if (redirect_fd(cmd->i_fd, STDIN_FILENO) == -1)
+		{
+			return (-1);
+		}
+	}
+	return (0);
 }
 
-int is_redirect_only_command(t_cmd *cmd)
+int	is_redirect_only_command(t_cmd *cmd)
 {
-  if (!cmd)
-    return (0);
-  if ((!cmd->cmd || ft_strlen(cmd->cmd) == 0) && cmd->rd)
-    return (1);
-        
-  return (0);
+	if (!cmd)
+		return (0);
+	if ((!cmd->cmd || ft_strlen(cmd->cmd) == 0) && cmd->rd)
+		return (1);
+	return (0);
 }
 
-int execute_redirect_only(t_cmd *cmd, t_shell *shell)
+int	execute_redirect_only(t_cmd *cmd, t_shell *shell)
 {
-  int saved_stdin;
-  int saved_stdout;;
-  int result;
+	int	saved_stdin;
+	int	saved_stdout;
+	int	result;
 
-  if (!cmd || !cmd->rd)
-    {
-        return (0);
-    }
-  saved_stdin = dup(STDIN_FILENO);
-  saved_stdout = dup(STDOUT_FILENO);
-    
-  if (saved_stdin == -1 || saved_stdout == -1)
-  {
-    if (saved_stdin != -1) 
-      close(saved_stdin);
-    if (saved_stdout != -1)
-      close(saved_stdout);
-    return (-1);
-  }
-  result = apply_redirections(cmd, shell);
-
-  dup2(saved_stdin, STDIN_FILENO);
-  dup2(saved_stdout, STDOUT_FILENO);
-  close(saved_stdin);
-  close(saved_stdout);
-    
-  return (result);
+	if (!cmd || !cmd->rd)
+		return (0);
+	saved_stdin = dup(STDIN_FILENO);
+	saved_stdout = dup(STDOUT_FILENO);
+	if (saved_stdin == -1 || saved_stdout == -1)
+	{
+		if (saved_stdin != -1)
+			close(saved_stdin);
+		if (saved_stdout != -1)
+			close(saved_stdout);
+		return (-1);
+	}
+	result = apply_redirections(cmd, shell);
+	dup2(saved_stdin, STDIN_FILENO);
+	dup2(saved_stdout, STDOUT_FILENO);
+	close(saved_stdin);
+	close(saved_stdout);
+	return (result);
 }

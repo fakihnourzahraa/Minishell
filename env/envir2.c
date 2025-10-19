@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   envir2.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miwehbe <miwehbe@student.42beirut.com>     +#+  +:+       +#+        */
+/*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/11 20:45:04 by miwehbe           #+#    #+#             */
-/*   Updated: 2025/09/11 20:45:04 by miwehbe          ###   ########.fr       */
+/*   Updated: 2025/10/18 16:08:26 by nfakih           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,8 @@ static t_env	*create_env_node(const char *name,
 	if (value)
 		node->val = ft_strdup(value);
 	else
-		node->val = NULL; 
-	if (!node->name )
+		node->val = NULL;
+	if (!node->name)
 	{
 		free(node->name);
 		free(node->val);
