@@ -119,19 +119,15 @@ static void	execute_child_process(t_shell *shell, t_cmd *cmd, t_pipe_info *info)
 int	execute_cmd_in_pipeline(t_shell *shell, t_cmd *cmd, t_pipe_info *info)
 {
 	pid_t	pid;
-
-	// Check for command path BEFORE forking
 	if (cmd->builtin == NOT_BUILTIN && !ft_strchr(cmd->args[0], '/'))
 	{
 		cmd->path = get_cmd_path(cmd->args[0], shell);
 		if (!cmd->path)
 		{
-			// Print error immediately in parent, in order
 			ft_putstr_fd("minishell: ", 2);
 			ft_putstr_fd(cmd->args[0], 2);
 			ft_putstr_fd(": command not found\n", 2);
 			
-			// Still fork but child will exit immediately
 			pid = fork();
 			if (pid < 0)
 			{

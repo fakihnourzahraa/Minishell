@@ -106,7 +106,7 @@ int	apply_redirections(t_cmd *cmd, t_shell *shell)
 	{
 		if (redirect_fd(cmd->i_fd, STDIN_FILENO) == -1)
 			return (-1);
-		cmd->i_fd = -1;  // Mark as used
+		cmd->i_fd = -1;
 	}
 	return (0);
 }
