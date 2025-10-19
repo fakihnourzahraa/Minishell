@@ -29,7 +29,7 @@ void	close_unused_pipes(int **pipes, int pipe_count, int current_cmd)
 	}
 }
 
-static void	execute_child_process(t_shell *shell, t_cmd *cmd, t_pipe_info *info)
+/*static void	execute_child_process(t_shell *shell, t_cmd *cmd, t_pipe_info *info)
 {
 	signals_child();
 	setup_cmd_fds(cmd, info, shell);
@@ -49,6 +49,38 @@ static void	execute_child_process(t_shell *shell, t_cmd *cmd, t_pipe_info *info)
 		cmd->path = get_cmd_path(cmd->args[0], shell);
 		if (!cmd->path)
 		{
+			//ft_putstr_fd("minishell: ", 2);
+			//ft_putstr_fd(cmd->args[0], 2);
+			//ft_putstr_fd(": command not found\n", 2);
+			cleanup_pipeline_child(shell);
+			exit(127);
+		}
+		exec_external_with_env(shell, cmd, cmd->path);
+		exit(127);
+
+		}
+}*/
+
+static void	execute_child_process(t_shell *shell, t_cmd *cmd, t_pipe_info *info)
+{
+	signals_child();
+	setup_cmd_fds(cmd, info, shell);
+	if (is_redirect_only_command(cmd))
+	{
+		cleanup_pipeline_child(shell);
+		exit(0);
+	}
+	if (cmd->builtin != NOT_BUILTIN)
+	{
+		execute_builtin_dispatch(cmd, shell);  // Direct dispatch, not execute_builtin!
+		cleanup_pipeline_child(shell);
+		exit(shell->exit_status);
+	}
+	else
+	{
+		cmd->path = get_cmd_path(cmd->args[0], shell);
+		if (!cmd->path)
+		{
 			ft_putstr_fd("minishell: ", 2);
 			ft_putstr_fd(cmd->args[0], 2);
 			ft_putstr_fd(": command not found\n", 2);
@@ -60,7 +92,8 @@ static void	execute_child_process(t_shell *shell, t_cmd *cmd, t_pipe_info *info)
 	}
 }
 
-int	execute_cmd_in_pipeline(t_shell *shell, t_cmd *cmd, t_pipe_info *info)
+
+/*int	execute_cmd_in_pipeline(t_shell *shell, t_cmd *cmd, t_pipe_info *info)
 {
 	pid_t	pid;
 
@@ -68,6 +101,67 @@ int	execute_cmd_in_pipeline(t_shell *shell, t_cmd *cmd, t_pipe_info *info)
 	if (pid < 0)
 	{
 		perror("fork");
+		return (-1);
+	}
+	else if (pid == 0)
+	{
+		execute_child_process(shell, cmd, info);
+		exit(1);
+	}
+	else
+	{
+		cmd->pid = pid;
+		return (pid);
+	}
+}
+*/
+
+int	execute_cmd_in_pipeline(t_shell *shell, t_cmd *cmd, t_pipe_info *info)
+{
+	pid_t	pid;
+
+	// Check for command path BEFORE forking
+	if (cmd->builtin == NOT_BUILTIN && !ft_strchr(cmd->args[0], '/'))
+	{
+		cmd->path = get_cmd_path(cmd->args[0], shell);
+		if (!cmd->path)
+		{
+			// Print error immediately in parent, in order
+			ft_putstr_fd("minishell: ", 2);
+			ft_putstr_fd(cmd->args[0], 2);
+			ft_putstr_fd(": command not found\n", 2);
+			
+			// Still fork but child will exit immediately
+			pid = fork();
+			if (pid < 0)
+			{
+				perror("fork");
+				return (-1);
+			}
+			else if (pid == 0)
+			{
+				signals_child();
+				setup_cmd_fds(cmd, info, shell);
+				cleanup_pipeline_child(shell);
+				exit(127);
+			}
+			else
+			{
+				cmd->pid = pid;
+				return (pid);
+			}
+		}
+	}
+	
+	pid = fork();
+	if (pid < 0)
+	{
+		perror("fork");
+		if (cmd->path)
+		{
+			free(cmd->path);
+			cmd->path = NULL;
+		}
 		return (-1);
 	}
 	else if (pid == 0)

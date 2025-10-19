@@ -43,7 +43,7 @@ static int	handle_append_redir(t_redir *redir)
 	return (redirect_fd(fd, STDOUT_FILENO));
 }
 
-int	apply_redirections(t_cmd *cmd, t_shell *shell)
+/*int	apply_redirections(t_cmd *cmd, t_shell *shell)
 {
 	t_redir	*current;
 
@@ -72,6 +72,41 @@ int	apply_redirections(t_cmd *cmd, t_shell *shell)
 		{
 			return (-1);
 		}
+	}
+	return (0);
+}
+*/
+int	apply_redirections(t_cmd *cmd, t_shell *shell)
+{
+	t_redir	*current;
+
+	if (!cmd)
+		return (0);
+	current = cmd->rd;
+	while (current)
+	{
+		if (current->type == R_OUT && handle_out_redir(current) == -1)
+			return (-1);
+		else if (current->type == R_APPEND
+			&& handle_append_redir(current) == -1)
+			return (-1);
+		current = current->next;
+	}
+	current = cmd->rd;
+	while (current)
+	{
+		if (current->type == R_IN && handle_in_redir(shell, current) == -1)
+			return (-1);
+		current = current->next;
+	}
+	// Handle heredoc ONLY if it hasn't been closed yet
+	// In pipelines, setup_cmd_fds closes it after dup2
+	// In single commands, we still need to handle it here
+	if (cmd->i_fd > 0)
+	{
+		if (redirect_fd(cmd->i_fd, STDIN_FILENO) == -1)
+			return (-1);
+		cmd->i_fd = -1;  // Mark as used
 	}
 	return (0);
 }
