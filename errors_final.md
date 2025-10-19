@@ -1,24 +1,37 @@
  cc  expansion_main.c tokenization/token.c tokenization/token_helpers.c tokenization/parsing.c tokenization/redir.c tokenization/data_structure.c tokenization/edge.c  cleanup.c tokenization/splits.c tokenization/chars.c env/envir.utils.c expansion/expansion.c env/envir.c expansion/expand_var.c expansion/replace_var.c expansion/trim.c libft/libft.a -o test_tokenization 
 
-MIRA: 
+MIRA:
+
 minishell$ << a
 minishell$ 
+(Is supposed to open a normal heredoc)
 
-minishell$ minishell$ echo hi << a << b
-> 
-hi
-ctrl d it should just leave one heredoc
-export? should be alphanatical
+
+
 
 minishell$ q | a | pwd
 minishell: q: command not found
 minishell: a: command not found
 /home/nfakih/Desktop/git/Minishell
 
+nour@nfakih:~/Desktop/myFiles/42/git/Minishell$ q | a | pwd
+/home/nour/Desktop/myFiles/42/git/Minishell
+Command 'q' not found
+a: command not found
+
+
+
 minishell$ echo "hi" | echo  "bye"  << a | pwd
 > a
 /home/nfakih/Desktop/git/Minishell
 minishell: Bad file descriptor
+
+nour@nfakih:~/Desktop/myFiles/42/git/Minishell$ echo "hi" | echo "bye" << a | pwd
+> a
+/home/nour/Desktop/myFiles/42/git/Minishell
+
+
+
 
 NOUR:
 
@@ -148,3 +161,8 @@ EOF
 cat << EOF
 User $(whoami) in directory $(pwd)
 EOF
+
+minishell$ minishell$ echo hi << a << b
+> 
+hi
+ctrl d it should just leave one heredoc
