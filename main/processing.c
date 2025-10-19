@@ -26,34 +26,6 @@ int	nour_parsing(t_shell *shell)
 	return (0);
 }
 
-/*void	mira_execution(t_shell *shell)
-{
-	t_cmd	*cmd_chain;
-	t_cmd	*current;
-
-	cmd_chain = shell->cmds;
-	if (!cmd_chain)
-		return ;
-	current = cmd_chain;
-	while (current)
-	{
-		if (current->cmd)
-			current->builtin = is_builtin(current->cmd);
-		else
-			current->builtin = NOT_BUILTIN;
-		current = current->next;
-	}
-	if (cmd_chain->next)
-		execute_pipeline(shell, cmd_chain);
-	else
-	{
-		if (is_redirect_only_command(cmd_chain))
-			execute_redirect_only(cmd_chain, shell);
-		else
-			execute_single(shell, cmd_chain);
-	}
-}*/
-
 void	mira_execution(t_shell *shell)
 {
 	t_cmd	*cmd_chain;
