@@ -166,3 +166,49 @@ minishell$ minishell$ echo hi << a << b
 > 
 hi
 ctrl d it should just leave one heredoc
+
+
+nour:
+
+.export TEST_VAR3="hello world"
+echo $TEST_VAR3
+
+.export TEST_VAR4="hello@world#test"
+echo $TEST_VAR4
+
+.test leak 
+cat << EOF > out1.txt < in.txt > out2.txt(f2se crtl c)
+
+.cat << EOF
+$HOME
+`pwd`
+$(echo test)
+EOF
+
+
+.export TEST=value << EOF
+ignored
+EOF
+echo $TEST
+
+.minishell$ echo "test\$HOME"
+test\/home/miwehbe
+minishell$ 
+
+.minishell$ echo "test\"quote"
+minishell: syntax error near unclosed quote "
+minishell$ 
+
+
+mira:
+.mkdir -p /tmp/test_no_perm
+chmod 000 /tmp/test_no_perm
+cd /tmp/test_no_perm
+echo $?
+
+
+.mkdir -p /tmp/test_pwd_delete
+cd /tmp/test_pwd_delete
+rm -rf /tmp/test_pwd_delete
+pwd
+

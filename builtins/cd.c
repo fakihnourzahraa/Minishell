@@ -82,7 +82,7 @@ static void	change_directory(t_shell *shell, char *target, const char *old_pwd)
 	shell->exit_status = 0;
 }
 
-void	builtin_cd(t_cmd *cmd, t_shell *shell)
+/*void	builtin_cd(t_cmd *cmd, t_shell *shell)
 {
 	char	*old_pwd;
 	char	*target;
@@ -91,5 +91,33 @@ void	builtin_cd(t_cmd *cmd, t_shell *shell)
 	target = get_target_dir(shell, cmd->args[1]);
 	if (!target)
 		return ;
+	change_directory(shell, target, old_pwd);
+}
+*/
+
+void	builtin_cd(t_cmd *cmd, t_shell *shell)
+{
+	char	*old_pwd;
+	char	*target;
+	int		arg_count;
+
+	arg_count = 0;
+	while (cmd->args[arg_count])
+		arg_count++;
+	if (arg_count > 2)
+	{
+		ft_putendl_fd("minishell: cd: too many arguments", 2);
+		shell->exit_status = 1;
+		return ;
+	}
+	old_pwd = get_env_value(shell->env, "PWD");
+	target = get_target_dir(shell, cmd->args[1]);
+	if (!target)
+		return ;
+	if (target[0] == '\0')
+	{
+		shell->exit_status = 0;
+		return ;
+	}
 	change_directory(shell, target, old_pwd);
 }

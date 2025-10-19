@@ -67,7 +67,7 @@ int	create_single_pipe(int **pipes, int index)
 	return (0);
 }
 
-static int	execute_all_commands(t_shell *shell, t_cmd *cmds, t_pipe_info *info)
+int	execute_all_commands(t_shell *shell, t_cmd *cmds, t_pipe_info *info)
 {
 	t_cmd	*current;
 	int		index;
@@ -85,7 +85,7 @@ static int	execute_all_commands(t_shell *shell, t_cmd *cmds, t_pipe_info *info)
 	return (0);
 }
 
-static void	cleanup_and_wait(t_shell *shell, t_cmd *cmds, t_pipe_info *info)
+void	cleanup_and_wait(t_shell *shell, t_cmd *cmds, t_pipe_info *info)
 {
 	close_and_free_pipes(info->pipes, info->cmd_count - 1);
 	info->pipes = NULL;
@@ -93,7 +93,7 @@ static void	cleanup_and_wait(t_shell *shell, t_cmd *cmds, t_pipe_info *info)
 	signals_prompt();
 }
 
-int	execute_multiple_cmds(t_shell *shell, t_cmd *cmds, int cmd_count)
+/*int	execute_multiple_cmds(t_shell *shell, t_cmd *cmds, int cmd_count)
 {
 	t_pipe_info	info;
 	t_cmd		*current;
@@ -145,3 +145,4 @@ int	execute_multiple_cmds(t_shell *shell, t_cmd *cmds, int cmd_count)
 	cleanup_and_wait(shell, cmds, &info);
 	return (shell->exit_status);
 }
+*/

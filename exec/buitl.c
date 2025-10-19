@@ -38,8 +38,8 @@ void	execute_builtin_dispatch(t_cmd *cmd, t_shell *shell)
 		builtin_unset(cmd, shell);
 }
 
-int	save_and_redirect(t_cmd *cmd, t_shell *shell
-				, int *stdin_fd, int *stdout_fd)
+int	save_and_redirect(t_cmd *cmd, t_shell *shell,
+		int *stdin_fd, int *stdout_fd)
 {
 	*stdin_fd = dup(STDIN_FILENO);
 	*stdout_fd = dup(STDOUT_FILENO);
