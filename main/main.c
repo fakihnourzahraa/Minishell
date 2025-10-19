@@ -74,8 +74,7 @@ void	cleanup_shell(t_shell *shell)
 	rl_clear_history();
 }
 
-<<<<<<< HEAD
-void mira_execution(t_shell *shell)
+/*void mira_execution(t_shell *shell)
 {
     int cmd_num;
     t_cmd *cmd_chain;
@@ -110,7 +109,7 @@ void mira_execution(t_shell *shell)
             execute_single(shell, cmd_chain);
         }
     }
-=======
+}*/
 int	main_loop(t_shell *shell)
 {
 	char	*input;
@@ -154,8 +153,8 @@ int	main_loop(t_shell *shell)
 		free(input);
 	}
 	return (shell->exit_status);
->>>>>>> ed47752448a758e0a7afa5611564b10256ccfb83
 }
+
 
 int	main(int argc, char **argv, char **envp)
 {
