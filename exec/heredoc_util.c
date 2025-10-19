@@ -69,8 +69,6 @@ void	heredoc_child(int write_fd, char **delims, int count, t_shell *shell)
 	while (1)
 	{
 		line = readline("> ");
-		//if (!line)
-		//	handle_eof(write_fd, delims, idx, count);
 		if (!line)
 		{
 			new_idx = handle_eof(delims, idx, count);
