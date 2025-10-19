@@ -36,12 +36,18 @@ static void	write_expanded_line(int write_fd, char *line, t_shell *shell)
 	free(expanded);
 }
 
-static void	handle_eof(int write_fd, t_shell *shell)
+static int	handle_eof(char **delims, int idx, int count)
 {
-	(void)shell;
-	g_signal = -1;
-	close(write_fd);
-	exit(0);
+	ft_putstr_fd("bash: warning: here-document at line 1 delimited by end-of-file (wanted `", 2);
+	ft_putstr_fd(delims[idx], 2);
+	ft_putstr_fd("')\n", 2);
+	idx++;
+	if (idx >= count)
+	{
+		g_signal = -1;
+		return (-1);
+	}
+	return (idx);
 }
 
 static void	handle_delimiter_match(char *line, int write_fd, t_shell *shell)
@@ -63,8 +69,19 @@ void	heredoc_child(int write_fd, char **delims, int count, t_shell *shell)
 	while (1)
 	{
 		line = readline("> ");
+		//if (!line)
+		//	handle_eof(write_fd, delims, idx, count);
 		if (!line)
-			handle_eof(write_fd, shell);
+		{
+			new_idx = handle_eof(delims, idx, count);
+			if (new_idx == -1)
+			{
+				close(write_fd);
+				exit(0);
+			}
+			idx = new_idx;
+			continue;
+		}
 		new_idx = check_delimiter(line, delims, idx, count);
 		if (new_idx == -1)
 			handle_delimiter_match(line, write_fd, shell);

@@ -72,6 +72,11 @@ static int	check_command_access(const char *cmd)
 			return (127);
 		return (126);
 	}
+	if (S_ISDIR(st.st_mode))
+	{
+		errno = EISDIR;
+		return (126);
+	}
 	if (access(cmd, X_OK) == -1)
 	{
 		if (errno == EACCES)
@@ -90,7 +95,10 @@ static int	handle_command_path(t_shell *shell, t_cmd *cmd, char **path)
 		access_result = check_command_access(cmd->args[0]);
 		if (access_result == 126)
 		{
-			printf("minishell: %s: Permission denied\n", cmd->args[0]);
+			if (errno == EISDIR)
+				printf("bash: %s: Is a directory\n", cmd->args[0]);
+			else
+				printf("minishell: %s: Permission denied\n", cmd->args[0]);
 			shell->exit_status = 126;
 			return (1);
 		}

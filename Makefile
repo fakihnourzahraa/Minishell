@@ -13,7 +13,7 @@ LIBFT_SRCS = libft/ft_isalpha.c libft/ft_isdigit.c libft/ft_isalnum.c libft/ft_i
        libft/ft_strmapi.c libft/ft_striteri.c libft/ft_putchar_fd.c \
        libft/ft_putstr_fd.c libft/ft_putendl_fd.c libft/ft_putnbr_fd.c\
        libft/ft_strcmp.c libft/ft_strndup.c libft/ft_strcat.c libft/ft_strcpy.c\
-       libft/ft_is_numeric.c libft/ft_size_of_arg.c libft/ft_atoll.c
+       libft/ft_is_numeric.c libft/ft_size_of_arg.c libft/ft_atoll.c libft/ft_free.c
 
 SRCS = main/main.c \
        main/signal.c \
