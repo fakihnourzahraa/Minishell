@@ -1,0 +1,78 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   exec_pip.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: miwehbe <miwehbe@student.42beirut.com>     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/10/20 22:51:45 by miwehbe           #+#    #+#             */
+/*   Updated: 2025/10/20 22:51:45 by miwehbe          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "exec.h"
+
+static int	handle_command_not_found(t_shell *shell, t_cmd *cmd, t_pipe_info *info)
+{
+	pid_t	pid;
+
+	ft_putstr_fd("minishell: ", 2);
+	ft_putstr_fd(cmd->args[0], 2);
+	ft_putstr_fd(": command not found\n", 2);
+	pid = fork();
+	if (pid < 0)
+	{
+		perror("fork");
+		return (-1);
+	}
+	else if (pid == 0)
+	{
+		signals_child();
+		setup_cmd_fds(cmd, info, shell);
+		cleanup_pipeline_child(shell);
+		exit(127);
+	}
+	else
+	{
+		cmd->pid = pid;
+		return (pid);
+	}
+}
+
+static int	fork_and_execute(t_shell *shell, t_cmd *cmd, t_pipe_info *info)
+{
+	pid_t	pid;
+
+	pid = fork();
+	if (pid < 0)
+	{
+		perror("fork");
+		if (cmd->path)
+		{
+			free(cmd->path);
+			cmd->path = NULL;
+		}
+		return (-1);
+	}
+	else if (pid == 0)
+	{
+		executes_child_process(shell, cmd, info);
+		exit(1);
+	}
+	else
+	{
+		cmd->pid = pid;
+		return (pid);
+	}
+}
+
+int	execute_cmd_in_pipeline(t_shell *shell, t_cmd *cmd, t_pipe_info *info)
+{
+	if (cmd->builtin == NOT_BUILTIN && !ft_strchr(cmd->args[0], '/'))
+	{
+		cmd->path = get_cmd_path(cmd->args[0], shell);
+		if (!cmd->path)
+			return (handle_command_not_found(shell, cmd, info));
+	}
+	return (fork_and_execute(shell, cmd, info));
+}

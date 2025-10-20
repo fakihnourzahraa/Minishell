@@ -24,11 +24,10 @@ static int	process_heredoc_redir(t_redir *redir, char **heredoc_delimiters,
 	return (0);
 }
 
-static int	process_cmd_heredocs(t_cmd *current, t_shell *shell)
+static int	collect_cmd_heredoc_delimiters(t_cmd *current, 
+		char **heredoc_delimiters)
 {
-	char	*heredoc_delimiters[100];
 	int		heredoc_count;
-	int		heredoc_fd;
 	t_redir	*redir;
 
 	heredoc_count = 0;
@@ -42,6 +41,19 @@ static int	process_cmd_heredocs(t_cmd *current, t_shell *shell)
 			return (-1);
 		redir = redir->next;
 	}
+	return (heredoc_count);
+}
+
+static int	process_cmd_heredocs(t_cmd *current, t_shell *shell)
+{
+	char	*heredoc_delimiters[100];
+	int		heredoc_count;
+	int		heredoc_fd;
+
+	heredoc_count = collect_cmd_heredoc_delimiters(current,
+			heredoc_delimiters);
+	if (heredoc_count == -1)
+		return (-1);
 	if (heredoc_count > 0)
 	{
 		heredoc_fd = run_multiple_heredocs(heredoc_delimiters,

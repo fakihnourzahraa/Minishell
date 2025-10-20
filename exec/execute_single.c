@@ -13,10 +13,24 @@
 #include "exec.h"
 #include <sys/stat.h>
 
+static void	execute_child_and_wait(t_shell *shell, t_cmd *cmd, pid_t pid)
+{
+	int	status;
+
+	if (pid == 0)
+		exec_external_child(shell, cmd);
+	signal(SIGINT, SIG_IGN);
+	signal(SIGQUIT, SIG_IGN);
+	waitpid(pid, &status, 0);
+	signals_prompt();
+	free(cmd->path);
+	cmd->path = NULL;
+	wait_child(shell, status);
+}
+
 static int	execute_external_command(t_shell *shell, t_cmd *cmd)
 {
 	pid_t	pid;
-	int		status;
 	char	*path;
 
 	if (handle_command_path(shell, cmd, &path))
@@ -30,16 +44,27 @@ static int	execute_external_command(t_shell *shell, t_cmd *cmd)
 		cmd->path = NULL;
 		return (1);
 	}
-	if (pid == 0)
-		exec_external_child(shell, cmd);
-	signal(SIGINT, SIG_IGN);
-	signal(SIGQUIT, SIG_IGN);
-	waitpid(pid, &status, 0);
-	signals_prompt();
-	free(cmd->path);
-	cmd->path = NULL;
-	wait_child(shell, status);
+	execute_child_and_wait(shell, cmd, pid);
 	return (1);
+}
+
+static void	builtin_child_process(t_shell *shell, t_cmd *cmd)
+{
+	signal(SIGINT, SIG_DFL);
+	signal(SIGQUIT, SIG_DFL);
+	if (process_heredocs(cmd, shell) == -1)
+	{
+		cleanup_child_process(shell);
+		exit(1);
+	}
+	if (apply_redirections(cmd, shell) == -1)
+	{
+		cleanup_child_process(shell);
+		exit(1);
+	}
+	execute_builtin_dispatch(cmd, shell);
+	cleanup_child_process(shell);
+	exit(shell->exit_status);
 }
 
 static int	execute_builtin_with_redirect(t_shell *shell, t_cmd *cmd)
@@ -51,56 +76,10 @@ static int	execute_builtin_with_redirect(t_shell *shell, t_cmd *cmd)
 	if (pid < 0)
 		return (perror("fork"), 1);
 	if (pid == 0)
-	{
-		signal(SIGINT, SIG_DFL);
-		signal(SIGQUIT, SIG_DFL);
-		if (process_heredocs(cmd, shell) == -1)
-		{
-			cleanup_child_process(shell);
-			exit(1);
-		}
-		if (apply_redirections(cmd, shell) == -1)
-		{
-			cleanup_child_process(shell);
-			exit(1);
-		}
-		execute_builtin_dispatch(cmd, shell);
-		cleanup_child_process(shell);
-		exit(shell->exit_status);
-	}
+		builtin_child_process(shell, cmd);
 	waitpid(pid, &status, 0);
 	wait_child(shell, status);
 	return (1);
-}
-
-int	process_heredocs(t_cmd *cmd, t_shell *shell)
-{
-	t_redir	*redir;
-	char	*heredoc_delimiters[100];
-	int		heredoc_count;
-	int		heredoc_fd;
-
-	heredoc_count = 0;
-	redir = cmd->rd;
-	while (redir && heredoc_count < 100)
-	{
-		if (redir->type == R_HEREDOC)
-		{
-			if (!redir->s || ft_strlen(redir->s) == 0)
-				return (-1);
-			heredoc_delimiters[heredoc_count++] = redir->s;
-		}
-		redir = redir->next;
-	}
-	if (heredoc_count > 0)
-	{
-		heredoc_fd = run_multiple_heredocs(heredoc_delimiters,
-				heredoc_count, shell);
-		if (heredoc_fd == -1)
-			return (-1);
-		cmd->i_fd = heredoc_fd;
-	}
-	return (0);
 }
 
 int	execute_single(t_shell *shell, t_cmd *cmd)

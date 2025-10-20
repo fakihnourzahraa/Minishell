@@ -29,15 +29,8 @@ void	close_unused_pipes(int **pipes, int pipe_count, int current_cmd)
 	}
 }
 
-static void	execute_child_process(t_shell *shell, t_cmd *cmd, t_pipe_info *info)
+static void	handle_child_command(t_shell *shell, t_cmd *cmd)
 {
-	signals_child();
-	setup_cmd_fds(cmd, info, shell);
-	if (is_redirect_only_command(cmd))
-	{
-		cleanup_pipeline_child(shell);
-		exit(0);
-	}
 	if (cmd->builtin != NOT_BUILTIN)
 	{
 		execute_builtin_dispatch(cmd, shell);
@@ -60,60 +53,16 @@ static void	execute_child_process(t_shell *shell, t_cmd *cmd, t_pipe_info *info)
 	}
 }
 
-int	execute_cmd_in_pipeline(t_shell *shell, t_cmd *cmd, t_pipe_info *info)
+void	executes_child_process(t_shell *shell, t_cmd *cmd, t_pipe_info *info)
 {
-	pid_t	pid;
-	if (cmd->builtin == NOT_BUILTIN && !ft_strchr(cmd->args[0], '/'))
+	signals_child();
+	setup_cmd_fds(cmd, info, shell);
+	if (is_redirect_only_command(cmd))
 	{
-		cmd->path = get_cmd_path(cmd->args[0], shell);
-		if (!cmd->path)
-		{
-			ft_putstr_fd("minishell: ", 2);
-			ft_putstr_fd(cmd->args[0], 2);
-			ft_putstr_fd(": command not found\n", 2);
-			
-			pid = fork();
-			if (pid < 0)
-			{
-				perror("fork");
-				return (-1);
-			}
-			else if (pid == 0)
-			{
-				signals_child();
-				setup_cmd_fds(cmd, info, shell);
-				cleanup_pipeline_child(shell);
-				exit(127);
-			}
-			else
-			{
-				cmd->pid = pid;
-				return (pid);
-			}
-		}
+		cleanup_pipeline_child(shell);
+		exit(0);
 	}
-	
-	pid = fork();
-	if (pid < 0)
-	{
-		perror("fork");
-		if (cmd->path)
-		{
-			free(cmd->path);
-			cmd->path = NULL;
-		}
-		return (-1);
-	}
-	else if (pid == 0)
-	{
-		execute_child_process(shell, cmd, info);
-		exit(1);
-	}
-	else
-	{
-		cmd->pid = pid;
-		return (pid);
-	}
+	handle_child_command(shell, cmd);
 }
 
 void	connect_pipes(int *input_fd, int *output_fd, t_pipe_info *info)

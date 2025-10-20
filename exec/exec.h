@@ -86,5 +86,7 @@ int	apply_output_redirections(t_cmd *cmd);
 int	save_std_fds(int *saved_stdin, int *saved_stdout);
 void	cleanup_and_wait(t_shell *shell, t_cmd *cmds, t_pipe_info *info);
 int	execute_all_commands(t_shell *shell, t_cmd *cmds, t_pipe_info *info);
+void	executes_child_process(t_shell *shell, t_cmd *cmd, t_pipe_info *info);
+void	handle_file_error(char *filename);
 
 #endif

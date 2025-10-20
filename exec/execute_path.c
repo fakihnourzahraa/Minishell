@@ -51,7 +51,6 @@ static char	*check_cmd_with_slash(const char *cmd)
 	}
 	return (NULL);
 }
-// we check if it has / than it maybe the full path
 
 static char	*search_in_paths(char **paths, const char *cmd)
 {
@@ -73,7 +72,6 @@ static char	*search_in_paths(char **paths, const char *cmd)
 	}
 	return (NULL);
 }
-// check for all executable paths
 
 char	*get_cmd_path(const char *cmd, t_shell *shell)
 {
