@@ -18,8 +18,8 @@
 # include "../builtins/builtin.h"
 # include "../env/env.h"
 # include "../main/main.h"
-# include <fcntl.h>
 # include "../expansion/expansion.h"
+# include <fcntl.h>
 
 typedef struct s_pipe_info
 {
@@ -31,8 +31,8 @@ typedef struct s_pipe_info
 int		is_builtin(char *cmd);
 int		needs_parent_execution(int builtin);
 void	execute_builtin_dispatch(t_cmd *cmd, t_shell *shell);
-int		save_and_redirect(t_cmd *cmd, t_shell *shell, int *stdin_fd,
-			int *stdout_fd);
+int		save_and_redirect(t_cmd *cmd, t_shell *shell,
+			int *stdin_fd, int *stdout_fd);
 int		execute_with_redirect_parent(t_cmd *cmd, t_shell *shell);
 int		execute_with_redirect_child(t_cmd *cmd, t_shell *shell);
 int		execute_builtin(t_cmd *cmd, t_shell *shell);
@@ -75,17 +75,17 @@ void	wait_child(t_shell *shell, int status);
 char	**prepare_child_execution(t_shell *shell, t_cmd *cmd);
 void	exec_external_child(t_shell *shell, t_cmd *cmd);
 int		check_command_access(const char *cmd);
-int	handle_absolute_path(t_shell *shell, t_cmd *cmd);
-int	handle_command_path(t_shell *shell, t_cmd *cmd, char **path);
+int		handle_absolute_path(t_shell *shell, t_cmd *cmd);
+int		handle_command_path(t_shell *shell, t_cmd *cmd, char **path);
 bool	is_valid_var_name(char *str, int len);
-int	handle_variable_assignment(t_shell *shell, t_cmd *cmd);
-int	handle_in_redir(t_shell *shell, t_redir *redir);
-int	handle_out_redir(t_redir *redir);
-int	handle_append_redir(t_redir *redir);
-int	apply_output_redirections(t_cmd *cmd);
-int	save_std_fds(int *saved_stdin, int *saved_stdout);
+int		handle_variable_assignment(t_shell *shell, t_cmd *cmd);
+int		handle_in_redir(t_shell *shell, t_redir *redir);
+int		handle_out_redir(t_redir *redir);
+int		handle_append_redir(t_redir *redir);
+int		apply_output_redirections(t_cmd *cmd);
+int		save_std_fds(int *saved_stdin, int *saved_stdout);
 void	cleanup_and_wait(t_shell *shell, t_cmd *cmds, t_pipe_info *info);
-int	execute_all_commands(t_shell *shell, t_cmd *cmds, t_pipe_info *info);
+int		execute_all_commands(t_shell *shell, t_cmd *cmds, t_pipe_info *info);
 void	executes_child_process(t_shell *shell, t_cmd *cmd, t_pipe_info *info);
 void	handle_file_error(char *filename);
 
