@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "exec.h"
+#include <sys/stat.h>
 
 static char	*get_path_from_env(t_shell *shell)
 {
@@ -41,10 +42,14 @@ static char	*join_path_cmd(const char *path, const char *cmd)
 
 static char	*check_cmd_with_slash(const char *cmd)
 {
+	struct stat	st;
+
 	if (!cmd)
 		return (NULL);
 	if (ft_strchr(cmd, '/'))
 	{
+		if (stat(cmd, &st) == 0 && S_ISDIR(st.st_mode))
+			return (NULL);
 		if (access(cmd, X_OK) == 0)
 			return (ft_strdup(cmd));
 		return (NULL);

@@ -66,14 +66,14 @@ void	exec_external_with_env(t_shell *shell, t_cmd *cmd, char *path)
 	envp_array = env_to_envp(shell->env);
 	if (!envp_array)
 	{
-		free(path);
+		//free(path);
 		cleanup_pipeline_child(shell);
 		exit(1);
 	}
 	execve(path, cmd->args, envp_array);
-	perror("execve");
+	//perror("execve");
 	free_envp(envp_array);
-	free(path);
+	//free(path);
 	cleanup_pipeline_child(shell);
 	exit(127);
 }

@@ -22,7 +22,7 @@ int	handle_absolute_path(t_shell *shell, t_cmd *cmd)
 	if (access_result == 126)
 	{
 		if (errno == EISDIR)
-			printf("bash: %s: Is a directory\n", cmd->args[0]);
+			printf("minishell: %s: Is a directory\n", cmd->args[0]);
 		else
 			printf("minishell: %s: Permission denied\n", cmd->args[0]);
 		shell->exit_status = 126;

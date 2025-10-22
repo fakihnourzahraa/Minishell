@@ -76,3 +76,11 @@ int	execute_cmd_in_pipeline(t_shell *shell, t_cmd *cmd, t_pipe_info *info)
 	}
 	return (fork_and_execute(shell, cmd, info));
 }
+
+void	connect_pipes(int *input_fd, int *output_fd, t_pipe_info *info)
+{
+	if (*input_fd == STDIN_FILENO && info->cmd_index > 0)
+		*input_fd = info->pipes[info->cmd_index - 1][0];
+	if (*output_fd == STDOUT_FILENO && info->cmd_index < info->cmd_count - 1)
+		*output_fd = info->pipes[info->cmd_index][1];
+}

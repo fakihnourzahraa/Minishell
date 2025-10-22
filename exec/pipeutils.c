@@ -39,7 +39,6 @@ static void	handle_child_command(t_shell *shell, t_cmd *cmd)
 	}
 	else
 	{
-		cmd->path = get_cmd_path(cmd->args[0], shell);
 		if (!cmd->path)
 		{
 			ft_putstr_fd("minishell: ", 2);
@@ -53,9 +52,38 @@ static void	handle_child_command(t_shell *shell, t_cmd *cmd)
 	}
 }
 
+static void	check_path_errors(t_shell *shell, t_cmd *cmd)
+{
+	struct stat	st;
+
+	if (cmd->builtin == NOT_BUILTIN && !cmd->path)
+	{
+		if (ft_strchr(cmd->args[0], '/'))
+		{
+			if (stat(cmd->args[0], &st) == -1)
+			{
+				ft_putstr_fd("minishell: ", 2);
+				ft_putstr_fd(cmd->args[0], 2);
+				ft_putstr_fd(": No such file or directory\n", 2);
+				cleanup_pipeline_child(shell);
+				exit(127);
+			}
+			if (S_ISDIR(st.st_mode))
+			{
+				ft_putstr_fd("minishell: ", 2);
+				ft_putstr_fd(cmd->args[0], 2);
+				ft_putstr_fd(": Is a directory\n", 2);
+				cleanup_pipeline_child(shell);
+				exit(126);
+			}
+		}
+	}
+}
+
 void	executes_child_process(t_shell *shell, t_cmd *cmd, t_pipe_info *info)
 {
 	signals_child();
+	check_path_errors(shell, cmd);
 	setup_cmd_fds(cmd, info, shell);
 	if (is_redirect_only_command(cmd))
 	{
@@ -63,12 +91,4 @@ void	executes_child_process(t_shell *shell, t_cmd *cmd, t_pipe_info *info)
 		exit(0);
 	}
 	handle_child_command(shell, cmd);
-}
-
-void	connect_pipes(int *input_fd, int *output_fd, t_pipe_info *info)
-{
-	if (*input_fd == STDIN_FILENO && info->cmd_index > 0)
-		*input_fd = info->pipes[info->cmd_index - 1][0];
-	if (*output_fd == STDOUT_FILENO && info->cmd_index < info->cmd_count - 1)
-		*output_fd = info->pipes[info->cmd_index][1];
 }

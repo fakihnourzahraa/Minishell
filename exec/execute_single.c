@@ -94,12 +94,30 @@ int	execute_single(t_shell *shell, t_cmd *cmd)
 		return (1);
 	if (cmd->builtin != NOT_BUILTIN)
 	{
-		if (cmd->rd)
-			return (execute_builtin_with_redirect(shell, cmd));
-		execute_builtin(cmd, shell);
-		return (1);
+    	if (cmd->rd)
+    	{
+        	if (needs_parent_execution(cmd->builtin))
+        	{
+            	if (process_heredocs(cmd, shell) == -1)
+                	return (1);
+            	return (execute_with_redirect_parent(cmd, shell));
+        	}
+        	else
+            	return (execute_builtin_with_redirect(shell, cmd));
+    	}
+    	execute_builtin(cmd, shell);
+    	return (1);
 	}
 	if (cmd->rd && process_heredocs(cmd, shell) == -1)
 		return (1);
 	return (execute_external_command(shell, cmd));
 }
+
+
+/*if (cmd->builtin != NOT_BUILTIN)
+{
+	if (cmd->rd)
+		return (execute_builtin_with_redirect(shell, cmd));
+	execute_builtin(cmd, shell);
+	return (1);
+}*/
