@@ -40,4 +40,6 @@ void	handle_expansion(t_shell *shell, t_expand_data *data);
 char	set_a(char a, char s);
 char	*trim_expand(t_shell *shell, int i, int old_len, char *s);
 char	*expand(t_shell *shell, char *s, bool h);
+void	write_expanded_line(int write_fd, char *line, t_shell *shell);
+
 #endif

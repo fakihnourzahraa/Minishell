@@ -48,6 +48,7 @@ SRCS = main/main.c \
 	   exec/exec_pip.c\
 	   exec/input_redr.c\
 	   exec/output_redr.c\
+	   exec/some_utils.c\
        env/envir.c \
        env/envir2.c \
        env/envir3.c \

@@ -71,3 +71,15 @@ void	handle_expansion(t_shell *shell, t_expand_data *data)
 				data->old_len, data->new_var);
 	}
 }
+
+void	write_expanded_line(int write_fd, char *line, t_shell *shell)
+{
+	char	*b;
+	char	*expanded;
+
+	b = ft_strdup(line);
+	expanded = expand(shell, b, true);
+	write(write_fd, expanded, ft_strlen(expanded));
+	write(write_fd, "\n", 1);
+	free(expanded);
+}

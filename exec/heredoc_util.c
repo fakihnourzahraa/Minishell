@@ -24,18 +24,6 @@ static int	check_delimiter(char *line, char **delims, int idx, int count)
 	return (idx);
 }
 
-static void	write_expanded_line(int write_fd, char *line, t_shell *shell)
-{
-	char	*b;
-	char	*expanded;
-
-	b = ft_strdup(line);
-	expanded = expand(shell, b, true);
-	write(write_fd, expanded, ft_strlen(expanded));
-	write(write_fd, "\n", 1);
-	free(expanded);
-}
-
 static int	process_line_or_eof(char *line, char **delims, int idx, int count)
 {
 	int	new_idx;
@@ -57,12 +45,13 @@ static int	process_line_or_eof(char *line, char **delims, int idx, int count)
 	return (new_idx);
 }
 
-static void	handle_valid_line(char *line, int write_fd, int *idx, 
-		char **delims, int count, t_shell *shell)
+static void	handle_valid_line(char *line, int write_fd,
+		t_heredoc_data *data, t_shell *shell)
 {
 	int	new_idx;
 
-	new_idx = process_line_or_eof(line, delims, *idx, count);
+	new_idx = process_line_or_eof(line, data->delims, *(data->idx),
+			data->count);
 	if (new_idx == -1)
 	{
 		free(line);
@@ -70,18 +59,61 @@ static void	handle_valid_line(char *line, int write_fd, int *idx,
 		close(write_fd);
 		exit(0);
 	}
-	if (new_idx == *idx && *idx == count - 1)
+	if (new_idx == *(data->idx) && *(data->idx) == data->count - 1)
 		write_expanded_line(write_fd, line, shell);
-	*idx = new_idx;
+	*(data->idx) = new_idx;
+}
+
+static void	process_heredoc_line(char *line, int write_fd,
+		t_heredoc_data *data, t_shell *shell)
+{
+	int	new_idx;
+
+	new_idx = process_line_or_eof(line, data->delims, *(data->idx),
+			data->count);
+	if (new_idx == -1 && !line)
+	{
+		close(write_fd);
+		exit(0);
+	}
+	if (!line)
+	{
+		*(data->idx) = new_idx;
+		return ;
+	}
+	handle_valid_line(line, write_fd, data, shell);
+	free(line);
 }
 
 void	heredoc_child(int write_fd, char **delims, int count, t_shell *shell)
 {
+	char			*line;
+	int				idx;
+	t_heredoc_data	data;
+
+	idx = 0;
+	data.delims = delims;
+	data.count = count;
+	data.idx = &idx;
+	signals_child_heredoc();
+	while (1)
+	{
+		line = readline("> ");
+		process_heredoc_line(line, write_fd, &data, shell);
+	}
+}
+
+/*void	heredoc_child(int write_fd, char **delims, int count, t_shell *shell)
+{
 	char	*line;
 	int		idx;
 	int		new_idx;
+	t_heredoc_data	data;
 
 	idx = 0;
+	data.delims = delims;
+	data.count = count;
+	data.idx = &idx;
 	signals_child_heredoc();
 	while (1)
 	{
@@ -97,7 +129,18 @@ void	heredoc_child(int write_fd, char **delims, int count, t_shell *shell)
 			idx = new_idx;
 			continue;
 		}
-		handle_valid_line(line, write_fd, &idx, delims, count, shell);
+		handle_valid_line(line, write_fd, &data, shell);
 		free(line);
 	}
 }
+static void	write_expanded_line(int write_fd, char *line, t_shell *shell)
+{
+	char	*b;
+	char	*expanded;
+
+	b = ft_strdup(line);
+	expanded = expand(shell, b, true);
+	write(write_fd, expanded, ft_strlen(expanded));
+	write(write_fd, "\n", 1);
+	free(expanded);
+}*/

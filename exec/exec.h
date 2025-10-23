@@ -30,6 +30,13 @@ typedef struct s_pipe_info
 	int	cmd_count;
 }	t_pipe_info;
 
+typedef struct s_heredoc_data
+{
+	char	**delims;
+	int		count;
+	int		*idx;
+}	t_heredoc_data;
+
 int		is_builtin(char *cmd);
 int		needs_parent_execution(int builtin);
 void	execute_builtin_dispatch(t_cmd *cmd, t_shell *shell);
