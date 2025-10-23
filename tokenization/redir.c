@@ -6,7 +6,7 @@
 /*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/10 11:10:26 by nour              #+#    #+#             */
-/*   Updated: 2025/10/17 13:48:55 by nour             ###   ########.fr       */
+/*   Updated: 2025/10/23 09:43:55 by nour             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,7 @@ t_redir	*init_redir(void)
 	r->s = NULL;
 	r->type = R_EMPTY;
 	r->next = NULL;
+	r->quotes = false;
 	return (r);
 }
 
@@ -67,6 +68,7 @@ t_redir	*init_for_r(t_redir *r, t_token *t)
 		r->type = R_APPEND;
 	else if (t->type == HEREDOC)
 		r->type = R_HEREDOC;
+	r->quotes = false;
 	return (r);
 }
 
@@ -81,9 +83,15 @@ void	help(t_token **current, char **a, char **b, t_redir **r)
 		if ((*current)->type == EMPTY)
 			*a = ft_strdup("");
 		else if ((*current)->quotes == 1)
+		{
 			*a = ft_strtrim((*current)->s, "'");
+			(*r)->quotes = true;
+		}
 		else if ((*current)->quotes == 2)
+		{
+			(*r)->quotes = true;
 			*a = ft_strtrim((*current)->s, "\"");
+		}
 		else
 			*a = ft_strdup((*current)->s);
 		*b = (*r)->s;
@@ -112,9 +120,15 @@ void	fill_r(t_token *t, t_cmd *cmd)
 	if (current->type == EMPTY)
 		r->s = ft_strdup("");
 	else if (current->quotes == 1)
+	{
 		r->s = ft_strtrim(current->s, "'");
+		r->quotes = true;
+	}
 	else if (current->quotes == 2)
+	{
+		r->quotes = true;
 		r->s = ft_strtrim(current->s, "\"");
+	}
 	else
 		r->s = ft_strdup(current->s);
 	help(&current, &a, &b, &r);

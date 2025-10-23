@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/28 16:10:17 by nour              #+#    #+#             */
-/*   Updated: 2025/10/18 16:40:49 by nfakih           ###   ########.fr       */
+/*   Updated: 2025/10/23 13:25:05 by nour             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,6 +103,7 @@ typedef struct s_redir
 	t_r_type	type;
 	char		*s;
 	int			fd;
+	bool		quotes;
 	t_redir		*next;
 }	t_redir;
 // type: input, output, append, or heredoc
@@ -132,6 +133,7 @@ typedef struct s_shell
 	char	*cwd;
 	int		*sti;
 	int		*sto;
+	bool	*quotes;
 }	t_shell;
 
 // in string immediately from read line
