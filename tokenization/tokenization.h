@@ -6,7 +6,7 @@
 /*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/28 16:10:17 by nour              #+#    #+#             */
-/*   Updated: 2025/10/17 13:34:33 by nour             ###   ########.fr       */
+/*   Updated: 2025/10/23 13:49:05 by nour             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,6 @@ void		add_redir(t_cmd *cmd, t_redir *c);
 int			set_single(int n, int i, char a, t_token *t);
 int			set_double(int n, char a, t_token *t, int i);
 int			split_q(char *a, t_shell *shell, int i);
-void		TT(t_token_type type);
-void		print_toke(t_token *token);
 void		add_cmd(t_shell *shell, t_cmd *cmd);
 t_cmd		*init_cmd(t_token *t);
 int			word_count_p(t_token *token);
@@ -39,8 +37,5 @@ int			split_q(char *a, t_shell *shell, int i);
 int			word_len_cmds(char *a, int i);
 int			word_len(char *a, int i);
 void		empty_token(char *a, t_shell *shell, int i);
-void		debug_parse_input(char *input, t_shell *shell);
-void		debug_print_cmds(t_cmd *cmds);
-void		debug_print_tokens(t_token *tokens);
 
 #endif

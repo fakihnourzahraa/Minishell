@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/16 16:30:14 by nfakih            #+#    #+#             */
-/*   Updated: 2025/10/18 16:21:39 by nfakih           ###   ########.fr       */
+/*   Updated: 2025/10/23 19:48:41 by nour             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ void	init_shell(t_shell *shell, char **envp)
 	shell->cwd = NULL;
 	shell->sti = NULL;
 	shell->sto = NULL;
+	shell->quotes = NULL;
 	update_shlvl_on_start(shell);
 }
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 14:33:35 by miwehbe           #+#    #+#             */
-/*   Updated: 2025/10/18 16:10:16 by nfakih           ###   ########.fr       */
+/*   Updated: 2025/10/23 20:01:38 by nour             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,11 +26,13 @@ int	run_multiple_heredocs(char **delimiters, int count, t_shell *shell)
     return (run_heredoc_internal(delimiters, count, shell));
 }
 
-static int	collect_heredoc_delimiters(t_cmd *cmd, char **heredoc_delimiters)
+static int	collect_heredoc_delimiters(t_cmd *cmd, char **heredoc_delimiters, t_shell *shell)
 {
 	t_redir	*redir;
 	int		heredoc_count;
+	bool	*quotes;
 
+	quotes = malloc(sizeof(bool) * 101);
 	heredoc_count = 0;
 	redir = cmd->rd;
 	while (redir && heredoc_count < 100)
@@ -39,10 +41,13 @@ static int	collect_heredoc_delimiters(t_cmd *cmd, char **heredoc_delimiters)
 		{
 			if (!redir->s || ft_strlen(redir->s) == 0)
 				return (-1);
-			heredoc_delimiters[heredoc_count++] = redir->s;
+			heredoc_delimiters[heredoc_count] = redir->s;
+			quotes[heredoc_count] = redir->quotes;
+			heredoc_count++;
 		}
 		redir = redir->next;
 	}
+	shell->quotes = quotes;
 	return (heredoc_count);
 }
 
@@ -52,7 +57,18 @@ int	process_heredocs(t_cmd *cmd, t_shell *shell)
 	int		heredoc_count;
 	int		heredoc_fd;
 
-	heredoc_count = collect_heredoc_delimiters(cmd, heredoc_delimiters);
+	heredoc_count = collect_heredoc_delimiters(cmd, heredoc_delimiters, shell);
+	// int i = 0;
+	// if (shell)
+	// 	printf("SHELL");
+	// if (shell->quotes)
+	// 	printf("QUOTES");
+	// printf("%d is %d\n", i, shell->quotes[i] ? 1 : 0);
+	// 	i++;
+	// 		printf("%d is %d\n", i, shell->quotes[i] ? 1 : 0);
+	// 	i++;
+	// 		printf("%d is %d\n", i, shell->quotes[i] ? 1 : 0);
+	// 	i++;
 	if (heredoc_count == -1)
 		return (-1);
 	if (heredoc_count > 0)
@@ -63,5 +79,7 @@ int	process_heredocs(t_cmd *cmd, t_shell *shell)
 			return (-1);
 		cmd->i_fd = heredoc_fd;
 	}
+	free(shell->quotes);
+	shell->quotes = NULL;
 	return (0);
 }
