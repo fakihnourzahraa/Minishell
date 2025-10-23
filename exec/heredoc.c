@@ -6,7 +6,7 @@
 /*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 14:33:35 by miwehbe           #+#    #+#             */
-/*   Updated: 2025/10/23 20:01:38 by nour             ###   ########.fr       */
+/*   Updated: 2025/10/23 20:03:17 by nour             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,17 +58,6 @@ int	process_heredocs(t_cmd *cmd, t_shell *shell)
 	int		heredoc_fd;
 
 	heredoc_count = collect_heredoc_delimiters(cmd, heredoc_delimiters, shell);
-	// int i = 0;
-	// if (shell)
-	// 	printf("SHELL");
-	// if (shell->quotes)
-	// 	printf("QUOTES");
-	// printf("%d is %d\n", i, shell->quotes[i] ? 1 : 0);
-	// 	i++;
-	// 		printf("%d is %d\n", i, shell->quotes[i] ? 1 : 0);
-	// 	i++;
-	// 		printf("%d is %d\n", i, shell->quotes[i] ? 1 : 0);
-	// 	i++;
 	if (heredoc_count == -1)
 		return (-1);
 	if (heredoc_count > 0)
