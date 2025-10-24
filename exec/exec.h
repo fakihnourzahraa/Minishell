@@ -20,8 +20,8 @@
 # include "../main/main.h"
 # include "../expansion/expansion.h"
 # include <fcntl.h>
-#include <sys/stat.h>
-#include <sys/types.h>
+# include <sys/stat.h>
+# include <sys/types.h>
 
 typedef struct s_pipe_info
 {

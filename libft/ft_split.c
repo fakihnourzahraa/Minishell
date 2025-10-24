@@ -51,9 +51,8 @@ static char	*copy_word(const char *start, int len)
 	return (word);
 }
 
-static int	extract_word(char const *s, int start, int end, char **result, int *wi)
+static int	extract_word(char **result, int *wi)
 {
-	result[*wi] = copy_word(s + start, end - start);
 	if (!result[*wi])
 	{
 		free_all(result, *wi);
@@ -80,7 +79,8 @@ static int	process_words(char const *s, char c, char **result)
 			start = i;
 			while (s[i] && s[i] != c)
 				i++;
-			if (!extract_word(s, start, i, result, &word_index))
+			result[word_index] = copy_word(s + start, i - start);
+			if (!extract_word(result, &word_index))
 				return (0);
 		}
 	}

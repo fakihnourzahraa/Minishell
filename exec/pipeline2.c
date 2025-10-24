@@ -6,7 +6,7 @@
 /*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/08 12:34:12 by miwehbe           #+#    #+#             */
-/*   Updated: 2025/10/18 15:35:38 by nfakih           ###   ########.fr       */
+/*   Updated: 2025/10/24 13:37:51 by nfakih           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,14 +66,11 @@ void	exec_external_with_env(t_shell *shell, t_cmd *cmd, char *path)
 	envp_array = env_to_envp(shell->env);
 	if (!envp_array)
 	{
-		//free(path);
 		cleanup_pipeline_child(shell);
 		exit(1);
 	}
 	execve(path, cmd->args, envp_array);
-	//perror("execve");
 	free_envp(envp_array);
-	//free(path);
 	cleanup_pipeline_child(shell);
 	exit(127);
 }

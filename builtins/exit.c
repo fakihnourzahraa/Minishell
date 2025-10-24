@@ -75,7 +75,6 @@ void	builtin_exit(t_cmd *cmd, t_shell *shell)
 {
 	int	arg_count;
 
-	//ft_putendl_fd("exit", 1);
 	if (isatty(STDIN_FILENO))
 		ft_putendl_fd("exit", 1);
 	arg_count = ft_size_of_arr(cmd->args);

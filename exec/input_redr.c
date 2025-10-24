@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   input_redr.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/20 23:35:55 by miwehbe           #+#    #+#             */
-/*   Updated: 2025/10/23 13:45:28 by nour             ###   ########.fr       */
+/*   Updated: 2025/10/24 13:38:13 by nfakih           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,6 @@ int	handle_input_redirections(t_cmd *cmd, t_shell *shell)
 		input_fd = cmd->i_fd;
 	else
 		input_fd = STDIN_FILENO;
-		
 	redir = cmd->rd;
 	while (redir)
 	{
@@ -89,11 +88,6 @@ int	handle_input_redirections(t_cmd *cmd, t_shell *shell)
 				close(input_fd);
 			input_fd = handle_redir_in(redir, input_fd);
 		}
-		//else if (redir->type == R_HEREDOC)
-		//{
-			// Skip heredocs since they were already processed
-			// and stored in cmd->i_fd
-		//}
 		redir = redir->next;
 	}
 	return (input_fd);
