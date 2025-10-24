@@ -120,7 +120,7 @@ void debug_print_cmd(t_cmd *cmd, const char *location)
 }
 int	execute_cmd_in_pipeline(t_shell *shell, t_cmd *cmd, t_pipe_info *info)
 {
-	if (cmd->builtin == NOT_BUILTIN && !ft_strchr(cmd->args[0], '/'))
+	if (cmd->builtin == NOT_BUILTIN && cmd->args[0] && !ft_strchr(cmd->args[0], '/'))
 	{
 		cmd->path = get_cmd_path(cmd->args[0], shell);
 		if (!cmd->path)

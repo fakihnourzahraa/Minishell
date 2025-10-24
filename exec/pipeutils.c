@@ -42,7 +42,10 @@ static void	handle_child_command(t_shell *shell, t_cmd *cmd)
 		if (!cmd->path)
 		{
 			ft_putstr_fd("minishell: ", 2);
-			ft_putstr_fd(cmd->args[0], 2);
+			if (cmd->args[0])
+				ft_putstr_fd(cmd->args[0], 2);
+			else
+				ft_putstr_fd("(null)", 2);
 			ft_putstr_fd(": command not found\n", 2);
 			cleanup_pipeline_child(shell);
 			exit(127);
@@ -56,7 +59,7 @@ static void	check_path_errors(t_shell *shell, t_cmd *cmd)
 {
 	struct stat	st;
 
-	if (cmd->builtin == NOT_BUILTIN && !cmd->path)
+	if (cmd->builtin == NOT_BUILTIN && !cmd->path && cmd->args[0])
 	{
 		if (ft_strchr(cmd->args[0], '/'))
 		{
