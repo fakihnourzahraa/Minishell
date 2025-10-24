@@ -6,7 +6,7 @@
 /*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/16 16:30:14 by nfakih            #+#    #+#             */
-/*   Updated: 2025/10/24 12:08:10 by nfakih           ###   ########.fr       */
+/*   Updated: 2025/10/24 12:26:00 by nfakih           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,8 @@ static int	handle_empty_input(t_shell *shell, char *input)
 		return (1);
 	return (0);
 }
-static void execute_check_exit(t_shell *shell, char *input)
+
+static void	execute_check_exit(t_shell *shell, char *input)
 {
 	add_history(input);
 	process_input(shell, input);

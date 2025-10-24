@@ -6,7 +6,7 @@
 /*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/24 11:24:09 by nfakih            #+#    #+#             */
-/*   Updated: 2025/10/24 12:14:18 by nfakih           ###   ########.fr       */
+/*   Updated: 2025/10/24 13:11:02 by nfakih           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,15 +67,10 @@ void	help(t_token **current, char **a, char **b, t_redir **r)
 			break ;
 		if ((*current)->type == EMPTY)
 			*a = ft_strdup("");
-		else if ((*current)->quotes == 1)
+		else if ((*current)->quotes == 1 || (*current)->quotes == 2)
 		{
-			*a = ft_strtrim((*current)->s, "'");
+			*a = ft_strdup((*current)->s);
 			(*r)->quotes = true;
-		}
-		else if ((*current)->quotes == 2)
-		{
-			(*r)->quotes = true;
-			*a = ft_strtrim((*current)->s, "\"");
 		}
 		else
 			*a = ft_strdup((*current)->s);
@@ -104,16 +99,21 @@ void	fill_r(t_token *t, t_cmd *cmd)
 	current = t->next;
 	if (current->type == EMPTY)
 		r->s = ft_strdup("");
-	else if (current->quotes == 1)
+	else if (current->quotes == 1 || current->quotes == 2)
 	{
-		a = ft_strtrim(current->s, "'");
+		r->s = ft_strdup(current->s);
 		r->quotes = true;
 	}
-	else if ((current)->quotes == 2)
-	{
-		r->quotes = true;
-		a = ft_strtrim((current)->s, "\"");
-	}
+	// else if (current->quotes == 1)
+	// {
+	// 	a = ft_strtrim(current->s, "'");
+	// 	r->quotes = true;
+	// }
+	// else if ((current)->quotes == 2)
+	// {
+	// 	r->quotes = true;
+	// 	a = ft_strtrim((current)->s, "\"");
+	// }
 	else
 		r->s = ft_strdup(current->s);
 	help(&current, &a, &b, &r);

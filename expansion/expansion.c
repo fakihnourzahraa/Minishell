@@ -6,7 +6,7 @@
 /*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/02 20:08:42 by nfakih            #+#    #+#             */
-/*   Updated: 2025/10/18 15:58:09 by nfakih           ###   ########.fr       */
+/*   Updated: 2025/10/24 12:48:07 by nfakih           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ void	remove_quotes(t_cmd *current)
 	t_redir	*redir;
 
 	i = 0;
-	if (current->cmd)
+	if (current->cmd && (ft_strcmp(current->cmd, "") == 0))
 		current->cmd = trim(current->cmd);
 	while (current->args && current->args[i])
 	{

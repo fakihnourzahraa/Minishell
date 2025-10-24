@@ -6,7 +6,7 @@
 /*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/18 09:38:17 by miwehbe           #+#    #+#             */
-/*   Updated: 2025/10/24 11:16:13 by nfakih           ###   ########.fr       */
+/*   Updated: 2025/10/24 12:33:30 by nfakih           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,8 @@ static int	process_line_or_eof(char *line, char **delims, int idx, int count)
 
 	if (!line)
 	{
-		ft_putstr_fd("minishell: warning: here-document at line 1 delimited by end-of-file (wanted `", 2);
+		ft_putstr_fd("minishell: warning: here-document", 2);
+		ft_putstr_fd(" at line 1 delimited by end-of-file (wanted `", 2);
 		ft_putstr_fd(delims[idx], 2);
 		ft_putstr_fd("')\n", 2);
 		idx++;

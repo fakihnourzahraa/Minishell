@@ -42,16 +42,11 @@ jnde2: No such file or directory
 ==357920==  main thread stack using the --main-stacksize= flag.
 ==357920==  The main thread stack size used in this run was 8388608.
 
-minishell$ q | a | pwd
-minishell: q: command not found
-minishell: a: command not found
-/home/nfakih/Desktop/git/Minishell
 
-nour@nfakih:~/Desktop/myFiles/42/git/Minishell$ q | a | pwd
-/home/nour/Desktop/myFiles/42/git/Minishell
-Command 'q' not found
-a: command not found
-
+minishell$ ""
+minishell: : Permission denied
+minishell$ echo $?
+126
 
 NOUR:
 
@@ -260,3 +255,14 @@ minishell$
 	 }
 	else
 		r->s = ft_strdup(current->s);
+
+
+minishell$ q | a | pwd
+minishell: q: command not found
+minishell: a: command not found
+/home/nfakih/Desktop/git/Minishell
+
+nour@nfakih:~/Desktop/myFiles/42/git/Minishell$ q | a | pwd
+/home/nour/Desktop/myFiles/42/git/Minishell
+Command 'q' not found
+a: command not found

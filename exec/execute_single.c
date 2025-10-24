@@ -6,7 +6,7 @@
 /*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/01 09:02:13 by miwehbe           #+#    #+#             */
-/*   Updated: 2025/10/18 15:27:33 by nfakih           ###   ########.fr       */
+/*   Updated: 2025/10/24 12:34:36 by nfakih           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,9 +84,7 @@ static int	execute_builtin_with_redirect(t_shell *shell, t_cmd *cmd)
 
 int	execute_single(t_shell *shell, t_cmd *cmd)
 {
-	if (!cmd || !shell)
-		return (0);
-	if (!cmd->cmd || cmd->cmd[0] == '\0')
+	if (!cmd || !shell || !cmd->cmd || cmd->cmd[0] == '\0')
 		return (0);
 	if (!cmd->args || !cmd->args[0])
 		return (0);
@@ -94,25 +92,24 @@ int	execute_single(t_shell *shell, t_cmd *cmd)
 		return (1);
 	if (cmd->builtin != NOT_BUILTIN)
 	{
-    	if (cmd->rd)
-    	{
-        	if (needs_parent_execution(cmd->builtin))
-        	{
-            	if (process_heredocs(cmd, shell) == -1)
-                	return (1);
-            	return (execute_with_redirect_parent(cmd, shell));
-        	}
-        	else
-            	return (execute_builtin_with_redirect(shell, cmd));
-    	}
-    	execute_builtin(cmd, shell);
-    	return (1);
+		if (cmd->rd)
+		{
+			if (needs_parent_execution(cmd->builtin))
+			{
+				if (process_heredocs(cmd, shell) == -1)
+					return (1);
+				return (execute_with_redirect_parent(cmd, shell));
+			}
+			else
+				return (execute_builtin_with_redirect(shell, cmd));
+		}
+		execute_builtin(cmd, shell);
+		return (1);
 	}
 	if (cmd->rd && process_heredocs(cmd, shell) == -1)
 		return (1);
 	return (execute_external_command(shell, cmd));
 }
-
 
 /*if (cmd->builtin != NOT_BUILTIN)
 {

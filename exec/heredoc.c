@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 14:33:35 by miwehbe           #+#    #+#             */
-/*   Updated: 2025/10/23 20:03:17 by nour             ###   ########.fr       */
+/*   Updated: 2025/10/24 12:32:14 by nfakih           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,17 +16,20 @@ extern int	g_signal;
 
 int	run_heredoc(char *delimiter, t_shell *shell)
 {
-    char *delims[2] = { delimiter, NULL };
+	char	*delims[2];
 
-    return (run_heredoc_internal(delims, 1, shell));
+	delims[0] = delimiter;
+	delims[1] = NULL;
+	return (run_heredoc_internal(delims, 1, shell));
 }
 
 int	run_multiple_heredocs(char **delimiters, int count, t_shell *shell)
 {
-    return (run_heredoc_internal(delimiters, count, shell));
+	return (run_heredoc_internal(delimiters, count, shell));
 }
 
-static int	collect_heredoc_delimiters(t_cmd *cmd, char **heredoc_delimiters, t_shell *shell)
+static int	collect_heredoc_delimiters(t_cmd *cmd, char **heredoc_delimiters,
+	t_shell *shell)
 {
 	t_redir	*redir;
 	int		heredoc_count;

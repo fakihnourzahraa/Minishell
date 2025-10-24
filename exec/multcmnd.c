@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   multcmnd.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miwehbe <miwehbe@student.42beirut.com>     +#+  +:+       +#+        */
+/*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/19 22:24:44 by miwehbe           #+#    #+#             */
-/*   Updated: 2025/10/19 22:24:44 by miwehbe          ###   ########.fr       */
+/*   Updated: 2025/10/24 12:27:05 by nfakih           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ static int	process_heredoc_redir(t_redir *redir, char **heredoc_delimiters,
 	return (0);
 }
 
-static int	collect_cmd_heredoc_delimiters(t_cmd *current, 
+static int	collect_cmd_heredoc_delimiters(t_cmd *current,
 		char **heredoc_delimiters)
 {
 	int		heredoc_count;

@@ -12,11 +12,6 @@
 
 #include "tokenization.h"
 
-// minishell$ echo "hi " "" "" "" p
-// hi     p
-// minishell$ echo "hi """""""p
-// hi     p
-
 int	set_token(t_shell *shell, char *a, int i)
 {
 	t_token	*n;
