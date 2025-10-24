@@ -6,7 +6,7 @@
 /*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/18 16:04:29 by nfakih            #+#    #+#             */
-/*   Updated: 2025/10/24 12:36:59 by nfakih           ###   ########.fr       */
+/*   Updated: 2025/10/24 13:26:30 by nfakih           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ void	cleanup_pipeline_resources(t_shell *shell)
 	}
 	if (shell->quotes)
 		free(shell->quotes);
+	shell->quotes = NULL;
 }
 
 void	cleanup_in_shell(t_shell *shell)

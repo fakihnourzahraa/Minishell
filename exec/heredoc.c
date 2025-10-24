@@ -6,7 +6,7 @@
 /*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 14:33:35 by miwehbe           #+#    #+#             */
-/*   Updated: 2025/10/24 12:32:14 by nfakih           ###   ########.fr       */
+/*   Updated: 2025/10/24 13:32:11 by nfakih           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,11 @@ static int	collect_heredoc_delimiters(t_cmd *cmd, char **heredoc_delimiters,
 		if (redir->type == R_HEREDOC)
 		{
 			if (!redir->s || ft_strlen(redir->s) == 0)
+			{
+				free(quotes);
+				shell->quotes = NULL;
 				return (-1);
+			}
 			heredoc_delimiters[heredoc_count] = redir->s;
 			quotes[heredoc_count] = redir->quotes;
 			heredoc_count++;
@@ -68,7 +72,11 @@ int	process_heredocs(t_cmd *cmd, t_shell *shell)
 		heredoc_fd = run_multiple_heredocs(heredoc_delimiters,
 				heredoc_count, shell);
 		if (heredoc_fd == -1)
+		{
+			free(shell->quotes);
+			shell->quotes = NULL;
 			return (-1);
+		}
 		cmd->i_fd = heredoc_fd;
 	}
 	free(shell->quotes);
