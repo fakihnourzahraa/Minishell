@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc_util.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/18 09:38:17 by miwehbe           #+#    #+#             */
-/*   Updated: 2025/10/23 19:46:01 by nour             ###   ########.fr       */
+/*   Updated: 2025/10/24 11:16:13 by nfakih           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ static void	handle_valid_line(char *line, int write_fd,
 	}
 	if (new_idx == *(data->idx) && *(data->idx) == data->count - 1)
 	{
-		if (!shell->quotes[*data->idx])
+		if (shell->quotes && !shell->quotes[*data->idx])
 			write_expanded_line(write_fd, line, shell);
 		else
 		{

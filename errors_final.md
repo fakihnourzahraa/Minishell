@@ -1,13 +1,46 @@
  cc  expansion_main.c tokenization/token.c tokenization/token_helpers.c tokenization/parsing.c tokenization/redir.c tokenization/data_structure.c tokenization/edge.c  cleanup.c tokenization/splits.c tokenization/chars.c env/envir.utils.c expansion/expansion.c env/envir.c expansion/expand_var.c expansion/replace_var.c expansion/trim.c libft/libft.a -o test_tokenization 
 
 MIRA:
-
-minishell$ << a
-minishell$ 
-(Is supposed to open a normal heredoc)
-
-
-
+nfakih@c1r7s4 ~/Desktop/git/Minishell
+ % valgrind --leak-check=full -q ./minishell
+minishell$ ls > a << b > c << d < e > f | cat << a << b > c > d >t>f<<p|cat Makefile>jnde1<jnde2>jnde3|ls>jnde4>jnde5<jnde6>jnde7|ls ls ls > jnde | << a << v | easy | exit
+> b
+> d
+> a
+> b
+> p
+> a
+> v
+jnde2: No such file or directory
+==357920== Invalid read of size 1
+==357920==    at 0x40B2E5: ft_strchr (in /home/nfakih/Desktop/git/Minishell/minishell)
+==357920==    by 0x406506: execute_cmd_in_pipeline (in /home/nfakih/Desktop/git/Minishell/minishell)
+==357920==    by 0x405E98: execute_all_commands (in /home/nfakih/Desktop/git/Minishell/minishell)
+==357920==    by 0x4054E3: execute_multiple_cmds (in /home/nfakih/Desktop/git/Minishell/minishell)
+==357920==    by 0x405A52: execute_pipeline (in /home/nfakih/Desktop/git/Minishell/minishell)
+==357920==    by 0x40AA4A: mira_execution (in /home/nfakih/Desktop/git/Minishell/minishell)
+==357920==    by 0x40AB2F: process_input (in /home/nfakih/Desktop/git/Minishell/minishell)
+==357920==    by 0x4015BD: main_loop (in /home/nfakih/Desktop/git/Minishell/minishell)
+==357920==    by 0x401691: main (in /home/nfakih/Desktop/git/Minishell/minishell)
+==357920==  Address 0x0 is not stack'd, malloc'd or (recently) free'd
+==357920== 
+==357920== 
+==357920== Process terminating with default action of signal 11 (SIGSEGV)
+==357920==  Access not within mapped region at address 0x0
+==357920==    at 0x40B2E5: ft_strchr (in /home/nfakih/Desktop/git/Minishell/minishell)
+==357920==    by 0x406506: execute_cmd_in_pipeline (in /home/nfakih/Desktop/git/Minishell/minishell)
+==357920==    by 0x405E98: execute_all_commands (in /home/nfakih/Desktop/git/Minishell/minishell)
+==357920==    by 0x4054E3: execute_multiple_cmds (in /home/nfakih/Desktop/git/Minishell/minishell)
+==357920==    by 0x405A52: execute_pipeline (in /home/nfakih/Desktop/git/Minishell/minishell)
+==357920==    by 0x40AA4A: mira_execution (in /home/nfakih/Desktop/git/Minishell/minishell)
+==357920==    by 0x40AB2F: process_input (in /home/nfakih/Desktop/git/Minishell/minishell)
+==357920==    by 0x4015BD: main_loop (in /home/nfakih/Desktop/git/Minishell/minishell)
+==357920==    by 0x401691: main (in /home/nfakih/Desktop/git/Minishell/minishell)
+==357920==  If you believe this happened as a result of a stack
+==357920==  overflow in your program's main thread (unlikely but
+==357920==  possible), you can try to increase the size of the
+==357920==  main thread stack using the --main-stacksize= flag.
+==357920==  The main thread stack size used in this run was 8388608.
 
 minishell$ q | a | pwd
 minishell: q: command not found
@@ -18,19 +51,6 @@ nour@nfakih:~/Desktop/myFiles/42/git/Minishell$ q | a | pwd
 /home/nour/Desktop/myFiles/42/git/Minishell
 Command 'q' not found
 a: command not found
-
-
-
-minishell$ echo "hi" | echo  "bye"  << a | pwd
-> a
-/home/nfakih/Desktop/git/Minishell
-minishell: Bad file descriptor
-
-nour@nfakih:~/Desktop/myFiles/42/git/Minishell$ echo "hi" | echo "bye" << a | pwd
-> a
-/home/nour/Desktop/myFiles/42/git/Minishell
-
-
 
 
 NOUR:
@@ -212,3 +232,31 @@ cd /tmp/test_pwd_delete
 rm -rf /tmp/test_pwd_delete
 pwd
 
+minishell$ echo "hi" | echo  "bye"  << a | pwd
+> a
+/home/nfakih/Desktop/git/Minishell
+minishell: Bad file descriptor
+
+nour@nfakih:~/Desktop/myFiles/42/git/Minishell$ echo "hi" | echo "bye" << a | pwd
+> a
+/home/nour/Desktop/myFiles/42/git/Minishell
+
+minishell$ << a
+minishell$ 
+(Is supposed to open a normal heredoc)
+
+
+	if (current->type == EMPTY)
+		r->s = ft_strdup("");
+	else if (current->quotes == 1)
+	{
+		r->s = ft_strtrim(current->s, "'");
+		r->quotes = true;
+	}
+	else if (current->quotes == 2)
+ {
+	r->quotes = true;
+	r->s = ft_strtrim(current->s, "\"");
+	 }
+	else
+		r->s = ft_strdup(current->s);

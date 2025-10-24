@@ -3,29 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   redir.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/09/10 11:10:26 by nour              #+#    #+#             */
-/*   Updated: 2025/10/23 09:43:55 by nour             ###   ########.fr       */
+/*   Created: 2025/10/24 11:24:09 by nfakih            #+#    #+#             */
+/*   Updated: 2025/10/24 11:34:34 by nfakih           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "tokenization.h"
-
-// typedef enum e_r_type
-// {
-//   R_IN,
-//   R_OUT,
-//   R_APPEND,
-//   R_HEREDOC
-// } t_r_type;
-// typedef struct s_redir
-// {
-// 	t_r_type	type;
-// 	char		*s;
-// 	int			fd;
-// 	t_redir		*next;
-// }				t_redir;
 
 void	add_redir(t_cmd *cmds, t_redir *c)
 {
@@ -119,15 +104,10 @@ void	fill_r(t_token *t, t_cmd *cmd)
 	current = t->next;
 	if (current->type == EMPTY)
 		r->s = ft_strdup("");
-	else if (current->quotes == 1)
+	else if (current->quotes == 1 || current->quotes == 2)
 	{
-		r->s = ft_strtrim(current->s, "'");
+		r->s = ft_strdup(current->s);
 		r->quotes = true;
-	}
-	else if (current->quotes == 2)
-	{
-		r->quotes = true;
-		r->s = ft_strtrim(current->s, "\"");
 	}
 	else
 		r->s = ft_strdup(current->s);
