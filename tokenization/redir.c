@@ -6,7 +6,7 @@
 /*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/24 11:24:09 by nfakih            #+#    #+#             */
-/*   Updated: 2025/10/24 11:34:34 by nfakih           ###   ########.fr       */
+/*   Updated: 2025/10/24 12:14:18 by nfakih           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,10 +104,15 @@ void	fill_r(t_token *t, t_cmd *cmd)
 	current = t->next;
 	if (current->type == EMPTY)
 		r->s = ft_strdup("");
-	else if (current->quotes == 1 || current->quotes == 2)
+	else if (current->quotes == 1)
 	{
-		r->s = ft_strdup(current->s);
+		a = ft_strtrim(current->s, "'");
 		r->quotes = true;
+	}
+	else if ((current)->quotes == 2)
+	{
+		r->quotes = true;
+		a = ft_strtrim((current)->s, "\"");
 	}
 	else
 		r->s = ft_strdup(current->s);
