@@ -6,7 +6,7 @@
 /*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/02 20:08:42 by nfakih            #+#    #+#             */
-/*   Updated: 2025/10/25 00:50:08 by nour             ###   ########.fr       */
+/*   Updated: 2025/10/25 13:53:46 by nour             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -179,7 +179,6 @@ int	split_argss(t_shell *shell, t_cmd **current, int i)
 	char	**old_args;
 	char	**split;
 	char	**new_args;
-	char	*b;
 
 	expanded = expand(shell, (*current)->args[i], false);
 	if (!has_unquoted_space(expanded))
