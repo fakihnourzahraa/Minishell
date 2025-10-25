@@ -60,7 +60,9 @@ int	split_q(char *a, t_shell *shell, int i)
 		ft_putstr_fd("minishell: syntax error unclosed quote '\n", 2);
 	else if (a[i] == '"')
 		ft_putstr_fd("minishell: syntax error near unclosed quote \"\n", 2);
+	shell->exit_status = 2;
 	return (-1);
+
 }
 
 void	fix_t(t_token **t, char *b, char n)

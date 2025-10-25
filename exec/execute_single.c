@@ -33,6 +33,12 @@ static int	execute_external_command(t_shell *shell, t_cmd *cmd)
 	pid_t	pid;
 	char	*path;
 
+	if (!cmd->args[0] || cmd->args[0][0] == '\0')
+	{
+		ft_putstr_fd("minishell: : command not found\n", 2);
+		shell->exit_status = 127;
+		return (1);
+	}
 	if (handle_command_path(shell, cmd, &path))
 		return (1);
 	cmd->path = path;
