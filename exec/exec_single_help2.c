@@ -39,12 +39,18 @@ int	handle_absolute_path(t_shell *shell, t_cmd *cmd)
 
 int	handle_command_path(t_shell *shell, t_cmd *cmd, char **path)
 {
+	char	*path_env;
+
 	if (handle_absolute_path(shell, cmd))
 		return (1);
+	path_env = get_env_value(shell->env, "PATH");
 	*path = get_cmd_path(cmd->args[0], shell);
 	if (!*path)
 	{
-		printf("minishell: %s: command not found\n", cmd->args[0]);
+		if (!path_env)
+			printf("minishell: %s: No such file or directory\n", cmd->args[0]);
+		else
+			printf("minishell: %s: command not found\n", cmd->args[0]);
 		shell->exit_status = 127;
 		return (1);
 	}
@@ -85,3 +91,17 @@ int	handle_variable_assignment(t_shell *shell, t_cmd *cmd)
 	free(var_value);
 	return (1);
 }
+
+/*int	handle_command_path(t_shell *shell, t_cmd *cmd, char **path)
+{
+	if (handle_absolute_path(shell, cmd))
+		return (1);
+	*path = get_cmd_path(cmd->args[0], shell);
+	if (!*path)
+	{
+		printf("minishell: %s: command not found\n", cmd->args[0]);
+		shell->exit_status = 127;
+		return (1);
+	}
+	return (0);
+}*/

@@ -82,19 +82,6 @@ static void	change_directory(t_shell *shell, char *target, const char *old_pwd)
 	shell->exit_status = 0;
 }
 
-/*void	builtin_cd(t_cmd *cmd, t_shell *shell)
-{
-	char	*old_pwd;
-	char	*target;
-
-	old_pwd = get_env_value(shell->env, "PWD");
-	target = get_target_dir(shell, cmd->args[1]);
-	if (!target)
-		return ;
-	change_directory(shell, target, old_pwd);
-}
-*/
-
 void	builtin_cd(t_cmd *cmd, t_shell *shell)
 {
 	char	*old_pwd;
@@ -121,3 +108,16 @@ void	builtin_cd(t_cmd *cmd, t_shell *shell)
 	}
 	change_directory(shell, target, old_pwd);
 }
+
+/*void	builtin_cd(t_cmd *cmd, t_shell *shell)
+{
+	char	*old_pwd;
+	char	*target;
+
+	old_pwd = get_env_value(shell->env, "PWD");
+	target = get_target_dir(shell, cmd->args[1]);
+	if (!target)
+		return ;
+	change_directory(shell, target, old_pwd);
+}
+*/

@@ -40,7 +40,10 @@ static int	handle_empty_input(t_shell *shell, char *input)
 		return (1);
 	}
 	if (g_signal == SIGINT)
+	{
 		g_signal = 0;
+		shell->exit_status = 130;
+	}
 	if (input[0] == '\0')
 		return (1);
 	return (0);
