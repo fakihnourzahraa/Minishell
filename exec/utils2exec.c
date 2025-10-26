@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils2exec.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/07 12:58:43 by miwehbe           #+#    #+#             */
-/*   Updated: 2025/10/18 15:40:02 by nfakih           ###   ########.fr       */
+/*   Updated: 2025/10/26 23:45:02 by nour             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,57 +92,3 @@ void	cleanup_and_wait(t_shell *shell, t_cmd *cmds, t_pipe_info *info)
 	wait_for_children(cmds, shell);
 	signals_prompt();
 }
-
-/*int	execute_multiple_cmds(t_shell *shell, t_cmd *cmds, int cmd_count)
-{
-	t_pipe_info	info;
-	t_cmd		*current;
-	t_redir		*redir;
-	char		*heredoc_delimiters[100];
-	int			heredoc_count;
-	int			heredoc_fd;
-
-	current = cmds;
-	while (current)
-	{
-		heredoc_count = 0;
-		if (current->rd)
-		{
-			redir = current->rd;
-			while (redir && heredoc_count < 100)
-			{
-				if (redir->type == R_HEREDOC)
-				{
-					if (!redir->s || ft_strlen(redir->s) == 0)
-						return (1);
-					heredoc_delimiters[heredoc_count] = redir->s;
-					heredoc_count++;
-				}
-				redir = redir->next;
-			}
-			if (heredoc_count > 0)
-			{
-				heredoc_fd = run_multiple_heredocs(heredoc_delimiters, heredoc_count, shell);
-				if (heredoc_fd == -1)
-					return (1);
-				current->i_fd = heredoc_fd;
-			}
-		}
-		current = current->next;
-	}
-	info.pipes = setup_pipes(cmd_count);
-	if (!info.pipes)
-		return (1);
-	info.cmd_count = cmd_count;
-	signals_parent();
-	if (execute_all_commands(shell, cmds, &info) == -1)
-	{
-		close_and_free_pipes(info.pipes, cmd_count - 1);
-		info.pipes = NULL;
-		signals_prompt();
-		return (1);
-	}
-	cleanup_and_wait(shell, cmds, &info);
-	return (shell->exit_status);
-}
-*/

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/16 16:30:14 by nfakih            #+#    #+#             */
-/*   Updated: 2025/10/24 12:26:00 by nfakih           ###   ########.fr       */
+/*   Updated: 2025/10/25 14:30:05 by nour             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ int	main_loop(t_shell *shell)
 			update_shlvl_on_exit(shell);
 			printf("exit\n");
 			break ;
-		}		
+		}
 		if (!handle_empty_input(shell, input))
 			execute_check_exit(shell, input);
 		free(input);

@@ -6,7 +6,7 @@
 /*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 22:14:32 by nfakih            #+#    #+#             */
-/*   Updated: 2025/10/17 13:19:38 by nour             ###   ########.fr       */
+/*   Updated: 2025/10/26 09:42:35 by nour             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,11 +25,6 @@ bool	skipable_space(char a)
 		return (true);
 	return (false);
 }
-// void	cleanup_token(t_shell *shell)
-// {
-// 	if (shell->tkns)
-// 		free_tokens(shell->tkns);
-// }
 
 int	skip_spaces(char *a, int i)
 {
@@ -39,6 +34,6 @@ int	skip_spaces(char *a, int i)
 }
 
 // only the skipable ones
-// Space (32) and Tab (9) are your main token separators
-// Newline (10) typically ends a command line
+// Space (32) and Tab (9) are the main token separators
+// Newline (10) ends a command line
 // Carriage Return (13) might appear in files created on Windows systems

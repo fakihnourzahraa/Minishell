@@ -6,7 +6,7 @@
 /*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/13 12:45:13 by nfakih            #+#    #+#             */
-/*   Updated: 2025/10/17 14:59:30 by nour             ###   ########.fr       */
+/*   Updated: 2025/10/26 11:19:55 by nour             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,10 +107,3 @@ t_cmd	*init_cmd(t_token *t)
 	}
 	return (cmd);
 }
-
-	// if (t->s == NULL)
-	// {
-	// 	cmd->args[0] = NULL;
-	// 	cmd->cmd = NULL;
-	// 	return (cmd);
-	// } before return cmd

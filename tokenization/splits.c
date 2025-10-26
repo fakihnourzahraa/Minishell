@@ -6,7 +6,7 @@
 /*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/31 13:23:45 by nfakih            #+#    #+#             */
-/*   Updated: 2025/10/17 13:39:01 by nour             ###   ########.fr       */
+/*   Updated: 2025/10/26 09:51:30 by nour             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ int	split_word(char *a, int i, t_shell *shell, t_token **t)
 		b[j] = a[i + j];
 		j++;
 	}
-	if (a[i + j] && a[i + j] != 32)
+	if (a[i + j] && !skipable_space(a[i + j]))
 		(*t)->space = 0;
 	b[j] = '\0';
 	(*t)->s = b;
@@ -62,10 +62,9 @@ int	split_q(char *a, t_shell *shell, int i)
 		ft_putstr_fd("minishell: syntax error near unclosed quote \"\n", 2);
 	shell->exit_status = 2;
 	return (-1);
-
 }
 
-void	fix_t(t_token **t, char *b, char n)
+void	fill_t(t_token **t, char *b, char n)
 {
 	(*t)->s = b;
 	(*t)->type = WORD;
@@ -100,6 +99,6 @@ int	split_quote(char *a, int i, t_shell *shell, char n)
 		t->space = false;
 	b[len + 1] = n;
 	b[len + 2] = '\0';
-	fix_t(&t, b, n);
+	fill_t(&t, b, n);
 	return (add_token(shell, t), i + len + 1);
 }

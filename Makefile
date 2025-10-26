@@ -69,6 +69,8 @@ SRCS = main/main.c \
        tokenization/token_helpers.c \
        tokenization/token.c \
        cleanup.c \
+       expansion/split_help.c\
+       expansion/segments.c\
        cleanup_two.c
 
 OBJS = $(SRCS:.c=.o)

@@ -6,7 +6,7 @@
 /*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/18 16:18:57 by nfakih            #+#    #+#             */
-/*   Updated: 2025/10/19 13:09:57 by nour             ###   ########.fr       */
+/*   Updated: 2025/10/26 09:40:10 by nour             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,3 +80,4 @@ int	process_input(t_shell *shell, char *input)
 	}
 	return (0);
 }
+//the return value of this isn't being handled

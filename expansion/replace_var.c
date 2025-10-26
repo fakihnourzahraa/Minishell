@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   replace_var.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/20 17:51:32 by miwehbe           #+#    #+#             */
-/*   Updated: 2025/10/18 15:57:40 by nfakih           ###   ########.fr       */
+/*   Updated: 2025/10/26 23:44:47 by nour             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,8 @@ int	h_false(char *s, int i, char *q)
 			return (i);
 		}
 		else if (s[i] == '$' && a == '\0' && s[i + 1] != '\0'
-			&& (s[i + 1] == '\'' || s[i + 1] == '"'))
+			&& s[i + 2] != '\0' && (s[i + 1] == '\'' || s[i + 1] == '"')
+			&& s[i + 1] == s[i + 2])
 		{
 			*q = a;
 			return (i);
@@ -72,7 +73,8 @@ int	h_true(char *s, int i)
 			&& (isalnum(s[i + 1]) || s[i + 1] == '_' || s[i + 1] == '?'))
 			return (i);
 		else if (s[i] == '$' && s[i + 1] != '\0'
-			&& (s[i + 1] == '\'' || s[i + 1] == '"'))
+			&& s[i + 2] != '\0' && (s[i + 1] == '\'' || s[i + 1] == '"')
+			&& s[i + 1] == s[i + 2])
 			return (i);
 		i++;
 	}
@@ -85,4 +87,5 @@ int	expand_at(char *s, int i, char *q, bool h)
 		return (h_true(s, i));
 	return (h_false(s, i, q));
 }
+
 //returns s[i] = $
