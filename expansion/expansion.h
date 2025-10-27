@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expansion.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/20 19:01:33 by miwehbe           #+#    #+#             */
-/*   Updated: 2025/10/26 23:43:40 by nour             ###   ########.fr       */
+/*   Updated: 2025/10/27 09:29:47 by nfakih           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,4 +45,5 @@ int		count_args(char **args);
 int		copy_args_segments(char **new_args, char **old_args,
 			char **split, int i);
 int		split_argss(t_shell *shell, t_cmd **current, int i);
+void	remove_quotes(t_cmd *current);
 #endif
