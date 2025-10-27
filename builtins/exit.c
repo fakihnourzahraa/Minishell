@@ -98,26 +98,3 @@ void	builtin_exit(t_cmd *cmd, t_shell *shell)
 	else
 		shell->exit = true;
 }
-
-/*static void	process_exit_argument(t_cmd *cmd, t_shell *shell, int arg_count)
-{
-	long long	exit_code;
-
-	if (!ft_is_numeric(cmd->args[1])
-		|| !check_numeric_overflow(cmd->args[1]))
-	{
-		ft_putendl_fd("minishell: exit: numeric argument required", 2);
-		shell->exit_status = 255;
-		shell->exit = true;
-		return ;
-	}
-	if (arg_count > 2)
-	{
-		ft_putendl_fd("minishell: exit: too many arguments", 2);
-		shell->exit_status = 1;
-		return ;
-	}
-	exit_code = ft_atoll(cmd->args[1]);
-	shell->exit_status = (unsigned char)exit_code;
-	shell->exit = true;
-}*/

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_single_help2.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miwehbe <miwehbe@student.42beirut.com>     +#+  +:+       +#+        */
+/*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/18 09:37:12 by miwehbe           #+#    #+#             */
-/*   Updated: 2025/10/18 09:37:12 by miwehbe          ###   ########.fr       */
+/*   Updated: 2025/10/27 10:29:21 by nfakih           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,17 +91,3 @@ int	handle_variable_assignment(t_shell *shell, t_cmd *cmd)
 	free(var_value);
 	return (1);
 }
-
-/*int	handle_command_path(t_shell *shell, t_cmd *cmd, char **path)
-{
-	if (handle_absolute_path(shell, cmd))
-		return (1);
-	*path = get_cmd_path(cmd->args[0], shell);
-	if (!*path)
-	{
-		printf("minishell: %s: command not found\n", cmd->args[0]);
-		shell->exit_status = 127;
-		return (1);
-	}
-	return (0);
-}*/

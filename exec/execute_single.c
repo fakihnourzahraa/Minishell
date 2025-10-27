@@ -6,7 +6,7 @@
 /*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/01 09:02:13 by miwehbe           #+#    #+#             */
-/*   Updated: 2025/10/24 12:34:36 by nfakih           ###   ########.fr       */
+/*   Updated: 2025/10/27 10:29:44 by nfakih           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,11 +116,3 @@ int	execute_single(t_shell *shell, t_cmd *cmd)
 		return (1);
 	return (execute_external_command(shell, cmd));
 }
-
-/*if (cmd->builtin != NOT_BUILTIN)
-{
-	if (cmd->rd)
-		return (execute_builtin_with_redirect(shell, cmd));
-	execute_builtin(cmd, shell);
-	return (1);
-}*/

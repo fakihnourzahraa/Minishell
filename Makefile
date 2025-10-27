@@ -71,7 +71,6 @@ SRCS = main/main.c \
        cleanup.c \
        expansion/split_help.c\
        expansion/segments.c\
-	   expansion/quotes.c\
        cleanup_two.c
 
 OBJS = $(SRCS:.c=.o)

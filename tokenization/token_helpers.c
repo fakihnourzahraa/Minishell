@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token_helpers.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 22:14:32 by nfakih            #+#    #+#             */
-/*   Updated: 2025/10/26 09:42:35 by nour             ###   ########.fr       */
+/*   Updated: 2025/10/27 10:00:54 by nfakih           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ int	skipforvar(char *a, int i)
 
 bool	skipable_space(char a)
 {
-	if (a == 32 || a == 9 || a == 11 || a == 12)
+	if (a == 32 || a == 9 || a == 11 || a == 12 || a == 10)
 		return (true);
 	return (false);
 }

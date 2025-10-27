@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   replace_var.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nour <nour@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/20 17:51:32 by miwehbe           #+#    #+#             */
-/*   Updated: 2025/10/26 23:44:47 by nour             ###   ########.fr       */
+/*   Updated: 2025/10/27 10:32:23 by nfakih           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ int	h_false(char *s, int i, char *q)
 	char	a;
 
 	a = *q;
-	while (s[i])
+	while (s && s[i])
 	{
 		if (s[i] == '\'' || s[i] == '"')
 			a = set_a(a, s[i]);
@@ -67,7 +67,7 @@ int	h_false(char *s, int i, char *q)
 
 int	h_true(char *s, int i)
 {
-	while (s[i])
+	while (s && s[i])
 	{
 		if (s[i] == '$' && s[i + 1] != '\0'
 			&& (isalnum(s[i + 1]) || s[i + 1] == '_' || s[i + 1] == '?'))
@@ -87,5 +87,4 @@ int	expand_at(char *s, int i, char *q, bool h)
 		return (h_true(s, i));
 	return (h_false(s, i, q));
 }
-
 //returns s[i] = $

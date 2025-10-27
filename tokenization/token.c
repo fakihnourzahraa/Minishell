@@ -90,6 +90,11 @@ int	tokenize_line(t_shell *shell)
 
 	a = shell->in;
 	i = skip_spaces(a, 0);
+	if ((size_t)i == ft_strlen(shell->in))
+	{
+		shell->exit_status = 0;
+		return (-1);
+	}
 	while (a[i])
 	{
 		j = i;

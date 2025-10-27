@@ -6,7 +6,7 @@
 /*   By: nfakih <nfakih@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/02 20:08:42 by nfakih            #+#    #+#             */
-/*   Updated: 2025/10/27 09:30:51 by nfakih           ###   ########.fr       */
+/*   Updated: 2025/10/27 10:21:50 by nfakih           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,28 @@ char	*expand(t_shell *shell, char *s, bool h)
 		data.i = expand_at(data.result, data.i, &q, h);
 	}
 	return (data.result);
+}
+
+void	remove_quotes(t_cmd *current)
+{
+	int		i;
+	t_redir	*redir;
+
+	i = 0;
+	if (current->cmd && (ft_strcmp(current->cmd, "") == 0))
+		current->cmd = trim(current->cmd);
+	while (current->args && current->args[i])
+	{
+		current->args[i] = trim(current->args[i]);
+		i++;
+	}
+	redir = current->rd;
+	while (redir)
+	{
+		if (redir->s)
+			redir->s = trim(redir->s);
+		redir = redir->next;
+	}
 }
 
 void	iterate_expansion(t_shell *shell)
